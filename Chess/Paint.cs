@@ -11,12 +11,12 @@
 
         public static void LightSquare()
         {
-            Console.BackgroundColor = ConsoleColor.Gray;
+            Console.BackgroundColor = ConsoleColor.Green;
         }
 
         public static void DarkSquare()
         {
-            Console.BackgroundColor = ConsoleColor.DarkGray;
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
         }
 
         public static void LightFigure()
