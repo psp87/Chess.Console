@@ -2,14 +2,15 @@
 {
     using Chess.Models.Player.Contracts;
     using System;
-    using static Chess.Program;
+    using System.Text;
 
     public static class Print
     {
         public static void Header()
         {
-            SetCursorMinMin(25, -3);
-            Console.Write("JUST CHESS BY PLAMEN PETROV");
+            string header = "JUST CHESS BY PLAMEN PETROV";
+            SetCursorMinMin((76 - header.Length)/2 + 1, -3);
+            Console.Write(header);
         }
 
         public static void Menu()
@@ -24,56 +25,46 @@
             Console.Write("(E)XIT");
         }
 
-        public static void GameStats()
+        public static void GameStats(IPlayer player1, IPlayer player2)
         {
             Console.ForegroundColor = ConsoleColor.White;
 
-            SetCursorMinMax(-13, -24);
-            Console.WriteLine(new string('-', 10));
-            SetCursorMinMax(-12, -23);
-            Console.WriteLine("PLAYER 1");
-            SetCursorMinMax(-13, -22);
-            Console.WriteLine(new string('-', 10));
-            SetCursorMinMax(-11, -20);
+            int playerOneNameCenterPosition = -(15 + player1.Name.Length) / 2;
+            Print.LineMinMax(playerOneNameCenterPosition - 1, -24, player1.Name.Length + 2, '-');
+            SetCursorMinMax(playerOneNameCenterPosition, -23);
+            Console.WriteLine($"{player1.Name}");
+            Print.LineMinMax(playerOneNameCenterPosition - 1, -22, player1.Name.Length + 2, '-');
+            SetCursorMinMax(-10, -20);
             Console.WriteLine("WHITE");
-            SetCursorMinMax(-11, -17);
-            Console.Write("P x 0");
-            SetCursorMinMax(-11, -15);
-            Console.Write("N x 0");
-            SetCursorMinMax(-11, -13);
-            Console.Write("B x 0");
-            SetCursorMinMax(-11, -11);
-            Console.Write("R x 0");
-            SetCursorMinMax(-11, -9);
-            Console.Write("Q x 0");
+            SetCursorMinMax(-10, -17);
+            Console.Write($"P x {player1.TakenFigures(nameof(Pawn))}");
+            SetCursorMinMax(-10, -15);
+            Console.Write($"N x {player1.TakenFigures(nameof(Knight))}");
+            SetCursorMinMax(-10, -13);
+            Console.Write($"B x {player1.TakenFigures(nameof(Bishop))}");
+            SetCursorMinMax(-10, -11);
+            Console.Write($"R x {player1.TakenFigures(nameof(Rook))}");
+            SetCursorMinMax(-10, -9);
+            Console.Write($"Q x {player1.TakenFigures(nameof(Queen))}");
 
-            SetCursorMaxMin(3, 5);
-            Console.WriteLine(new string('-', 10));
-            SetCursorMaxMin(4, 6);
-            Console.WriteLine("PLAYER 2");
-            SetCursorMaxMin(3, 7);
-            Console.WriteLine(new string('-', 10));
+
+            int playerTwoNameCenterPosition = (15 - player2.Name.Length) / 2;
+            Print.LineMaxMin(playerTwoNameCenterPosition - 1, 5, player2.Name.Length + 2, '-');
+            SetCursorMaxMin(playerTwoNameCenterPosition, 6);
+            Console.WriteLine($"{player2.Name}");
+            Print.LineMaxMin(playerTwoNameCenterPosition - 1, 7, player2.Name.Length + 2, '-');
             SetCursorMaxMin(5, 9);
             Console.WriteLine("BLACK");
             SetCursorMaxMin(5, 12);
-            Console.Write("P x 0");
+            Console.Write($"P x {player2.TakenFigures(nameof(Pawn))}");
             SetCursorMaxMin(5, 14);
-            Console.Write("N x 0");
+            Console.Write($"N x {player2.TakenFigures(nameof(Knight))}");
             SetCursorMaxMin(5, 16);
-            Console.Write("B x 0");
+            Console.Write($"B x {player2.TakenFigures(nameof(Bishop))}");
             SetCursorMaxMin(5, 18);
-            Console.Write("R x 0");
+            Console.Write($"R x {player2.TakenFigures(nameof(Rook))}");
             SetCursorMaxMin(5, 20);
-            Console.Write("Q x 0");
-        }
-
-        internal static void Values()
-        {
-            char symbol = char.Parse(Console.ReadLine());
-            int fromX = int.Parse(Console.ReadLine());
-            int fromY = int.Parse(Console.ReadLine());
-            int toX = int.Parse(Console.ReadLine());
-            int toY = int.Parse(Console.ReadLine());
+            Console.Write($"Q x {player2.TakenFigures(nameof(Queen))}");
         }
 
         public static void Turn(IPlayer player)
@@ -82,19 +73,54 @@
 
             if (player.Color == Color.Light)
             {
-                SetCursorMinMax(-13, -23);
-                Console.Write(">PLAYER 1<");
+                int playerOneCenterNamePosition = -(15 + player.Name.Length) / 2;
+
+                SetCursorMinMax(playerOneCenterNamePosition, -23);
+                Console.Write($"{player.Name}");
 
                 SetCursorMinMax(-13, -6);
-                Console.Write("MOVE:");
+                Console.Write("MOVE:      ");
                 SetCursorMinMax(-8, -6);
             }
             else
             {
+                int playerTwoCenterNamePosition = (15 - player.Name.Length) / 2;
+
+                SetCursorMaxMin(playerTwoCenterNamePosition, 6);
+                Console.Write($"{player.Name}");
+
                 SetCursorMaxMin(3, 23);
-                Console.Write("MOVE:");
+                Console.Write("MOVE:      ");
                 SetCursorMaxMin(8, 23);
             }
+        }
+
+        public static void ExampleText()
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            SetCursorMinMin(-12, 7);
+            Console.Write("EXAMPLE:");
+            SetCursorMinMin(-12, 9);
+            Console.Write("PE2E4");
+            SetCursorMinMin(-12, 11);
+            Console.Write("P - PAWN");
+            SetCursorMinMin(-12, 12);
+            Console.Write("E2 - FROM");
+            SetCursorMinMin(-12, 13);
+            Console.Write("E4 - TO");
+
+            SetCursorMinMin(-12, 16);
+            Console.Write("LEGEND");
+            SetCursorMinMin(-12, 17);
+            Console.Write("P - PAWN");
+            SetCursorMinMin(-12, 18);
+            Console.Write("N - KNIGHT");
+            SetCursorMinMin(-12, 19);
+            Console.Write("B - BISHOP");
+            SetCursorMinMin(-12, 20);
+            Console.Write("R - ROOK");
+            SetCursorMinMin(-12, 21);
+            Console.Write("Q - QUEEN");
         }
 
         public static void MenuGame()
@@ -109,10 +135,28 @@
             Console.Write("(E)XIT");
         }
 
-        public static void BlankLine(int x, int y)
+        public static void LineMinMax(int x, int y, int count, char symbol)
         {
             SetCursorMinMax(x, y);
-            Console.Write(new string(' ', 10));
+            Console.Write(new string(symbol, count));
+        }
+
+        public static void LineMaxMin(int x, int y, int count, char symbol)
+        {
+            SetCursorMaxMin(x, y);
+            Console.Write(new string(symbol, count));
+        }
+
+        public static void LineMinMin(int x, int y, int count, char symbol)
+        {
+            SetCursorMinMin(x, y);
+            Console.Write(new string(symbol, count));
+        }
+
+        public static void LineMaxMax(int x, int y, int count, char symbol)
+        {
+            SetCursorMaxMax(x, y);
+            Console.Write(new string(symbol, count));
         }
 
         private static void SetCursorMinMin(int x, int y)

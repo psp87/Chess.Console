@@ -6,7 +6,8 @@
     using Chess.Models.Board.Contracts;
     using Chess.Models.Figures.Contracts;
     using Chess.Models.Player.Contracts;
-    using static Chess.Program;
+
+    public enum Color { Light, Dark, Empty }
 
     public enum CoordinateX
     {
@@ -65,13 +66,11 @@
                     if ((row + col) % 2 == 0)
                     {
                         Drawer.EmptySquare(row, col);
-
                         currentFigure.Draw(row, col);
                     }
                     else
                     {
                         Drawer.EmptySquare(row, col);
-
                         currentFigure.Draw(row, col);
                     }
                 }
@@ -87,52 +86,31 @@
 
         public void FigureMove(IPlayer player)
         {
-            Print.Turn(player);
+            Globals.TurnCounter++;
 
-            string text = Console.ReadLine();
+            bool successfulMove = false;
 
-            string pattern = @"([A-Za-z])([A-Za-z])([1-8])([A-Za-z])([1-8])";
-            Regex regex = new Regex(pattern);
-            Match match = regex.Match(text);
-
-            char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
-            int fromCol = colMapping[match.Groups[2].ToString().ToUpper()];
-            int fromRow = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
-            int toCol = colMapping[match.Groups[4].ToString().ToUpper()];
-            int toRow = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
-
-            IFigure empty = Factory.GetEmpty((CoordinateY)fromRow, (CoordinateX)fromCol);
-
-            if (this.squares[toRow][toCol].IsOccupied == false)
+            while (!successfulMove)
             {
-                if (player.Color == this.squares[fromRow][fromCol].Color && symbol == this.squares[fromRow][fromCol].Symbol)
-                {
-                    if (this.squares[fromRow][fromCol].Move(this.squares, (CoordinateY)toRow, (CoordinateX)toCol))
-                    {
-                        // Assigning the new value, Deleting the old drawn figure, Drawing the new figure
-                        this.squares[toRow][toCol] = this.squares[fromRow][fromCol];
-                        Drawer.EmptySquare(toRow, toCol);
-                        this.squares[toRow][toCol].Draw(toRow, toCol);
+                string text = Console.ReadLine();
 
-                        // Assigning and drawing empty to the old square
-                        this.squares[fromRow][fromCol] = empty;
-                        Drawer.EmptySquare(fromRow, fromCol);
+                string pattern = @"([A-Za-z])([A-Za-z])([1-8])([A-Za-z])([1-8])";
+                Regex regex = new Regex(pattern);
+                Match match = regex.Match(text);
 
-                        // Check the pawn if it is last move
-                        if (this.squares[toRow][toCol] is Pawn)
-                        {
-                            Pawn.LastMoveCheck(toRow, toCol, squares, player);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (this.squares[toRow][toCol].Color != this.squares[fromRow][fromCol].Color)
+                char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
+                int fromCol = colMapping[match.Groups[2].ToString().ToUpper()];
+                int fromRow = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
+                int toCol = colMapping[match.Groups[4].ToString().ToUpper()];
+                int toRow = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
+
+                IFigure empty = Factory.GetEmpty((CoordinateY)fromRow, (CoordinateX)fromCol);
+
+                if (this.squares[toRow][toCol].IsOccupied == false)
                 {
                     if (player.Color == this.squares[fromRow][fromCol].Color && symbol == this.squares[fromRow][fromCol].Symbol)
                     {
-                        if (this.squares[fromRow][fromCol].Take(this.squares, (CoordinateY)toRow, (CoordinateX)toCol))
+                        if (this.squares[fromRow][fromCol].Move(this.squares, (CoordinateY)toRow, (CoordinateX)toCol))
                         {
                             // Assigning the new value, Deleting the old drawn figure, Drawing the new figure
                             this.squares[toRow][toCol] = this.squares[fromRow][fromCol];
@@ -148,9 +126,64 @@
                             {
                                 Pawn.LastMoveCheck(toRow, toCol, squares, player);
                             }
+
+                            successfulMove = true;
                         }
                     }
                 }
+                else
+                {
+                    if (this.squares[toRow][toCol].Color != this.squares[fromRow][fromCol].Color)
+                    {
+                        if (player.Color == this.squares[fromRow][fromCol].Color && symbol == this.squares[fromRow][fromCol].Symbol)
+                        {
+                            if (this.squares[fromRow][fromCol].Take(this.squares, (CoordinateY)toRow, (CoordinateX)toCol))
+                            {
+                                player.TakeFigure(this.squares[toRow][toCol].Name);
+
+                                // Assigning the new value, Deleting the old drawn figure, Drawing the new figure
+                                this.squares[toRow][toCol] = this.squares[fromRow][fromCol];
+                                Drawer.EmptySquare(toRow, toCol);
+                                this.squares[toRow][toCol].Draw(toRow, toCol);
+
+                                // Assigning and drawing empty to the old square
+                                this.squares[fromRow][fromCol] = empty;
+                                Drawer.EmptySquare(fromRow, fromCol);
+
+                                // Check the pawn if it is last move
+                                if (this.squares[toRow][toCol] is Pawn)
+                                {
+                                    Pawn.LastMoveCheck(toRow, toCol, squares, player);
+                                }
+
+                                successfulMove = true;
+                            }
+                        }
+                    }
+                }
+
+                if (EnPassant.Turn == Globals.TurnCounter && squares[fromRow][fromCol] is Pawn && toRow == EnPassant.Row && toCol == EnPassant.Col)
+                {
+                    //player.TakenFigures(this.squares[toRow][toCol]);
+
+                    this.squares[toRow][toCol] = this.squares[fromRow][fromCol];
+                    this.squares[toRow][toCol].Row = (CoordinateY)toRow;
+                    this.squares[toRow][toCol].Col = (CoordinateX)toCol;
+                    this.squares[toRow][toCol].Draw(toRow, toCol);
+
+                    this.squares[fromRow][fromCol] = empty;
+                    Drawer.EmptySquare(fromRow, fromCol);
+
+                    int colCheck = toCol > fromCol ? 1 : -1;
+                    this.squares[fromRow][fromCol + colCheck] = empty;
+                    this.squares[fromRow][fromCol + colCheck].Row = (CoordinateY)fromRow;
+                    this.squares[fromRow][fromCol + colCheck].Col = (CoordinateX)fromCol;
+                    Drawer.EmptySquare(fromRow, fromCol + colCheck);
+
+                    successfulMove = true;
+                }
+
+                Paint.DefaultColor();
             }
         }
 

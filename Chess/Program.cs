@@ -6,8 +6,6 @@
 
     public class Program
     {
-        public enum Color { Light, Dark, Empty }
-
         public static void Main()
         {
             IBoard board = Factory.GetBoard();
@@ -28,30 +26,28 @@
                             board.NewGame();
                             board.Draw();
 
-                            IPlayer player1 = Factory.GetPlayer("Pepi", Color.Light);
-                            IPlayer player2 = Factory.GetPlayer("Pati", Color.Dark);
+                            IPlayer player1 = Factory.GetPlayer("PEPPY", Color.Light);
+                            IPlayer player2 = Factory.GetPlayer("PATTY", Color.Dark);
 
                             while (true)
                             {
+                                Print.ExampleText();
+
                                 for (int turn = 1; turn <= 2; turn++)
                                 {
                                     if (turn % 2 == 1)
                                     {
-                                        Print.GameStats();
-
+                                        Print.GameStats(player1, player2);
+                                        Print.Turn(player1);
                                         board.FigureMove(player1);
-
-                                        Paint.DefaultColor();
-                                        Print.BlankLine(-13, -6);
+                                        Print.LineMinMax(-13, -6, 10, ' ');
                                     }
                                     else
                                     {
-                                        Print.GameStats();
-
+                                        Print.GameStats(player1, player2);
+                                        Print.Turn(player2);
                                         board.FigureMove(player2);
-
-                                        Paint.DefaultColor();
-                                        Print.BlankLine(79, -53);
+                                        Print.LineMinMax(79, -53, 10, ' ');
                                     }
                                 }
                             }

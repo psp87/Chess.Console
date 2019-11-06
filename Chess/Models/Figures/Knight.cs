@@ -2,7 +2,6 @@
 {
     using System;
     using Chess.Models.Figures.Contracts;
-    using static Chess.Program;
 
     public class Knight : IFigure
     {

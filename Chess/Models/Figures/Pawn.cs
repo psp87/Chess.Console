@@ -3,7 +3,6 @@
     using System;
     using Chess.Models.Figures.Contracts;
     using Chess.Models.Player.Contracts;
-    using static Chess.Program;
 
     public class Pawn : IFigure
     {
@@ -99,6 +98,7 @@
                 {
                     this.Row -= 2;
                     this.IsFirstMove = false;
+                    this.EnPassantCheck(squares, toRow);
                     return true;
                 }
             }
@@ -124,6 +124,7 @@
                 {
                     this.Row += 2;
                     this.IsFirstMove = false;
+                    this.EnPassantCheck(squares, toRow);
                     return true;
                 }
             }
@@ -228,6 +229,55 @@
                             break;
                         }
                 }
+            }
+        }
+
+        private void EnPassantCheck(IFigure[][] squares, CoordinateY toRow)
+        {
+            int rowSign = this.Color == Color.Light ? 1 : -1;
+
+            var currentRow = (int)this.Row;
+            var currentCol = (int)this.Col;
+            
+            switch (currentCol)
+            {
+                case 0:
+                    {
+                        var rightNeighbor = squares[(int)toRow][currentCol + 1];
+
+                        if (rightNeighbor is Pawn && rightNeighbor.Color != this.Color)
+                        {
+                            EnPassant.Turn = Globals.TurnCounter + 1;
+                            EnPassant.Row = currentRow + rowSign;
+                            EnPassant.Col = currentCol;
+                        }
+                    }
+                    break;
+                case 7:
+                    {
+                        var leftNeighbor = squares[(int)toRow][currentCol - 1];
+
+                        if (leftNeighbor is Pawn && leftNeighbor.Color != this.Color)
+                        {
+                            EnPassant.Turn = Globals.TurnCounter + 1;
+                            EnPassant.Row = currentRow + rowSign;
+                            EnPassant.Col = currentCol;
+                        }
+                    }
+                    break;
+                default:
+                    {
+                        var rightNeighbor = squares[(int)toRow][currentCol + 1];
+                        var leftNeighbor = squares[(int)toRow][currentCol - 1];
+
+                        if (leftNeighbor is Pawn && leftNeighbor.Color != this.Color || rightNeighbor is Pawn && rightNeighbor.Color != this.Color)
+                        {
+                            EnPassant.Turn = Globals.TurnCounter + 1;
+                            EnPassant.Row = currentRow + rowSign;
+                            EnPassant.Col = currentCol;
+                        }
+                    }
+                    break;
             }
         }
     }

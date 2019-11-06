@@ -1,18 +1,22 @@
 ﻿namespace Chess.Models.Player
 {
-    using Chess.Models.Figures.Contracts;
     using Chess.Models.Player.Contracts;
     using System.Collections.Generic;
-    using System.Linq;
-    using static Chess.Program;
 
     public class Player : IPlayer
     {
-        Dictionary<IFigure, int> takenFigures;
+        Dictionary<string, int> takenFigures;
 
         public Player(string name, Color color)
         {
-            new Dictionary<IFigure, int>();
+            this.takenFigures = new Dictionary<string, int>()
+            {
+                { nameof(Pawn), 0 },
+                { nameof(Knight), 0 },
+                { nameof(Bishop), 0 },
+                { nameof(Rook), 0 },
+                { nameof(Queen), 0 },
+            };
             this.Name = name;
             this.Color = color;
             this.isCastlingAvailable = true;
@@ -28,16 +32,14 @@
 
         public bool isCastlingAvailable { get; set; }
 
-        public int TakenFigures(IFigure figure)
+        public void TakeFigure(string figureName)
         {
-            if (!takenFigures.ContainsKey(figure))
-            {
-                this.takenFigures[figure] = 0;
-            }
+            takenFigures[figureName]++;
+        }
 
-            takenFigures[figure]++;
-
-            return takenFigures.Where(x => x.Key.Name == figure.Name).Select(x => x.Value).Count();
+        public int TakenFigures(string figureName)
+        {
+            return takenFigures[figureName];
         }
     }
 }

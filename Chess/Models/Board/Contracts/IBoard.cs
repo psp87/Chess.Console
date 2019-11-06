@@ -1,7 +1,7 @@
-﻿using Chess.Models.Player.Contracts;
-
-namespace Chess.Models.Board.Contracts
+﻿namespace Chess.Models.Board.Contracts
 {
+    using Chess.Models.Player.Contracts;
+
     public interface IBoard
     {
         void Draw();
