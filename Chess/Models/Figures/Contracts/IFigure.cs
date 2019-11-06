@@ -1,8 +1,5 @@
 ﻿namespace Chess.Models.Figures.Contracts
 {
-    using Chess.Models.Player.Contracts;
-    using static Chess.Program;
-
     public interface IFigure
     {
         string Name { get; }

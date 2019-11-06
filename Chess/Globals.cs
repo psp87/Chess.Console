@@ -8,7 +8,7 @@
         public const int CellRows = 9;
         public const int CellCols = 9;
 
-        public const int OffsetHorizontal = 18;
+        public const int OffsetHorizontal = 17;
         public const int OffsetVertical = 6;
 
         public const int HorizontalMin = OffsetHorizontal;
@@ -22,5 +22,7 @@
 
         public const int VerticalMinWithBorder = VerticalMin - 2;
         public const int VerticalMaxWithBorder = VerticalMax + 2;
+
+        public static int TurnCounter = 0;
     }
 }

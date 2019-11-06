@@ -4,7 +4,6 @@
     using Chess.Models.Figures.Contracts;
     using Chess.Models.Player;
     using Chess.Models.Player.Contracts;
-    using static Chess.Program;
 
     public class Factory
     {

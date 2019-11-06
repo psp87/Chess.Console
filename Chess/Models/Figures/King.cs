@@ -2,7 +2,6 @@
 {
     using System;
     using Chess.Models.Figures.Contracts;
-    using static Chess.Program;
 
     public class King : IFigure
     {
@@ -76,102 +75,105 @@
 
         public bool Move(IFigure[][] squares, CoordinateY toRow, CoordinateX toCol)
         {
-            if (toCol == this.Col && toRow == this.Row - 1)
+            if (!this.NearKingCheck((int)toRow, (int)toCol, squares))
             {
-                this.Row -= 1;
-                this.IsFirstMove = false;
-                return true;
-            }
-
-            if (toCol == this.Col + 1 && toRow == this.Row - 1)
-            {
-                this.Row -= 1;
-                this.Col += 1;
-                this.IsFirstMove = false;
-                return true;
-            }
-
-            if (toCol == this.Col + 1 && toRow == this.Row)
-            {
-                this.Col += 1;
-                this.IsFirstMove = false;
-                return true;
-            }
-
-            if (toCol == this.Col + 1 && toRow == this.Row + 1)
-            {
-                this.Row += 1;
-                this.Col += 1;
-                this.IsFirstMove = false;
-                return true;
-            }
-
-            if (toCol == this.Col && toRow == this.Row + 1)
-            {
-                this.Row += 1;
-                this.IsFirstMove = false;
-                return true;
-            }
-
-            if (toCol == this.Col - 1 && toRow == this.Row + 1)
-            {
-                this.Row += 1;
-                this.Col -= 1;
-                this.IsFirstMove = false;
-                return true;
-            }
-
-            if (toCol == this.Col - 1 && toRow == this.Row)
-            {
-                this.Col -= 1;
-                this.IsFirstMove = false;
-                return true;
-            }
-
-            if (toCol == this.Col - 1 && toRow == this.Row - 1)
-            {
-                this.Row -= 1;
-                this.Col -= 1;
-                this.IsFirstMove = false;
-                return true;
-            }
-
-            if (this.IsFirstMove && toRow == this.Row)
-            {
-                if (toCol == this.Col + 2)
+                if (toCol == this.Col && toRow == this.Row - 1)
                 {
-                    if (this.OccupiedSquaresCheck(toRow, toCol, squares) && squares[(int)this.Row][7] is Rook && squares[(int)this.Row][7].IsFirstMove)
-                    {
-                        this.Col += 2;
-                        this.IsFirstMove = false;
-
-                        IFigure empty = Factory.GetEmpty(this.Row, (CoordinateX)7);
-                        squares[(int)this.Row][(int)this.Col - 1] = squares[(int)this.Row][7];
-                        Drawer.EmptySquare((int)this.Row, 7);
-                        squares[(int)this.Row][(int)this.Col - 1].Draw((int)this.Row, (int)this.Col - 1);
-                        squares[(int)this.Row][(int)this.Col - 1].Col -= 2;
-                        squares[(int)this.Row][7] = empty;
-                        Drawer.EmptySquare((int)this.Row, 7);
-
-                        return true;
-                    }
+                    this.Row -= 1;
+                    this.IsFirstMove = false;
+                    return true;
                 }
 
-                if (toCol == this.Col - 2)
+                if (toCol == this.Col + 1 && toRow == this.Row - 1)
                 {
-                    if (this.OccupiedSquaresCheck(toRow, toCol, squares) && squares[(int)this.Row][0] is Rook && squares[(int)this.Row][0].IsFirstMove)
+                    this.Row -= 1;
+                    this.Col += 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
+
+                if (toCol == this.Col + 1 && toRow == this.Row)
+                {
+                    this.Col += 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
+
+                if (toCol == this.Col + 1 && toRow == this.Row + 1)
+                {
+                    this.Row += 1;
+                    this.Col += 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
+
+                if (toCol == this.Col && toRow == this.Row + 1)
+                {
+                    this.Row += 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
+
+                if (toCol == this.Col - 1 && toRow == this.Row + 1)
+                {
+                    this.Row += 1;
+                    this.Col -= 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
+
+                if (toCol == this.Col - 1 && toRow == this.Row)
+                {
+                    this.Col -= 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
+
+                if (toCol == this.Col - 1 && toRow == this.Row - 1)
+                {
+                    this.Row -= 1;
+                    this.Col -= 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
+
+                if (this.IsFirstMove && toRow == this.Row)
+                {
+                    if (toCol == this.Col + 2)
                     {
-                        this.Col -= 2;
+                        if (this.OccupiedSquaresCheck(toRow, toCol, squares) && squares[(int)this.Row][7] is Rook && squares[(int)this.Row][7].IsFirstMove)
+                        {
+                            this.Col += 2;
+                            this.IsFirstMove = false;
 
-                        IFigure empty = Factory.GetEmpty(this.Row, (CoordinateX)0);
-                        squares[(int)this.Row][(int)this.Col + 1] = squares[(int)this.Row][0];
-                        Drawer.EmptySquare((int)this.Row, 0);
-                        squares[(int)this.Row][(int)this.Col + 1].Draw((int)this.Row, (int)this.Col + 1);
-                        squares[(int)this.Row][(int)this.Col + 1].Col += 3;
-                        squares[(int)this.Row][0] = empty;
-                        Drawer.EmptySquare((int)this.Row, 0);
+                            IFigure empty = Factory.GetEmpty(this.Row, (CoordinateX)7);
+                            squares[(int)this.Row][(int)this.Col - 1] = squares[(int)this.Row][7];
+                            Drawer.EmptySquare((int)this.Row, 7);
+                            squares[(int)this.Row][(int)this.Col - 1].Draw((int)this.Row, (int)this.Col - 1);
+                            squares[(int)this.Row][(int)this.Col - 1].Col -= 2;
+                            squares[(int)this.Row][7] = empty;
+                            Drawer.EmptySquare((int)this.Row, 7);
 
-                        return true;
+                            return true;
+                        }
+                    }
+
+                    if (toCol == this.Col - 2)
+                    {
+                        if (this.OccupiedSquaresCheck(toRow, toCol, squares) && squares[(int)this.Row][0] is Rook && squares[(int)this.Row][0].IsFirstMove)
+                        {
+                            this.Col -= 2;
+
+                            IFigure empty = Factory.GetEmpty(this.Row, (CoordinateX)0);
+                            squares[(int)this.Row][(int)this.Col + 1] = squares[(int)this.Row][0];
+                            Drawer.EmptySquare((int)this.Row, 0);
+                            squares[(int)this.Row][(int)this.Col + 1].Draw((int)this.Row, (int)this.Col + 1);
+                            squares[(int)this.Row][(int)this.Col + 1].Col += 3;
+                            squares[(int)this.Row][0] = empty;
+                            Drawer.EmptySquare((int)this.Row, 0);
+
+                            return true;
+                        }
                     }
                 }
             }
@@ -181,64 +183,67 @@
 
         public bool Take(IFigure[][] squares, CoordinateY toRow, CoordinateX toCol)
         {
-            if (toCol == this.Col && toRow == this.Row - 1)
+            if (!this.NearKingCheck((int)toRow, (int)toCol, squares))
             {
-                this.Row -= 1;
-                this.IsFirstMove = false;
-                return true;
-            }
+                if (toCol == this.Col && toRow == this.Row - 1 && !(squares[(int)toRow][(int)toCol] is King))
+                {
+                    this.Row -= 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
 
-            if (toCol == this.Col + 1 && toRow == this.Row - 1)
-            {
-                this.Row -= 1;
-                this.Col += 1;
-                this.IsFirstMove = false;
-                return true;
-            }
+                if (toCol == this.Col + 1 && toRow == this.Row - 1 && !(squares[(int)toRow][(int)toCol] is King))
+                {
+                    this.Row -= 1;
+                    this.Col += 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
 
-            if (toCol == this.Col + 1 && toRow == this.Row)
-            {
-                this.Col += 1;
-                this.IsFirstMove = false;
-                return true;
-            }
+                if (toCol == this.Col + 1 && toRow == this.Row && !(squares[(int)toRow][(int)toCol] is King))
+                {
+                    this.Col += 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
 
-            if (toCol == this.Col + 1 && toRow == this.Row + 1)
-            {
-                this.Row += 1;
-                this.Col += 1;
-                this.IsFirstMove = false;
-                return true;
-            }
+                if (toCol == this.Col + 1 && toRow == this.Row + 1 && !(squares[(int)toRow][(int)toCol] is King))
+                {
+                    this.Row += 1;
+                    this.Col += 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
 
-            if (toCol == this.Col && toRow == this.Row + 1)
-            {
-                this.Row += 1;
-                this.IsFirstMove = false;
-                return true;
-            }
+                if (toCol == this.Col && toRow == this.Row + 1 && !(squares[(int)toRow][(int)toCol] is King))
+                {
+                    this.Row += 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
 
-            if (toCol == this.Col - 1 && toRow == this.Row + 1)
-            {
-                this.Row += 1;
-                this.Col -= 1;
-                this.IsFirstMove = false;
-                return true;
-            }
+                if (toCol == this.Col - 1 && toRow == this.Row + 1 && !(squares[(int)toRow][(int)toCol] is King))
+                {
+                    this.Row += 1;
+                    this.Col -= 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
 
-            if (toCol == this.Col - 1 && toRow == this.Row)
-            {
-                this.Col -= 1;
-                this.IsFirstMove = false;
-                return true;
-            }
+                if (toCol == this.Col - 1 && toRow == this.Row && !(squares[(int)toRow][(int)toCol] is King))
+                {
+                    this.Col -= 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
 
-            if (toCol == this.Col - 1 && toRow == this.Row - 1)
-            {
-                this.Row -= 1;
-                this.Col -= 1;
-                this.IsFirstMove = false;
-                return true;
+                if (toCol == this.Col - 1 && toRow == this.Row - 1 && !(squares[(int)toRow][(int)toCol] is King))
+                {
+                    this.Row -= 1;
+                    this.Col -= 1;
+                    this.IsFirstMove = false;
+                    return true;
+                }
             }
 
             return false;
@@ -255,7 +260,7 @@
 
             for (int i = 1; i <= colDifference; i++)
             {
-                int sign = this.Col < toCol? i : -i;
+                int sign = this.Col < toCol ? i : -i;
 
                 int colCheck = (int)this.Col + sign;
 
@@ -266,6 +271,23 @@
             }
 
             return true;
+        }
+
+        private bool NearKingCheck(int toRow, int toCol, IFigure[][] squares)
+        {
+            //if (squares[toRow - 1][toCol] is King && this.Color != squares[toRow - 1][toCol].Color ||
+            //    squares[toRow - 1][toCol + 1] is King && this.Color != squares[toRow - 1][toCol + 1].Color ||
+            //    squares[toRow][toCol + 1] is King && this.Color != squares[toRow][toCol + 1].Color ||
+            //    squares[toRow + 1][toCol + 1] is King && this.Color != squares[toRow + 1][toCol + 1].Color ||
+            //    squares[toRow + 1][toCol] is King && this.Color != squares[toRow + 1][toCol].Color ||
+            //    squares[toRow + 1][toCol - 1] is King && this.Color != squares[toRow + 1][toCol - 1].Color ||
+            //    squares[toRow][toCol - 1] is King && this.Color != squares[toRow][toCol - 1].Color ||
+            //    squares[toRow - 1][toCol - 1] is King && this.Color != squares[toRow - 1][toCol - 1].Color)
+            //{
+            //    return true;
+            //}
+
+            return false;
         }
     }
 }
