@@ -14,7 +14,7 @@
       <ExcludeFromSourceAnalysis>False</ExcludeFromSourceAnalysis>
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Update="Program.cs">
+    <Compile Update="StartUp.cs">
       <ExcludeFromSourceAnalysis>False</ExcludeFromSourceAnalysis>
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>

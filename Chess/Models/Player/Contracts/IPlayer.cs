@@ -1,5 +1,7 @@
 ﻿namespace Chess.Models.Player.Contracts
 {
+    using Enums;
+
     public interface IPlayer
     {
         string Name { get; }

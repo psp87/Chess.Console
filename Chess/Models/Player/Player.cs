@@ -1,7 +1,9 @@
 ﻿namespace Chess.Models.Player
 {
-    using Chess.Models.Player.Contracts;
     using System.Collections.Generic;
+    using Figures;
+    using Contracts;
+    using Enums;
 
     public class Player : IPlayer
     {

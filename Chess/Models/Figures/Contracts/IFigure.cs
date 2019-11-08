@@ -1,5 +1,8 @@
 ﻿namespace Chess.Models.Figures.Contracts
 {
+    using Square.Contracts;
+    using Enums;
+
     public interface IFigure
     {
         string Name { get; }
@@ -8,20 +11,14 @@
 
         char Symbol { get; }
 
-        CoordinateY Row { get; set; }
-
-        CoordinateX Col { get; set; }
-
-        bool IsOccupied { get; set; }
+        bool[,] FigureMatrix { get; }
 
         bool IsFirstMove { get; set; }
 
         bool IsLastMove { get; set; }
 
-        void Draw(int row, int col);
+        bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol);
 
-        bool Move(IFigure[][] squares, CoordinateY toRow, CoordinateX toCol);
-
-        bool Take(IFigure[][] squares, CoordinateY toRow, CoordinateX toCol);
+        bool Take(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol);
     }
 }

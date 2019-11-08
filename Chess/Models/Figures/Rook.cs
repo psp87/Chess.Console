@@ -1,23 +1,20 @@
-﻿namespace Chess
+﻿namespace Chess.Models.Figures
 {
     using System;
-    using Chess.Models.Figures.Contracts;
+    using Square.Contracts;
+    using Contracts;
+    using Enums;
 
     public class Rook : IFigure
     {
-        private bool[,] figureMatrix;
-
-        public Rook(Color color, CoordinateY row, CoordinateX col)
+        public Rook(Color color)
         {
             this.Name = "Rook";
             this.Color = color;
             this.Symbol = 'R';
-            this.Col = col;
-            this.Row = row;
-            this.IsOccupied = true;
             this.IsFirstMove = true;
             this.IsLastMove = false;
-            this.figureMatrix = new bool[Globals.CellRows, Globals.CellCols]
+            this.FigureMatrix = new bool[Globals.CellRows, Globals.CellCols]
             {
                 { false, false, false, false, false, false, false, false, false },
                 { false, false, true, false, true, false, true, false, false },
@@ -37,58 +34,28 @@
 
         public char Symbol { get; }
 
-        public CoordinateY Row { get; set; }
-
-        public CoordinateX Col { get; set; }
-
-        public bool IsOccupied { get; set; }
+        public bool[,] FigureMatrix { get; }
 
         public bool IsFirstMove { get; set; }
 
         public bool IsLastMove { get; set; }
 
-        public void Draw(int row, int col)
+        public bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
         {
-            for (int cellRow = 1; cellRow < Globals.CellRows - 1; cellRow++)
+            if (toRow != square.Row && toCol == square.Col)
             {
-                for (int cellCol = 1; cellCol < Globals.CellCols - 1; cellCol++)
+                if (this.OccupiedSquaresCheck(toRow, toCol, matrix, square))
                 {
-                    if (this.figureMatrix[cellRow, cellCol] == true)
-                    {
-                        Console.SetCursorPosition(col * Globals.CellCols + Globals.OffsetHorizontal + cellCol,
-                            row * Globals.CellRows + Globals.OffsetVertical + cellRow);
-
-                        if (this.Color == Color.Light)
-                        {
-                            Paint.LightFigure();
-                            Console.Write(" ");
-                        }
-                        else
-                        {
-                            Paint.DarkFigure();
-                            Console.Write(" ");
-                        }
-                    }
-                }
-            }
-        }
-
-        public bool Move(IFigure[][] squares, CoordinateY toRow, CoordinateX toCol)
-        {
-            if (toRow != this.Row && toCol == this.Col)
-            {
-                if (this.OccupiedSquaresCheck(toRow, toCol, squares))
-                {
-                    this.Row = toRow;
+                    square.Row = toRow;
                     return true;
                 }
             }
 
-            if (toRow == this.Row && toCol != this.Col)
+            if (toRow == square.Row && toCol != square.Col)
             {
-                if (this.OccupiedSquaresCheck(toRow, toCol, squares))
+                if (this.OccupiedSquaresCheck(toRow, toCol, matrix, square))
                 {
-                    this.Col = toCol;
+                    square.Col = toCol;
                     return true;
                 }
             }
@@ -96,22 +63,22 @@
             return false;
         }
 
-        public bool Take(IFigure[][] squares, CoordinateY toRow, CoordinateX toCol)
+        public bool Take(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
         {
-            if (toRow != this.Row && toCol == this.Col)
+            if (toRow != square.Row && toCol == square.Col)
             {
-                if (this.OccupiedSquaresCheck(toRow, toCol, squares))
+                if (this.OccupiedSquaresCheck(toRow, toCol, matrix, square))
                 {
-                    this.Row = toRow;
+                    square.Row = toRow;
                     return true;
                 }
             }
 
-            if (toRow == this.Row && toCol != this.Col)
+            if (toRow == square.Row && toCol != square.Col)
             {
-                if (this.OccupiedSquaresCheck(toRow, toCol, squares))
+                if (this.OccupiedSquaresCheck(toRow, toCol, matrix, square))
                 {
-                    this.Col = toCol;
+                    square.Col = toCol;
                     return true;
                 }
             }
@@ -119,19 +86,19 @@
             return false;
         }
 
-        private bool OccupiedSquaresCheck(CoordinateY toRow, CoordinateX toCol, IFigure[][] squares)
+        private bool OccupiedSquaresCheck(Row toRow, Col toCol, ISquare[][] matrix, ISquare square)
         {
-            if (toRow != this.Row)
+            if (toRow != square.Row)
             {
-                int rowDifference = Math.Abs((int)this.Row - (int)toRow) - 1;
+                int rowDifference = Math.Abs((int)square.Row - (int)toRow) - 1;
 
                 for (int i = 1; i <= rowDifference; i++)
                 {
-                    int sign = this.Row < toRow ? i : -i;
+                    int sign = square.Row < toRow ? i : -i;
 
-                    int rowCheck = (int)this.Row + sign;
+                    int rowCheck = (int)square.Row + sign;
 
-                    if (squares[rowCheck][(int)this.Col].IsOccupied)
+                    if (matrix[rowCheck][(int)square.Col].IsOccupied)
                     {
                         return false;
                     }
@@ -139,15 +106,15 @@
             }
             else
             {
-                int colDifference = Math.Abs((int)this.Col - (int)toCol) - 1;
+                int colDifference = Math.Abs((int)square.Col - (int)toCol) - 1;
 
                 for (int i = 1; i <= colDifference; i++)
                 {
-                    int sign = this.Col < toCol ? i : -i;
+                    int sign = square.Col < toCol ? i : -i;
 
-                    int colCheck = (int)this.Col + sign;
+                    int colCheck = (int)square.Col + sign;
 
-                    if (squares[(int)this.Row][colCheck].IsOccupied)
+                    if (matrix[(int)square.Row][colCheck].IsOccupied)
                     {
                         return false;
                     }

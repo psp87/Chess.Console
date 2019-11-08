@@ -1,20 +1,31 @@
-﻿namespace Chess
+﻿namespace Chess.Models.Figures
 {
     using System;
-    using Chess.Models.Figures.Contracts;
+    using Square.Contracts;
+    using Contracts;
+    using Enums;
 
     public class Empty : IFigure
     {
-        public Empty(CoordinateY row, CoordinateX col)
+        public Empty()
         {
             this.Name = "Empty";
             this.Symbol = 'E';
-            this.Col = col;
-            this.Row = row;
             this.Color = Color.Empty;
-            this.IsOccupied = false;
             this.IsFirstMove = false;
             this.IsLastMove = false;
+            this.FigureMatrix = new bool[Globals.CellRows, Globals.CellCols]
+            {
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, false, false, false, false, false }
+            };
         }
 
         public string Name { get; }
@@ -23,26 +34,18 @@
 
         public char Symbol { get; }
 
-        public CoordinateY Row { get; set; }
-
-        public CoordinateX Col { get; set; }
-
-        public bool IsOccupied { get; set; }
+        public bool[,] FigureMatrix { get; }
 
         public bool IsFirstMove { get; set; }
 
         public bool IsLastMove { get; set; }
 
-        public void Draw(int row, int col)
-        {
-        }
-
-        public bool Move(IFigure[][] squares, CoordinateY toY, CoordinateX toX)
+        public bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
         {
             throw new NotImplementedException();
         }
 
-        public bool Take(IFigure[][] squares, CoordinateY toRow, CoordinateX toCol)
+        public bool Take(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
         {
             throw new NotImplementedException();
         }

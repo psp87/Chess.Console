@@ -1,9 +1,69 @@
 ﻿namespace Chess
 {
     using System;
+    using Models.Square.Contracts;
+    using Models.Figures.Contracts;
+    using Models.Enums;
 
-    public static class Drawer
+    public static class Draw
     {
+        public static void Board()
+        {
+            for (int row = 0; row < Globals.BoardRows; row++)
+            {
+                for (int col = 0; col < Globals.BoardCols; col++)
+                {
+                    EmptySquare(row, col);
+                }
+            }
+
+            Border();
+
+            Paint.DefaultColor();
+        }
+
+        public static void NewGame(ISquare[][] matrix)
+        {
+            for (int row = 0; row < Globals.BoardRows; row++)
+            {
+                for (int col = 0; col < Globals.BoardCols; col++)
+                {
+                    ISquare currentSquare = matrix[row][col];
+                    Figure(row, col, currentSquare.Figure);
+                }
+            }
+
+            Border();
+
+            Paint.DefaultColor();
+        }
+
+        public static void Figure(int row, int col, IFigure figure)
+        {
+            for (int cellRow = 1; cellRow < Globals.CellRows - 1; cellRow++)
+            {
+                for (int cellCol = 1; cellCol < Globals.CellCols - 1; cellCol++)
+                {
+                    if (figure.FigureMatrix[cellRow, cellCol] == true)
+                    {
+                        Console.SetCursorPosition(col * Globals.CellCols + Globals.OffsetHorizontal + cellCol,
+                            row * Globals.CellRows + Globals.OffsetVertical + cellRow);
+
+                        if (figure.Color == Color.Light)
+                        {
+                            Paint.LightFigure();
+                            Console.Write(" ");
+                        }
+                        else
+                        {
+                            Paint.DarkFigure();
+                            Console.Write(" ");
+                        }
+                    }
+                }
+            }
+        }
+
         public static void EmptySquare(int row, int col)
         {
             if ((row + col) % 2 == 0)
@@ -23,7 +83,7 @@
             }
         }
 
-        public static void Border()
+        private static void Border()
         {
             Paint.BorderBackground();
             Paint.BorderText();
