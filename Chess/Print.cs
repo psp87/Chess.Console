@@ -1,8 +1,9 @@
 ﻿namespace Chess
 {
-    using Chess.Models.Player.Contracts;
     using System;
-    using System.Text;
+    using Models.Figures;
+    using Models.Player.Contracts;
+    using Models.Enums;
 
     public static class Print
     {
@@ -133,6 +134,14 @@
 
             SetCursorMinMax(42, 2);
             Console.Write("(E)XIT");
+        }
+
+        public static void MenuPlayers(int playerNumber)
+        {
+            LineMinMax(Globals.HorizontalMinWithBorder, 2, 50, ' ');
+
+            SetCursorMinMax(Globals.HorizontalMinWithBorder, 2);
+            Console.Write($"PLAYER {playerNumber} NAME: ");
         }
 
         public static void LineMinMax(int x, int y, int count, char symbol)

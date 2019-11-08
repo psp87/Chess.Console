@@ -1,12 +1,13 @@
 ﻿namespace Chess.Models.Board.Contracts
 {
-    using Chess.Models.Player.Contracts;
+    using Square.Contracts;
+    using Player.Contracts;
 
     public interface IBoard
     {
-        void Draw();
+        ISquare[][] Matrix { get; set; }
 
-        void FigureMove(IPlayer player);
+        void MoveFigure(IPlayer player);
 
         void NewGame();
     }

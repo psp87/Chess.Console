@@ -1,23 +1,19 @@
-﻿namespace Chess
+﻿namespace Chess.Models.Figures
 {
-    using System;
-    using Chess.Models.Figures.Contracts;
+    using Square.Contracts;
+    using Contracts;
+    using Enums;
 
     public class Knight : IFigure
     {
-        private bool[,] figureMatrix;
-
-        public Knight(Color color, CoordinateY row, CoordinateX col)
+        public Knight(Color color)
         {
             this.Name = "Knight";
             this.Color = color;
             this.Symbol = 'N';
-            this.Col = col;
-            this.Row = row;
-            this.IsOccupied = true;
             this.IsFirstMove = true;
             this.IsLastMove = false;
-            this.figureMatrix = new bool[Globals.CellRows, Globals.CellCols]
+            this.FigureMatrix = new bool[Globals.CellRows, Globals.CellCols]
             {
                 { false, false, false, false, false, false, false, false, false },
                 { false, false, false, true, true, true, false, false, false },
@@ -37,158 +33,128 @@
 
         public char Symbol { get; }
 
-        public CoordinateY Row { get; set; }
-
-        public CoordinateX Col { get; set; }
-
-        public bool IsOccupied { get; set; }
+        public bool[,] FigureMatrix { get; }
 
         public bool IsFirstMove { get; set; }
 
         public bool IsLastMove { get; set; }
 
-        public void Draw(int row, int col)
+        public bool Move(ISquare[][] squares, ISquare square, IFigure figure, Row toRow, Col toCol)
         {
-            for (int cellRow = 1; cellRow < Globals.CellRows - 1; cellRow++)
+            if (toCol == square.Col - 1 && toRow == square.Row - 2)
             {
-                for (int cellCol = 1; cellCol < Globals.CellCols - 1; cellCol++)
-                {
-                    if (this.figureMatrix[cellRow, cellCol] == true)
-                    {
-                        Console.SetCursorPosition(col * Globals.CellCols + Globals.OffsetHorizontal + cellCol,
-                            row * Globals.CellRows + Globals.OffsetVertical + cellRow);
-
-                        if (this.Color == Color.Light)
-                        {
-                            Paint.LightFigure();
-                            Console.Write(" ");
-                        }
-                        else
-                        {
-                            Paint.DarkFigure();
-                            Console.Write(" ");
-                        }
-                    }
-                }
-            }
-        }
-
-        public bool Move(IFigure[][] squares, CoordinateY toRow, CoordinateX toCol)
-        {
-            if (toCol == this.Col - 1 && toRow == this.Row - 2)
-            {
-                this.Row -= 2;
-                this.Col -= 1;
+                square.Row -= 2;
+                square.Col -= 1;
                 return true;
             }
 
-            if (toCol == this.Col + 1 && toRow == this.Row - 2)
+            if (toCol == square.Col + 1 && toRow == square.Row - 2)
             {
-                this.Row -= 2;
-                this.Col += 1;
+                square.Row -= 2;
+                square.Col += 1;
                 return true;
             }
 
-            if (toCol == this.Col - 1 && toRow == this.Row + 2)
+            if (toCol == square.Col - 1 && toRow == square.Row + 2)
             {
-                this.Row += 2;
-                this.Col -= 1;
+                square.Row += 2;
+                square.Col -= 1;
                 return true;
             }
 
-            if (toCol == this.Col + 1 && toRow == this.Row + 2)
+            if (toCol == square.Col + 1 && toRow == square.Row + 2)
             {
-                this.Row += 2;
-                this.Col += 1;
+                square.Row += 2;
+                square.Col += 1;
                 return true;
             }
 
-            if (toCol == this.Col - 2 && toRow == this.Row - 1)
+            if (toCol == square.Col - 2 && toRow == square.Row - 1)
             {
-                this.Row -= 1;
-                this.Col -= 2;
+                square.Row -= 1;
+                square.Col -= 2;
                 return true;
             }
 
-            if (toCol == this.Col - 2 && toRow == this.Row + 1)
+            if (toCol == square.Col - 2 && toRow == square.Row + 1)
             {
-                this.Row += 1;
-                this.Col -= 2;
+                square.Row += 1;
+                square.Col -= 2;
                 return true;
             }
 
-            if (toCol == this.Col + 2 && toRow == this.Row - 1)
+            if (toCol == square.Col + 2 && toRow == square.Row - 1)
             {
-                this.Row -= 1;
-                this.Col += 2;
+                square.Row -= 1;
+                square.Col += 2;
                 return true;
             }
 
-            if (toCol == this.Col + 2 && toRow == this.Row + 1)
+            if (toCol == square.Col + 2 && toRow == square.Row + 1)
             {
-                this.Row += 1;
-                this.Col += 2;
+                square.Row += 1;
+                square.Col += 2;
                 return true;
             }
 
             return false;
         }
 
-        public bool Take(IFigure[][] squares, CoordinateY toRow, CoordinateX toCol)
+        public bool Take(ISquare[][] squares, ISquare square, IFigure figure, Row toRow, Col toCol)
         {
-            if (toCol == this.Col - 1 && toRow == this.Row - 2)
+            if (toCol == square.Col - 1 && toRow == square.Row - 2)
             {
-                this.Row -= 2;
-                this.Col -= 1;
+                square.Row -= 2;
+                square.Col -= 1;
                 return true;
             }
 
-            if (toCol == this.Col + 1 && toRow == this.Row - 2)
+            if (toCol == square.Col + 1 && toRow == square.Row - 2)
             {
-                this.Row -= 2;
-                this.Col += 1;
+                square.Row -= 2;
+                square.Col += 1;
                 return true;
             }
 
-            if (toCol == this.Col - 1 && toRow == this.Row + 2)
+            if (toCol == square.Col - 1 && toRow == square.Row + 2)
             {
-                this.Row += 2;
-                this.Col -= 1;
+                square.Row += 2;
+                square.Col -= 1;
                 return true;
             }
 
-            if (toCol == this.Col + 1 && toRow == this.Row + 2)
+            if (toCol == square.Col + 1 && toRow == square.Row + 2)
             {
-                this.Row += 2;
-                this.Col += 1;
+                square.Row += 2;
+                square.Col += 1;
                 return true;
             }
 
-            if (toCol == this.Col - 2 && toRow == this.Row - 1)
+            if (toCol == square.Col - 2 && toRow == square.Row - 1)
             {
-                this.Row -= 1;
-                this.Col -= 2;
+                square.Row -= 1;
+                square.Col -= 2;
                 return true;
             }
 
-            if (toCol == this.Col - 2 && toRow == this.Row + 1)
+            if (toCol == square.Col - 2 && toRow == square.Row + 1)
             {
-                this.Row += 1;
-                this.Col -= 2;
+                square.Row += 1;
+                square.Col -= 2;
                 return true;
             }
 
-            if (toCol == this.Col + 2 && toRow == this.Row - 1)
+            if (toCol == square.Col + 2 && toRow == square.Row - 1)
             {
-                this.Row -= 1;
-                this.Col += 2;
+                square.Row -= 1;
+                square.Col += 2;
                 return true;
             }
 
-            if (toCol == this.Col + 2 && toRow == this.Row + 1)
+            if (toCol == square.Col + 2 && toRow == square.Row + 1)
             {
-                this.Row += 1;
-                this.Col += 2;
+                square.Row += 1;
+                square.Col += 2;
                 return true;
             }
 
