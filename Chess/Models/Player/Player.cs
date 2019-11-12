@@ -22,13 +22,18 @@
             this.Name = name;
             this.Color = color;
             this.isCastlingAvailable = true;
+            this.isMoveAvailable = true;
+            this.isCheck = false;
+            this.isCheckmate = false;
         }
 
         public string Name { get; }
 
         public Color Color { get; }
 
-        public bool isChess { get; set; }
+        public bool isCheck { get; set; }
+
+        public bool isCheckmate { get; set; }
 
         public bool isMoveAvailable { get; set; }
 

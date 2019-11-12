@@ -7,26 +7,23 @@
 
     public class Square : ISquare
     {
-        public Square(Row row, Col col, Color color, IFigure empty)
+        public Square(Row row, Col col, IFigure empty)
         {
             this.Row = row;
             this.Col = col;
-            this.Color = color;
             this.Figure = empty;
             this.IsOccupied = false;
-            this.IsAttacked = new Dictionary<IFigure, int>();
+            this.IsAttacked = new List<ISquare>();
         }
 
         public Row Row { get; set; }
 
         public Col Col { get; set; }
 
-        public Color Color { get; set; }
-
         public IFigure Figure { get ; set ; }
 
         public bool IsOccupied { get; set; }
 
-        public Dictionary<IFigure, int> IsAttacked { get; set; }
+        public List<ISquare> IsAttacked { get; set; }
     }
 }

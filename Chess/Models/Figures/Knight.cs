@@ -1,5 +1,6 @@
 ﻿namespace Chess.Models.Figures
 {
+    using Board;
     using Square.Contracts;
     using Contracts;
     using Enums;
@@ -38,6 +39,49 @@
         public bool IsFirstMove { get; set; }
 
         public bool IsLastMove { get; set; }
+
+        public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
+        {
+            if (Board.InBoardCheck(row - 2, col - 1))
+            {
+                matrix[row - 2][col - 1].IsAttacked.Add(square);
+            }
+
+            if (Board.InBoardCheck(row - 2, col + 1))
+            {
+                matrix[row - 2][col + 1].IsAttacked.Add(square);
+            }
+
+            if (Board.InBoardCheck(row + 2, col - 1))
+            {
+                matrix[row + 2][col - 1].IsAttacked.Add(square);
+            }
+
+            if (Board.InBoardCheck(row + 2, col + 1))
+            {
+                matrix[row + 2][col + 1].IsAttacked.Add(square);
+            }
+
+            if (Board.InBoardCheck(row - 1, col - 2))
+            {
+                matrix[row - 1][col - 2].IsAttacked.Add(square);
+            }
+
+            if (Board.InBoardCheck(row - 1, col + 2))
+            {
+                matrix[row - 1][col + 2].IsAttacked.Add(square);
+            }
+
+            if (Board.InBoardCheck(row + 1, col - 2))
+            {
+                matrix[row + 1][col - 2].IsAttacked.Add(square);
+            }
+
+            if (Board.InBoardCheck(row + 1, col + 2))
+            {
+                matrix[row + 1][col + 2].IsAttacked.Add(square);
+            }
+        }
 
         public bool Move(ISquare[][] squares, ISquare square, IFigure figure, Row toRow, Col toCol)
         {

@@ -7,7 +7,7 @@
     {
         ISquare[][] Matrix { get; set; }
 
-        void MoveFigure(IPlayer player);
+        void MoveFigure(IPlayer playerMoving, IPlayer otherPlayer);
 
         void NewGame();
     }

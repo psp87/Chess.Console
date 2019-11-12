@@ -17,6 +17,8 @@
 
         bool IsLastMove { get; set; }
 
+        void Attacking(ISquare[][] matrix, ISquare square, int row, int col);
+
         bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol);
 
         bool Take(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol);

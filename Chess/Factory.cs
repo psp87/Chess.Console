@@ -78,9 +78,9 @@
             return matrix;
         }
 
-        public static ISquare GetSquare(Row row, Col col, Color color, IFigure empty)
+        public static ISquare GetSquare(Row row, Col col, IFigure empty)
         {
-            ISquare square = new Square(row, col, color, empty);
+            ISquare square = new Square(row, col, empty);
             return square;
         }
     }
