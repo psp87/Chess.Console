@@ -10,7 +10,7 @@
         public const int CellRows = 9;
         public const int CellCols = 9;
 
-        public const int OffsetHorizontal = 17;
+        public const int OffsetHorizontal = 21;
         public const int OffsetVertical = 6;
 
         public const int HorizontalMin = OffsetHorizontal;

@@ -40,6 +40,11 @@
 
         public bool IsLastMove { get; set; }
 
+        public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
+        {
+
+        }
+
         public bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
         {
             throw new NotImplementedException();

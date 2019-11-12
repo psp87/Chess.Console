@@ -1,6 +1,7 @@
 ﻿namespace Chess.Models.Figures
 {
     using System;
+    using Board;
     using Square.Contracts;
     using Contracts;
     using Enums;
@@ -39,6 +40,113 @@
         public bool IsFirstMove { get; set; }
 
         public bool IsLastMove { get; set; }
+
+        public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
+        {
+            for (int i = 1; i <= 7; i++)
+            {
+                if (Board.InBoardCheck(row - i, col))
+                {
+                    matrix[row - i][col].IsAttacked.Add(square);
+
+                    if (matrix[row - i][col].IsOccupied)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 1; i <= 7; i++)
+            {
+                if (Board.InBoardCheck(row + i, col))
+                {
+                    matrix[row + i][col].IsAttacked.Add(square);
+
+                    if (matrix[row + i][col].IsOccupied)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 1; i <= 7; i++)
+            {
+                if (Board.InBoardCheck(row, col - i))
+                {
+                    matrix[row][col - i].IsAttacked.Add(square);
+
+                    if (matrix[row][col - i].IsOccupied)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 1; i <= 7; i++)
+            {
+                if (Board.InBoardCheck(row, col + i))
+                {
+                    matrix[row][col + i].IsAttacked.Add(square);
+
+                    if (matrix[row][col + i].IsOccupied)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 1; i <= 7; i++)
+            {
+                if (Board.InBoardCheck(row - i, col - i))
+                {
+                    matrix[row - i][col - i].IsAttacked.Add(square);
+
+                    if (matrix[row - i][col - i].IsOccupied)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 1; i <= 7; i++)
+            {
+                if (Board.InBoardCheck(row - i, col + i))
+                {
+                    matrix[row - i][col + i].IsAttacked.Add(square);
+
+                    if (matrix[row - i][col + i].IsOccupied)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 1; i <= 7; i++)
+            {
+                if (Board.InBoardCheck(row + i, col - i))
+                {
+                    matrix[row + i][col - i].IsAttacked.Add(square);
+
+                    if (matrix[row + i][col - i].IsOccupied)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 1; i <= 7; i++)
+            {
+                if (Board.InBoardCheck(row + i, col + i))
+                {
+                    matrix[row + i][col + i].IsAttacked.Add(square);
+
+                    if (matrix[row + i][col + i].IsOccupied)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
 
         public bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
         {

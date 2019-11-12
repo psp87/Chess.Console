@@ -8,7 +8,9 @@
 
         Color Color { get; }
 
-        bool isChess { get; set; }
+        bool isCheck { get; set; }
+
+        bool isCheckmate { get; set; }
 
         bool isMoveAvailable { get; set; }
 

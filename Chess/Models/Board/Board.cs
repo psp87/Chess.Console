@@ -1,13 +1,14 @@
 ﻿namespace Chess.Models.Board
 {
     using System;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using Contracts;
-    using Square.Contracts;
+    using Enums;
+    using Figures;
     using Figures.Contracts;
     using Player.Contracts;
-    using Figures;
-    using Enums;
+    using Square.Contracts;
 
     public class Board : IBoard
     {
@@ -15,12 +16,21 @@
         {
             this.Matrix = Factory.GetMatrix(this.Matrix);
             this.MatrixInitializeAssign();
-            Draw.Board();
         }
 
         public ISquare[][] Matrix { get; set; }
 
-        public void MoveFigure(IPlayer player)
+        public static bool InBoardCheck(int row, int col)
+        {
+            if (row >= 0 && row <= 7 && col >= 0 && col <= 7)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void MoveFigure(IPlayer currentPlayer, IPlayer otherPlayer)
         {
             Globals.TurnCounter++;
 
@@ -28,97 +38,246 @@
 
             bool successfulMove = false;
 
-            while (!successfulMove)
+            while (!successfulMove || currentPlayer.isCheck == true)
             {
-                string text = Console.ReadLine();
-
-                string pattern = @"([A-Za-z])([A-Za-z])([1-8])([A-Za-z])([1-8])";
-                Regex regex = new Regex(pattern);
-                Match match = regex.Match(text);
-
-                char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
-                int fromCol = Globals.ColMap[match.Groups[2].ToString().ToUpper()];
-                int fromRow = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
-                int toCol = Globals.ColMap[match.Groups[4].ToString().ToUpper()];
-                int toRow = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
-
-                if (this.Matrix[toRow][toCol].IsOccupied == false)
+                try
                 {
-                    if (player.Color == this.Matrix[fromRow][fromCol].Figure.Color && symbol == this.Matrix[fromRow][fromCol].Figure.Symbol)
+                    string text = Console.ReadLine();
+
+                    string pattern = @"([A-Za-z])([A-Za-z])([1-8])([A-Za-z])([1-8])";
+                    Regex regex = new Regex(pattern);
+                    Match match = regex.Match(text);
+
+                    char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
+                    int fromCol = Globals.ColMap[match.Groups[2].ToString().ToUpper()];
+                    int fromRow = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
+                    int toCol = Globals.ColMap[match.Groups[4].ToString().ToUpper()];
+                    int toRow = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
+
+                    var fromSquare = this.Matrix[fromRow][fromCol];
+                    var toSquare = this.Matrix[toRow][toCol];
+
+                    var tempSquare = this.Matrix[toRow][toCol];
+
+                    if (!toSquare.IsOccupied && currentPlayer.Color == fromSquare.Figure.Color && symbol == fromSquare.Figure.Symbol)
                     {
-                        if (this.Matrix[fromRow][fromCol].Figure.Move(this.Matrix, this.Matrix[fromRow][fromCol], this.Matrix[fromRow][fromCol].Figure, (Row)toRow, (Col)toCol))
+                        if (fromSquare.Figure.Move(this.Matrix, this.Matrix[fromRow][fromCol], this.Matrix[fromRow][fromCol].Figure, (Row)toRow, (Col)toCol))
                         {
-                            // Assigning the new value, Deleting the old drawn figure, Drawing the new figure
-                            this.Matrix[toRow][toCol] = this.Matrix[fromRow][fromCol];
-                            Draw.EmptySquare(toRow, toCol);
-                            Draw.Figure(toRow, toCol, this.Matrix[toRow][toCol].Figure);
+                            this.AssignNewValues(emptyFigure, fromCol, fromRow, toCol, toRow);
+                            this.AttackedSquares();
 
-                            // Assigning and drawing empty to the old square
-                            this.Matrix[fromRow][fromCol] = Factory.GetSquare((Row)fromRow, (Col)fromCol, this.Matrix[fromRow][fromCol].Color, emptyFigure);
-                            Draw.EmptySquare(fromRow, fromCol);
-
-                            // Check the pawn if it is last move
-                            if (this.Matrix[toRow][toCol].Figure is Pawn)
+                            if (this.IsKingAttacked(currentPlayer, fromCol, fromRow, toCol, toRow, tempSquare))
                             {
-                                Pawn.LastMoveCheck(toRow, toCol, this.Matrix[toRow][toCol].Figure);
+                                currentPlayer.isCheck = true;
+                                this.AttackedSquares();
+                                Print.KingIsCheck(currentPlayer);
+                                continue;
+                            }
+                            currentPlayer.isCheck = false;
+
+                            this.DrawNewFigures(fromCol, fromRow, toCol, toRow);
+
+                            if (this.Matrix[toRow][toCol].Figure is Pawn && this.Matrix[toRow][toCol].Figure.IsLastMove)
+                            {
+                                this.Matrix[toRow][toCol].Figure = Pawn.Promotion(toRow, toCol, this.Matrix[toRow][toCol].Figure);
+                                this.AttackedSquares();
+                            }
+
+                            if (IsCheck(currentPlayer, otherPlayer))
+                            {
+                                Print.CheckMessage(currentPlayer);
+
+                                this.Checkmate(currentPlayer, Check.KingRow, Check.KingCol, this.Matrix[Check.AttackingRow][Check.AttackingCol], otherPlayer);
                             }
 
                             successfulMove = true;
                         }
                     }
-                }
-                else
-                {
-                    if (this.Matrix[toRow][toCol].Figure.Color != this.Matrix[fromRow][fromCol].Figure.Color)
+
+                    if (toSquare.IsOccupied && toSquare.Figure.Color != fromSquare.Figure.Color &&
+                        currentPlayer.Color == fromSquare.Figure.Color && symbol == fromSquare.Figure.Symbol)
                     {
-                        if (player.Color == this.Matrix[fromRow][fromCol].Figure.Color && symbol == this.Matrix[fromRow][fromCol].Figure.Symbol)
+                        if (fromSquare.Figure.Take(this.Matrix, this.Matrix[fromRow][fromCol], this.Matrix[fromRow][fromCol].Figure, (Row)toRow, (Col)toCol))
                         {
-                            if (this.Matrix[fromRow][fromCol].Figure.Take(this.Matrix, this.Matrix[fromRow][fromCol], this.Matrix[fromRow][fromCol].Figure, (Row)toRow, (Col)toCol))
+                            this.AssignNewValues(emptyFigure, fromCol, fromRow, toCol, toRow);
+                            this.AttackedSquares();
+
+                            if (this.IsKingAttacked(currentPlayer, fromCol, fromRow, toCol, toRow, tempSquare))
                             {
-                                player.TakeFigure(this.Matrix[toRow][toCol].Figure.Name);
+                                currentPlayer.isCheck = true;
+                                this.AttackedSquares();
+                                Print.KingIsCheck(currentPlayer);
+                                continue;
+                            }
+                            currentPlayer.isCheck = false;
 
-                                // Assigning the new value, Deleting the old drawn figure, Drawing the new figure
-                                this.Matrix[toRow][toCol] = this.Matrix[fromRow][fromCol];
-                                Draw.EmptySquare(toRow, toCol);
-                                Draw.Figure(toRow, toCol, this.Matrix[toRow][toCol].Figure);
+                            this.DrawNewFigures(fromCol, fromRow, toCol, toRow);
 
-                                // Assigning and drawing empty to the old square
-                                this.Matrix[fromRow][fromCol] = Factory.GetSquare((Row)fromRow, (Col)fromCol, this.Matrix[fromRow][fromCol].Color, emptyFigure); ;
-                                Draw.EmptySquare(fromRow, fromCol);
+                            if (this.Matrix[toRow][toCol].Figure is Pawn && this.Matrix[toRow][toCol].Figure.IsLastMove)
+                            {
+                                this.Matrix[toRow][toCol].Figure = Pawn.Promotion(toRow, toCol, this.Matrix[toRow][toCol].Figure);
+                                this.AttackedSquares();
+                            }
 
-                                // Check the pawn if it is last move
-                                if (this.Matrix[toRow][toCol].Figure is Pawn)
-                                {
-                                    Pawn.LastMoveCheck(toRow, toCol, this.Matrix[toRow][toCol].Figure);
-                                }
+                            if (IsCheck(currentPlayer, otherPlayer))
+                            {
+                                Print.CheckMessage(currentPlayer);
 
-                                successfulMove = true;
+                                this.Checkmate(currentPlayer, Check.KingRow, Check.KingCol, this.Matrix[Check.AttackingRow][Check.AttackingCol], otherPlayer);
+                            }
+
+                            successfulMove = true;
+
+                            currentPlayer.TakeFigure(tempSquare.Figure.Name);
+                        }
+                    }
+
+                    if (EnPassant.Turn == Globals.TurnCounter && fromSquare.Figure is Pawn && toRow == EnPassant.Row && toCol == EnPassant.Col)
+                    {
+                        this.Matrix[toRow][toCol] = this.Matrix[fromRow][fromCol];
+                        this.Matrix[toRow][toCol].Row = (Row)toRow;
+                        this.Matrix[toRow][toCol].Col = (Col)toCol;
+                        Draw.Figure(toRow, toCol, this.Matrix[toRow][toCol].Figure);
+
+                        this.Matrix[fromRow][fromCol] = Factory.GetSquare((Row)fromRow, (Col)fromCol, emptyFigure);
+                        Draw.EmptySquare(fromRow, fromCol);
+
+                        int colCheck = toCol > fromCol ? 1 : -1;
+                        this.Matrix[fromRow][fromCol + colCheck] = Factory.GetSquare((Row)fromRow, (Col)fromCol, emptyFigure);
+                        this.Matrix[fromRow][fromCol + colCheck].Row = (Row)fromRow;
+                        this.Matrix[fromRow][fromCol + colCheck].Col = (Col)fromCol;
+                        Draw.EmptySquare(fromRow, fromCol + colCheck);
+
+                        this.AttackedSquares();
+                        successfulMove = true;
+                    }
+
+                    if (!successfulMove)
+                    {
+                        Print.InvalidMessage(currentPlayer);
+                    }
+
+                    Paint.DefaultColor();
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+        }
+
+        private bool Stalemate(IPlayer player)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Checkmate(IPlayer playerMoving, int kingRow, int kingCol, ISquare attackingSquare, IPlayer otherPlayer)
+        {
+            // To take attacking figure check
+            if (attackingSquare.IsAttacked.Where(x => x.Figure.Color == otherPlayer.Color).Any())
+            {
+                if (!(attackingSquare.IsAttacked.Where(x => x.Figure.Color == otherPlayer.Color) is King))
+                {
+                    return;
+                }
+            }
+
+            // To move king check
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int k = -1; k <= 1; k++)
+                {
+                    if (i == 0 && k == 0)
+                    {
+                        continue;
+                    }
+
+                    if (InBoardCheck(kingRow + i, kingCol + k))
+                    {
+                        var checkedSquare = this.Matrix[kingRow + i][kingCol + k];
+
+                        if (this.NeighbourSquareAvailable(checkedSquare, playerMoving))
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // To move other figure check
+            if (!(attackingSquare.Figure is Knight) && !(attackingSquare.Figure is Pawn))
+            {
+                if ((int)attackingSquare.Row == kingRow)
+                {
+                    int difference = Math.Abs((int)attackingSquare.Col - kingCol) - 1;
+
+                    if ((int)attackingSquare.Col - kingCol < 0)
+                    {
+                        for (int i = 1; i <= difference; i++)
+                        {
+                            if (this.Matrix[kingRow][(int)attackingSquare.Col + i].IsAttacked.Where(x => x.Figure.Color == playerMoving.Color).Any())
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 1; i <= difference; i++)
+                        {
+                            if (this.Matrix[kingRow][(int)attackingSquare.Col - i].IsAttacked.Where(x => x.Figure.Color == playerMoving.Color).Any())
+                            {
+                                return;
                             }
                         }
                     }
                 }
-
-                if (EnPassant.Turn == Globals.TurnCounter && this.Matrix[fromRow][fromCol].Figure is Pawn && toRow == EnPassant.Row && toCol == EnPassant.Col)
+                else if ((int)attackingSquare.Col == kingCol)
                 {
-                    this.Matrix[toRow][toCol] = this.Matrix[fromRow][fromCol];
-                    this.Matrix[toRow][toCol].Row = (Row)toRow;
-                    this.Matrix[toRow][toCol].Col = (Col)toCol;
-                    Draw.Figure(toRow, toCol, this.Matrix[toRow][toCol].Figure);
+                    int difference = Math.Abs((int)attackingSquare.Row - kingRow) - 1;
 
-                    this.Matrix[fromRow][fromCol] = Factory.GetSquare((Row)fromRow, (Col)fromCol, this.Matrix[fromRow][fromCol].Color, emptyFigure);
-                    Draw.EmptySquare(fromRow, fromCol);
-
-                    int colCheck = toCol > fromCol ? 1 : -1;
-                    this.Matrix[fromRow][fromCol + colCheck] = Factory.GetSquare((Row)fromRow, (Col)fromCol, this.Matrix[fromRow][fromCol].Color, emptyFigure);
-                    this.Matrix[fromRow][fromCol + colCheck].Row = (Row)fromRow;
-                    this.Matrix[fromRow][fromCol + colCheck].Col = (Col)fromCol;
-                    Draw.EmptySquare(fromRow, fromCol + colCheck);
-
-                    successfulMove = true;
+                    if ((int)attackingSquare.Row - kingRow < 0)
+                    {
+                        for (int i = 1; i <= difference; i++)
+                        {
+                            if (this.Matrix[kingRow + i][(int)attackingSquare.Col].IsAttacked.Where(x => x.Figure.Color == playerMoving.Color).Any())
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 1; i <= difference; i++)
+                        {
+                            if (this.Matrix[kingRow + i][(int)attackingSquare.Col].IsAttacked.Where(x => x.Figure.Color == playerMoving.Color).Any())
+                            {
+                                return;
+                            }
+                        }
+                    }
                 }
+                //else
+                //{
 
-                Paint.DefaultColor();
+                //}
             }
+
+            otherPlayer.isCheckmate = true;
+        }
+
+        private bool NeighbourSquareAvailable(ISquare square, IPlayer player)
+        {
+            if ((square.IsOccupied == true &&
+                square.Figure.Color != player.Color &&
+                !square.IsAttacked.Where(x => x.Figure.Color != player.Color).Any()) ||
+                (square.IsOccupied == false &&
+                !square.IsAttacked.Where(x => x.Figure.Color != player.Color).Any()))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void NewGame()
@@ -127,81 +286,103 @@
             Draw.NewGame(this.Matrix);
         }
 
+        public void AttackedSquares()
+        {
+            for (int row = 0; row < Globals.BoardRows; row++)
+            {
+                for (int col = 0; col < Globals.BoardCols; col++)
+                {
+                    this.Matrix[row][col].IsAttacked.Clear();
+                }
+            }
+
+            for (int row = 0; row < Globals.BoardRows; row++)
+            {
+                for (int col = 0; col < Globals.BoardCols; col++)
+                {
+                    if (this.Matrix[row][col].IsOccupied == true)
+                    {
+                        this.Matrix[row][col].Figure.Attacking(this.Matrix, this.Matrix[row][col], row, col);
+                    }
+                }
+            }
+        }
+
         private void MatrixInitializeAssign()
         {
             IFigure empty = Factory.GetEmpty();
 
-            ISquare square1 = Factory.GetSquare(Row.One, Col.A, Color.Dark, empty);
-            ISquare square2 = Factory.GetSquare(Row.One, Col.B, Color.Light, empty);
-            ISquare square3 = Factory.GetSquare(Row.One, Col.C, Color.Dark, empty);
-            ISquare square4 = Factory.GetSquare(Row.One, Col.D, Color.Light, empty);
-            ISquare square5 = Factory.GetSquare(Row.One, Col.E, Color.Dark, empty);
-            ISquare square6 = Factory.GetSquare(Row.One, Col.F, Color.Light, empty);
-            ISquare square7 = Factory.GetSquare(Row.One, Col.G, Color.Dark, empty);
-            ISquare square8 = Factory.GetSquare(Row.One, Col.H, Color.Light, empty);
+            ISquare square1 = Factory.GetSquare(Row.One, Col.A, empty);
+            ISquare square2 = Factory.GetSquare(Row.One, Col.B, empty);
+            ISquare square3 = Factory.GetSquare(Row.One, Col.C, empty);
+            ISquare square4 = Factory.GetSquare(Row.One, Col.D, empty);
+            ISquare square5 = Factory.GetSquare(Row.One, Col.E, empty);
+            ISquare square6 = Factory.GetSquare(Row.One, Col.F, empty);
+            ISquare square7 = Factory.GetSquare(Row.One, Col.G, empty);
+            ISquare square8 = Factory.GetSquare(Row.One, Col.H, empty);
 
-            ISquare square9 = Factory.GetSquare(Row.Two, Col.A, Color.Light, empty);
-            ISquare square10 = Factory.GetSquare(Row.Two, Col.B, Color.Dark, empty);
-            ISquare square11 = Factory.GetSquare(Row.Two, Col.C, Color.Light, empty);
-            ISquare square12 = Factory.GetSquare(Row.Two, Col.D, Color.Dark, empty);
-            ISquare square13 = Factory.GetSquare(Row.Two, Col.E, Color.Light, empty);
-            ISquare square14 = Factory.GetSquare(Row.Two, Col.F, Color.Dark, empty);
-            ISquare square15 = Factory.GetSquare(Row.Two, Col.G, Color.Light, empty);
-            ISquare square16 = Factory.GetSquare(Row.Two, Col.H, Color.Dark, empty);
+            ISquare square9 = Factory.GetSquare(Row.Two, Col.A, empty);
+            ISquare square10 = Factory.GetSquare(Row.Two, Col.B, empty);
+            ISquare square11 = Factory.GetSquare(Row.Two, Col.C, empty);
+            ISquare square12 = Factory.GetSquare(Row.Two, Col.D, empty);
+            ISquare square13 = Factory.GetSquare(Row.Two, Col.E, empty);
+            ISquare square14 = Factory.GetSquare(Row.Two, Col.F, empty);
+            ISquare square15 = Factory.GetSquare(Row.Two, Col.G, empty);
+            ISquare square16 = Factory.GetSquare(Row.Two, Col.H, empty);
 
-            ISquare square17 = Factory.GetSquare(Row.Three, Col.A, Color.Dark, empty);
-            ISquare square18 = Factory.GetSquare(Row.Three, Col.B, Color.Light, empty);
-            ISquare square19 = Factory.GetSquare(Row.Three, Col.C, Color.Dark, empty);
-            ISquare square20 = Factory.GetSquare(Row.Three, Col.D, Color.Light, empty);
-            ISquare square21 = Factory.GetSquare(Row.Three, Col.E, Color.Dark, empty);
-            ISquare square22 = Factory.GetSquare(Row.Three, Col.F, Color.Light, empty);
-            ISquare square23 = Factory.GetSquare(Row.Three, Col.G, Color.Dark, empty);
-            ISquare square24 = Factory.GetSquare(Row.Three, Col.H, Color.Light, empty);
+            ISquare square17 = Factory.GetSquare(Row.Three, Col.A, empty);
+            ISquare square18 = Factory.GetSquare(Row.Three, Col.B, empty);
+            ISquare square19 = Factory.GetSquare(Row.Three, Col.C, empty);
+            ISquare square20 = Factory.GetSquare(Row.Three, Col.D, empty);
+            ISquare square21 = Factory.GetSquare(Row.Three, Col.E, empty);
+            ISquare square22 = Factory.GetSquare(Row.Three, Col.F, empty);
+            ISquare square23 = Factory.GetSquare(Row.Three, Col.G, empty);
+            ISquare square24 = Factory.GetSquare(Row.Three, Col.H, empty);
 
-            ISquare square25 = Factory.GetSquare(Row.Four, Col.A, Color.Light, empty);
-            ISquare square26 = Factory.GetSquare(Row.Four, Col.B, Color.Dark, empty);
-            ISquare square27 = Factory.GetSquare(Row.Four, Col.C, Color.Light, empty);
-            ISquare square28 = Factory.GetSquare(Row.Four, Col.D, Color.Dark, empty);
-            ISquare square29 = Factory.GetSquare(Row.Four, Col.E, Color.Light, empty);
-            ISquare square30 = Factory.GetSquare(Row.Four, Col.F, Color.Dark, empty);
-            ISquare square31 = Factory.GetSquare(Row.Four, Col.G, Color.Light, empty);
-            ISquare square32 = Factory.GetSquare(Row.Four, Col.H, Color.Dark, empty);
+            ISquare square25 = Factory.GetSquare(Row.Four, Col.A, empty);
+            ISquare square26 = Factory.GetSquare(Row.Four, Col.B, empty);
+            ISquare square27 = Factory.GetSquare(Row.Four, Col.C, empty);
+            ISquare square28 = Factory.GetSquare(Row.Four, Col.D, empty);
+            ISquare square29 = Factory.GetSquare(Row.Four, Col.E, empty);
+            ISquare square30 = Factory.GetSquare(Row.Four, Col.F, empty);
+            ISquare square31 = Factory.GetSquare(Row.Four, Col.G, empty);
+            ISquare square32 = Factory.GetSquare(Row.Four, Col.H, empty);
 
-            ISquare square33 = Factory.GetSquare(Row.Five, Col.A, Color.Dark, empty);
-            ISquare square34 = Factory.GetSquare(Row.Five, Col.B, Color.Light, empty);
-            ISquare square35 = Factory.GetSquare(Row.Five, Col.C, Color.Dark, empty);
-            ISquare square36 = Factory.GetSquare(Row.Five, Col.D, Color.Light, empty);
-            ISquare square37 = Factory.GetSquare(Row.Five, Col.E, Color.Dark, empty);
-            ISquare square38 = Factory.GetSquare(Row.Five, Col.F, Color.Light, empty);
-            ISquare square39 = Factory.GetSquare(Row.Five, Col.G, Color.Dark, empty);
-            ISquare square40 = Factory.GetSquare(Row.Five, Col.H, Color.Light, empty);
+            ISquare square33 = Factory.GetSquare(Row.Five, Col.A, empty);
+            ISquare square34 = Factory.GetSquare(Row.Five, Col.B, empty);
+            ISquare square35 = Factory.GetSquare(Row.Five, Col.C, empty);
+            ISquare square36 = Factory.GetSquare(Row.Five, Col.D, empty);
+            ISquare square37 = Factory.GetSquare(Row.Five, Col.E, empty);
+            ISquare square38 = Factory.GetSquare(Row.Five, Col.F, empty);
+            ISquare square39 = Factory.GetSquare(Row.Five, Col.G, empty);
+            ISquare square40 = Factory.GetSquare(Row.Five, Col.H, empty);
 
-            ISquare square41 = Factory.GetSquare(Row.Six, Col.A, Color.Light, empty);
-            ISquare square42 = Factory.GetSquare(Row.Six, Col.B, Color.Dark, empty);
-            ISquare square43 = Factory.GetSquare(Row.Six, Col.C, Color.Light, empty);
-            ISquare square44 = Factory.GetSquare(Row.Six, Col.D, Color.Dark, empty);
-            ISquare square45 = Factory.GetSquare(Row.Six, Col.E, Color.Light, empty);
-            ISquare square46 = Factory.GetSquare(Row.Six, Col.F, Color.Dark, empty);
-            ISquare square47 = Factory.GetSquare(Row.Six, Col.G, Color.Light, empty);
-            ISquare square48 = Factory.GetSquare(Row.Six, Col.H, Color.Dark, empty);
+            ISquare square41 = Factory.GetSquare(Row.Six, Col.A, empty);
+            ISquare square42 = Factory.GetSquare(Row.Six, Col.B, empty);
+            ISquare square43 = Factory.GetSquare(Row.Six, Col.C, empty);
+            ISquare square44 = Factory.GetSquare(Row.Six, Col.D, empty);
+            ISquare square45 = Factory.GetSquare(Row.Six, Col.E, empty);
+            ISquare square46 = Factory.GetSquare(Row.Six, Col.F, empty);
+            ISquare square47 = Factory.GetSquare(Row.Six, Col.G, empty);
+            ISquare square48 = Factory.GetSquare(Row.Six, Col.H, empty);
 
-            ISquare square49 = Factory.GetSquare(Row.Seven, Col.A, Color.Dark, empty);
-            ISquare square50 = Factory.GetSquare(Row.Seven, Col.B, Color.Light, empty);
-            ISquare square51 = Factory.GetSquare(Row.Seven, Col.C, Color.Dark, empty);
-            ISquare square52 = Factory.GetSquare(Row.Seven, Col.D, Color.Light, empty);
-            ISquare square53 = Factory.GetSquare(Row.Seven, Col.E, Color.Dark, empty);
-            ISquare square54 = Factory.GetSquare(Row.Seven, Col.F, Color.Light, empty);
-            ISquare square55 = Factory.GetSquare(Row.Seven, Col.G, Color.Dark, empty);
-            ISquare square56 = Factory.GetSquare(Row.Seven, Col.H, Color.Light, empty);
+            ISquare square49 = Factory.GetSquare(Row.Seven, Col.A, empty);
+            ISquare square50 = Factory.GetSquare(Row.Seven, Col.B, empty);
+            ISquare square51 = Factory.GetSquare(Row.Seven, Col.C, empty);
+            ISquare square52 = Factory.GetSquare(Row.Seven, Col.D, empty);
+            ISquare square53 = Factory.GetSquare(Row.Seven, Col.E, empty);
+            ISquare square54 = Factory.GetSquare(Row.Seven, Col.F, empty);
+            ISquare square55 = Factory.GetSquare(Row.Seven, Col.G, empty);
+            ISquare square56 = Factory.GetSquare(Row.Seven, Col.H, empty);
 
-            ISquare square57 = Factory.GetSquare(Row.Eight, Col.A, Color.Light, empty);
-            ISquare square58 = Factory.GetSquare(Row.Eight, Col.B, Color.Dark, empty);
-            ISquare square59 = Factory.GetSquare(Row.Eight, Col.C, Color.Light, empty);
-            ISquare square60 = Factory.GetSquare(Row.Eight, Col.D, Color.Dark, empty);
-            ISquare square61 = Factory.GetSquare(Row.Eight, Col.E, Color.Light, empty);
-            ISquare square62 = Factory.GetSquare(Row.Eight, Col.F, Color.Dark, empty);
-            ISquare square63 = Factory.GetSquare(Row.Eight, Col.G, Color.Light, empty);
-            ISquare square64 = Factory.GetSquare(Row.Eight, Col.H, Color.Dark, empty);
+            ISquare square57 = Factory.GetSquare(Row.Eight, Col.A, empty);
+            ISquare square58 = Factory.GetSquare(Row.Eight, Col.B, empty);
+            ISquare square59 = Factory.GetSquare(Row.Eight, Col.C, empty);
+            ISquare square60 = Factory.GetSquare(Row.Eight, Col.D, empty);
+            ISquare square61 = Factory.GetSquare(Row.Eight, Col.E, empty);
+            ISquare square62 = Factory.GetSquare(Row.Eight, Col.F, empty);
+            ISquare square63 = Factory.GetSquare(Row.Eight, Col.G, empty);
+            ISquare square64 = Factory.GetSquare(Row.Eight, Col.H, empty);
 
             this.Matrix[7][0] = square1;
             this.Matrix[7][1] = square2;
@@ -354,7 +535,6 @@
             this.Matrix[0][5].IsOccupied = true;
             this.Matrix[0][6].IsOccupied = true;
             this.Matrix[0][7].IsOccupied = true;
-
             this.Matrix[1][0].IsOccupied = true;
             this.Matrix[1][1].IsOccupied = true;
             this.Matrix[1][2].IsOccupied = true;
@@ -372,7 +552,6 @@
             this.Matrix[6][5].IsOccupied = true;
             this.Matrix[6][6].IsOccupied = true;
             this.Matrix[6][7].IsOccupied = true;
-
             this.Matrix[7][0].IsOccupied = true;
             this.Matrix[7][1].IsOccupied = true;
             this.Matrix[7][2].IsOccupied = true;
@@ -381,6 +560,75 @@
             this.Matrix[7][5].IsOccupied = true;
             this.Matrix[7][6].IsOccupied = true;
             this.Matrix[7][7].IsOccupied = true;
+        }
+
+        private void DrawNewFigures(int fromCol, int fromRow, int toCol, int toRow)
+        {
+            Draw.EmptySquare(toRow, toCol);
+            Draw.Figure(toRow, toCol, this.Matrix[toRow][toCol].Figure);
+
+            Draw.EmptySquare(fromRow, fromCol);
+        }
+
+        private void AssignNewValues(IFigure emptyFigure, int fromCol, int fromRow, int toCol, int toRow)
+        {
+            // Assigning the new value
+            this.Matrix[toRow][toCol] = this.Matrix[fromRow][fromCol];
+
+            // Assigning empty to the old square
+            this.Matrix[fromRow][fromCol] = Factory.GetSquare((Row)fromRow, (Col)fromCol, emptyFigure);
+        }
+
+        private bool IsKingAttacked(IPlayer player, int fromCol, int fromRow, int toCol, int toRow, ISquare tempSquare)
+        {
+            for (int row = 0; row < Globals.BoardRows; row++)
+            {
+                for (int col = 0; col < Globals.BoardCols; col++)
+                {
+                    var currentSquare = this.Matrix[row][col];
+
+                    if (currentSquare.Figure is King && currentSquare.Figure.Color == player.Color
+                        && currentSquare.IsAttacked.Where(x => x.Figure.Color != player.Color).Any())
+                    {
+                        // Assigning the new value, Deleting the old drawn figure
+                        this.Matrix[toRow][toCol].Row = this.Matrix[fromRow][fromCol].Row;
+                        this.Matrix[toRow][toCol].Col = this.Matrix[fromRow][fromCol].Col;
+                        this.Matrix[fromRow][fromCol] = this.Matrix[toRow][toCol];
+
+                        // Assigning the old square
+                        this.Matrix[toRow][toCol] = tempSquare;
+
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsCheck(IPlayer playerMoving, IPlayer otherPlayer)
+        {
+            for (int row = 0; row < Globals.BoardRows; row++)
+            {
+                for (int col = 0; col < Globals.BoardCols; col++)
+                {
+                    var currentSquare = this.Matrix[row][col];
+
+                    if (currentSquare.Figure is King && currentSquare.Figure.Color == otherPlayer.Color
+                        && currentSquare.IsAttacked.Where(x => x.Figure.Color == playerMoving.Color).Any())
+                    {
+                        Check.KingRow = (int)this.Matrix[row][col].Row;
+                        Check.KingCol = (int)this.Matrix[row][col].Col;
+
+                        Check.AttackingRow = (int)currentSquare.IsAttacked.Where(x => x.Figure.Color == otherPlayer.Color).FirstOrDefault().Row;
+                        Check.AttackingCol = (int)currentSquare.IsAttacked.Where(x => x.Figure.Color == otherPlayer.Color).FirstOrDefault().Col;
+
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

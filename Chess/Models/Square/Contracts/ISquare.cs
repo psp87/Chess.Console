@@ -10,12 +10,10 @@
 
         Col Col { get; set; }
 
-        Color Color { get; set; }
-
         IFigure Figure { get; set; }
 
         bool IsOccupied { get; set; }
 
-        Dictionary<IFigure, int> IsAttacked { get; set; }
+        List<ISquare> IsAttacked { get; set; }
     }
 }

@@ -4,6 +4,7 @@
     using Contracts;
     using Square.Contracts;
     using Enums;
+    using Board;
 
     public class Pawn : IFigure
     {
@@ -39,6 +40,34 @@
         public bool IsFirstMove { get; set; }
 
         public bool IsLastMove { get; set; }
+
+        public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
+        {
+            if (this.Color == Color.Light)
+            {
+                if (Board.InBoardCheck(row - 1, col - 1))
+                {
+                    matrix[row - 1][col - 1].IsAttacked.Add(square);
+                }
+
+                if (Board.InBoardCheck(row - 1, col + 1))
+                {
+                    matrix[row - 1][col + 1].IsAttacked.Add(square);
+                }
+            }
+            else
+            {
+                if (Board.InBoardCheck(row + 1, col - 1))
+                {
+                    matrix[row + 1][col - 1].IsAttacked.Add(square);
+                }
+
+                if (Board.InBoardCheck(row + 1, col + 1))
+                {
+                    matrix[row + 1][col + 1].IsAttacked.Add(square);
+                }
+            }
+        }
 
         public bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
         {
@@ -154,47 +183,58 @@
             return false;
         }
 
-        public static void LastMoveCheck(int toRow, int toCol, IFigure figure)
+        public static IFigure Promotion(int toRow, int toCol, IFigure figure)
         {
-            if (figure.IsLastMove)
-            {
-                string figureChoose = Console.ReadLine();
+            Paint.DefaultColor();
 
-                switch (figureChoose.ToUpper())
-                {
-                    case "Q":
-                        {
-                            Draw.EmptySquare(toRow, toCol);
-                            IFigure queen = Factory.GetQueen(figure.Color);
-                            figure = queen;
-                            Draw.Figure(toRow, toCol, figure);
-                            break;
-                        }
-                    case "R":
-                        {
-                            Draw.EmptySquare(toRow, toCol);
-                            IFigure rook = Factory.GetRook(figure.Color);
-                            figure = rook;
-                            Draw.Figure(toRow, toCol, figure);
-                            break;
-                        }
-                    case "B":
-                        {
-                            Draw.EmptySquare(toRow, toCol);
-                            IFigure bishop = Factory.GetBishop(figure.Color);
-                            figure = bishop;
-                            Draw.Figure(toRow, toCol, figure);
-                            break;
-                        }
-                    case "N":
-                        {
-                            Draw.EmptySquare(toRow, toCol);
-                            IFigure knight = Factory.GetKnight(figure.Color);
-                            figure = knight;
-                            Draw.Figure(toRow, toCol, figure);
-                            break;
-                        }
-                }
+            if (figure.Color == Color.Light)
+            {
+                Print.SetCursorMinMax(-17, -4);
+                Console.WriteLine("(Q,R,B,N)");
+                Print.SetCursorMinMax(-17, -6);
+                Console.Write("CHOOSE FIGURE:");
+            }
+            else
+            {
+                Print.SetCursorMinMax(78, -51);
+                Console.WriteLine("(Q,R,B,N)");
+                Print.SetCursorMinMax(78, -53);
+                Console.Write("CHOOSE FIGURE:");
+            }
+
+            var figureChoose = Console.ReadKey().Key;
+
+            switch (figureChoose)
+            {
+                case ConsoleKey.Q:
+                    {
+                        Draw.EmptySquare(toRow, toCol);
+                        IFigure queen = Factory.GetQueen(figure.Color);
+                        Draw.Figure(toRow, toCol, queen);
+                        return queen;
+                    }
+                case ConsoleKey.R:
+                    {
+                        Draw.EmptySquare(toRow, toCol);
+                        IFigure rook = Factory.GetRook(figure.Color);
+                        Draw.Figure(toRow, toCol, rook);
+                        return rook;
+                    }
+                case ConsoleKey.B:
+                    {
+                        Draw.EmptySquare(toRow, toCol);
+                        IFigure bishop = Factory.GetBishop(figure.Color);
+                        Draw.Figure(toRow, toCol, bishop);
+                        return bishop;
+                    }
+                case ConsoleKey.N:
+                    {
+                        Draw.EmptySquare(toRow, toCol);
+                        IFigure knight = Factory.GetKnight(figure.Color);
+                        Draw.Figure(toRow, toCol, knight);
+                        return knight;
+                    }
+                default: return figure;
             }
         }
 
@@ -204,7 +244,7 @@
 
             var currentRow = (int)square.Row;
             var currentCol = (int)square.Col;
-            
+
             switch (currentCol)
             {
                 case 0:
