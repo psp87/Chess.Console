@@ -40,6 +40,11 @@
 
         public bool IsLastMove { get; set; }
 
+        public bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
+        {
+            return true;
+        }
+
         public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
         {
 

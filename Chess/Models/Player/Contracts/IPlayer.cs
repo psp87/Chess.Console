@@ -8,13 +8,11 @@
 
         Color Color { get; }
 
-        bool isCheck { get; set; }
+        bool IsCheck { get; set; }
 
-        bool isCheckmate { get; set; }
+        bool IsCheckmate { get; set; }
 
-        bool isMoveAvailable { get; set; }
-
-        bool isCastlingAvailable { get; set; }
+        bool IsMoveAvailable { get; set; }
 
         void TakeFigure(string figureName);
 

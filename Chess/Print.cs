@@ -9,7 +9,9 @@
     {
         public static void Header()
         {
-            Console.ForegroundColor = ConsoleColor.White;
+            Paint.DefaultBackground();
+            Paint.WhiteText();
+
             string header = "JUST CHESS BY PLAMEN PETROV";
             SetCursorMinMin((76 - header.Length) / 2 + 1, -3);
             Console.Write(header);
@@ -17,19 +19,21 @@
 
         public static void Menu()
         {
+            Paint.DefaultBackground();
+            Paint.WhiteText();
+
             SetCursorMinMax(21, 2);
             Console.Write("(N)EW GAME");
-
             SetCursorMinMax(35, 2);
             Console.Write("(L)OAD GAME");
-
             SetCursorMinMax(50, 2);
             Console.Write("(E)XIT");
         }
 
-        public static void GameStats(IPlayer player1, IPlayer player2)
+        public static void Stats(IPlayer player1, IPlayer player2)
         {
-            Console.ForegroundColor = ConsoleColor.White;
+            Paint.DefaultBackground();
+            Paint.WhiteText();
 
             int lightHorizontalOffset = -12;
             int lightVerticalOffset = -24;
@@ -54,7 +58,6 @@
             SetCursorMinMax(lightHorizontalOffset, lightVerticalOffset + 15);
             Console.Write($"Q x {player1.TakenFigures(nameof(Queen))}");
 
-
             int playerTwoNameCenterPosition = (19 - player2.Name.Length) / 2;
             Print.LineMaxMin(playerTwoNameCenterPosition - 1, darkVerticalOffset, player2.Name.Length + 2, '-');
             SetCursorMaxMin(playerTwoNameCenterPosition, darkVerticalOffset + 1);
@@ -74,47 +77,10 @@
             Console.Write($"Q x {player2.TakenFigures(nameof(Queen))}");
         }
 
-        public static void CheckMessage(IPlayer player)
-        {
-            if (player.Color == Color.Light)
-            {
-                Print.SetCursorMinMax(-12, -27);
-                Console.Write("CHECK!");
-            }
-            else
-            {
-                Print.SetCursorMaxMin(7, 2);
-                Console.Write("CHECK!");
-            }
-        }
-
-        public static void Stalemate()
-        {
-            //Print.SetCursorMinMax(1, 1);
-            //Console.Write("THE GAME IS STALEMATE!");
-        }
-
-        public static void BlackWon(IPlayer player)
-        {
-            EmptyFinalMessage();
-            SetCursorMaxMin(5, 2);
-            Console.Write("CHECKMATE!");
-            SetCursorMinMax(28, 2);
-            Console.Write($"{player.Name.ToUpper()} WON THE GAME!");
-        }
-
-        public static void WhiteWon(IPlayer player)
-        {
-            EmptyFinalMessage();
-            SetCursorMaxMin(-12, 27);
-            Console.Write("CHECKMATE!");
-            SetCursorMinMax(28, 2);
-            Console.Write($"{player.Name.ToUpper()} WON THE GAME!");
-        }
-
         public static void Turn(IPlayer player)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            Paint.DefaultBackground();
+            Paint.YellowText();
 
             if (player.Color == Color.Light)
             {
@@ -122,7 +88,6 @@
 
                 SetCursorMinMax(playerOneCenterNamePosition, -23);
                 Console.Write($"{player.Name}");
-
                 SetCursorMinMax(-16, -6);
                 Console.Write("MOVE:      ");
                 SetCursorMinMax(-11, -6);
@@ -133,15 +98,62 @@
 
                 SetCursorMaxMin(playerTwoCenterNamePosition, 6);
                 Console.Write($"{player.Name}");
-
                 SetCursorMaxMin(3, 23);
                 Console.Write("MOVE:      ");
                 SetCursorMaxMin(8, 23);
             }
         }
 
+        public static void Check(IPlayer player)
+        {
+            Paint.DefaultBackground();
+            Paint.YellowText();
+
+            switch (player.Color)
+            {
+                case Color.Light: SetCursorMinMax(-12, -27);
+                    break;
+                case Color.Dark: SetCursorMaxMin(7, 2);
+                    break;
+            }
+
+            Console.Write("CHECK!");
+        }
+
+        public static void Won(IPlayer player)
+        {
+            Paint.DefaultBackground();
+            Paint.YellowText();
+
+            EmptyFinalScreen();
+            if (player.Color == Color.Light)
+            {
+                SetCursorMinMax(-14, -27);
+            }
+            else
+            {
+                SetCursorMaxMin(5, 2);
+            }
+            Console.Write("CHECKMATE!");
+            SetCursorMinMax(28, 2);
+            Console.Write($"{player.Name.ToUpper()} WON THE GAME!");
+        }
+
+        public static void Stalemate()
+        {
+            Paint.DefaultBackground();
+            Paint.YellowText();
+
+            EmptyFinalScreen();
+            SetCursorMinMax(28, 2);
+            Console.Write("THE GAME IS STALEMATE!");
+        }
+
         public static void KingIsCheck(IPlayer player)
         {
+            Paint.DefaultBackground();
+            Paint.YellowText();
+
             if (player.Color == Color.Light)
             {
                 SetCursorMinMax(-16, -4);
@@ -160,10 +172,12 @@
 
         public static void ExampleText()
         {
+            Paint.DefaultBackground();
+            Paint.GrayText();
+
             int horizontalOffset = -14;
             int verticalOffset = 7;
 
-            Console.ForegroundColor = ConsoleColor.Gray;
             SetCursorMinMin(horizontalOffset, verticalOffset);
             Console.Write("EXAMPLE:");
             SetCursorMinMin(horizontalOffset, verticalOffset + 2);
@@ -189,21 +203,26 @@
             Console.Write("Q - QUEEN");
         }
 
-        public static void MenuGame()
+        public static void GameMenu()
         {
+            Paint.DefaultBackground();
+            Paint.WhiteText();
+
             SetCursorMinMax(Globals.HorizontalMinWithBorder, 2);
             Console.Write(new string(' ', Globals.HorizontalMaxWithBorder));
 
             SetCursorMinMax(27, 2);
             Console.Write("(S)AVE GAME");
-
             SetCursorMinMax(42, 2);
             Console.Write("(E)XIT");
         }
 
-        public static void InvalidMessage(IPlayer currentPlayer)
+        public static void Invalid(IPlayer player)
         {
-            if (currentPlayer.Color == Color.Light)
+            Paint.DefaultBackground();
+            Paint.YellowText();
+
+            if (player.Color == Color.Light)
             {
                 LineMinMax(-16, -4, 15, ' ');
                 SetCursorMinMax(-16, -4);
@@ -221,33 +240,58 @@
             }
         }
 
-        public static void MenuPlayers(int number)
+        public static void PlayersMenu(int number)
         {
+            Paint.DefaultBackground();
+            Paint.WhiteText();
+
             LineMinMax(Globals.HorizontalMinWithBorder, 2, 50, ' ');
             SetCursorMinMax(Globals.HorizontalMinWithBorder, 2);
             Console.Write($"PLAYER {number} NAME: ");
         }
 
-        public static void LightEmptyMessageScreen()
+        public static void EmptyMessageScreen(IPlayer player)
         {
-            LineMinMax(-19, -2, 19, ' ');
-            LineMinMax(-19, -3, 19, ' ');
-            LineMinMax(-19, -4, 19, ' ');
-            LineMinMax(-19, -5, 19, ' ');
-            LineMinMax(-19, -6, 19, ' ');
+            Paint.DefaultBackground();
+
+            if (player.Color == Color.Light)
+            {
+                LineMinMax(-19, -2, 19, ' ');
+                LineMinMax(-19, -3, 19, ' ');
+                LineMinMax(-19, -4, 19, ' ');
+                LineMinMax(-19, -5, 19, ' ');
+                LineMinMax(-19, -6, 19, ' ');
+            }
+            else
+            {
+                LineMaxMin(1, 22, 19, ' ');
+                LineMaxMin(1, 23, 19, ' ');
+                LineMaxMin(1, 24, 19, ' ');
+                LineMaxMin(1, 25, 19, ' ');
+                LineMaxMin(1, 26, 19, ' ');
+            }
         }
 
-        public static void DarkEmptyMessageScreen()
+        public static void EmptyCheckScreen(IPlayer player)
         {
-            Print.LineMaxMin(1, 22, 19, ' ');
-            Print.LineMaxMin(1, 23, 19, ' ');
-            Print.LineMaxMin(1, 24, 19, ' ');
-            Print.LineMaxMin(1, 25, 19, ' ');
-            Print.LineMaxMin(1, 26, 19, ' ');
+            Paint.DefaultBackground();
+
+            switch (player.Color)
+            {
+                case Color.Light:
+                    LineMinMax(-12, -27, 6, ' ');
+
+                    break;
+                case Color.Dark:
+                    LineMaxMin(7, 2, 6, ' ');
+                    break;
+            }
         }
 
-        private static void EmptyFinalMessage()
+        public static void EmptyFinalScreen()
         {
+            Paint.DefaultBackground();
+
             LineMinMax(2, 1, 72, ' ');
             LineMinMax(2, 2, 72, ' ');
             LineMinMax(2, 3, 72, ' ');

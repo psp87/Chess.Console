@@ -41,6 +41,76 @@
 
         public bool IsLastMove { get; set; }
 
+        public bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
+        {
+            if (this.Color == Color.Light)
+            {
+                if (Board.InBoardCheck(row - 1, col))
+                {
+                    var checkedSquare = matrix[row - 1][col];
+
+                    if (!checkedSquare.IsOccupied)
+                    {
+                        return true;
+                    }
+                }
+
+                if (Board.InBoardCheck(row - 1, col - 1))
+                {
+                    var checkedSquare = matrix[row - 1][col - 1];
+
+                    if (checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color)
+                    {
+                        return true;
+                    }
+                }
+
+                if (Board.InBoardCheck(row - 1, col + 1))
+                {
+                    var checkedSquare = matrix[row - 1][col + 1];
+
+                    if (checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                if (Board.InBoardCheck(row + 1, col))
+                {
+                    var checkedSquare = matrix[row + 1][col];
+
+                    if (!checkedSquare.IsOccupied)
+                    {
+                        return true;
+                    }
+                }
+
+                if (Board.InBoardCheck(row + 1, col - 1))
+                {
+                    var checkedSquare = matrix[row + 1][col - 1];
+
+                    if (checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color)
+                    {
+                        return true;
+                    }
+                }
+
+                if (Board.InBoardCheck(row + 1, col + 1))
+                {
+                    var checkedSquare = matrix[row + 1][col + 1];
+
+                    if (checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
         {
             if (this.Color == Color.Light)
@@ -185,7 +255,7 @@
 
         public static IFigure Promotion(int toRow, int toCol, IFigure figure)
         {
-            Paint.DefaultColor();
+            Paint.DefaultBackground();
 
             if (figure.Color == Color.Light)
             {
