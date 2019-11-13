@@ -21,23 +21,20 @@
             };
             this.Name = name;
             this.Color = color;
-            this.isCastlingAvailable = true;
-            this.isMoveAvailable = true;
-            this.isCheck = false;
-            this.isCheckmate = false;
+            this.IsMoveAvailable = true;
+            this.IsCheck = false;
+            this.IsCheckmate = false;
         }
 
         public string Name { get; }
 
         public Color Color { get; }
 
-        public bool isCheck { get; set; }
+        public bool IsCheck { get; set; }
 
-        public bool isCheckmate { get; set; }
+        public bool IsCheckmate { get; set; }
 
-        public bool isMoveAvailable { get; set; }
-
-        public bool isCastlingAvailable { get; set; }
+        public bool IsMoveAvailable { get; set; }
 
         public void TakeFigure(string figureName)
         {

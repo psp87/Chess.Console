@@ -19,7 +19,7 @@
 
             Border();
 
-            Paint.DefaultColor();
+            Paint.DefaultBackground();
         }
 
         public static void NewGame(ISquare[][] matrix)
@@ -35,7 +35,7 @@
 
             Border();
 
-            Paint.DefaultColor();
+            Paint.DefaultBackground();
         }
 
         public static void Figure(int row, int col, IFigure figure)

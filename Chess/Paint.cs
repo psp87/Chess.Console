@@ -4,7 +4,7 @@
 
     public static class Paint
     {
-        public static void DefaultColor()
+        public static void DefaultBackground()
         {
             Console.BackgroundColor = ConsoleColor.Black;
         }
@@ -37,6 +37,21 @@
         public static void BorderText()
         {
             Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public static void YellowText()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+        }
+
+        public static void WhiteText()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public static void GrayText()
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
 }

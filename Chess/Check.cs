@@ -1,9 +1,5 @@
 ﻿namespace Chess
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     public static class Check
     {
         public static int KingRow { get; set; }

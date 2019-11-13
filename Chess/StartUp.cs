@@ -27,14 +27,14 @@
                             List<string> playerNames = new List<string>();
                             for (int i = 1; i <= 2; i++)
                             {
-                                Print.MenuPlayers(i);
+                                Print.PlayersMenu(i);
                                 playerNames.Add(Console.ReadLine());
                             }
 
                             IPlayer player1 = Factory.GetPlayer(playerNames[0].ToUpper(), Color.Light);
                             IPlayer player2 = Factory.GetPlayer(playerNames[1].ToUpper(), Color.Dark);
 
-                            Print.MenuGame();
+                            Print.GameMenu();
                             Print.ExampleText();
 
                             board.NewGame();
@@ -48,48 +48,51 @@
                                 {
                                     if (turn % 2 == 1)
                                     {
-                                        if (player1.isCheckmate)
+                                        if (player1.IsCheckmate)
                                         {
-                                            Print.BlackWon(player2);
+                                            Print.Won(player2);
                                             checkmate = true;
                                             break;
                                         }
-                                        if (!player1.isMoveAvailable)
+
+                                        if (!player1.IsMoveAvailable)
                                         {
                                             Print.Stalemate();
                                             stalemate = true;
                                             break;
                                         }
 
-                                        Print.GameStats(player1, player2);
+                                        Print.Stats(player1, player2);
                                         Print.Turn(player1);
                                         board.MoveFigure(player1, player2);
-                                        Print.LightEmptyMessageScreen();
+                                        Print.EmptyMessageScreen(player1);
                                     }
                                     else
                                     {
-                                        if (player2.isCheckmate)
+                                        if (player2.IsCheckmate)
                                         {
-                                            Print.WhiteWon(player1);
+                                            Print.Won(player1);
                                             checkmate = true;
                                             break;
                                         }
-                                        if (!player2.isMoveAvailable)
+
+                                        if (!player2.IsMoveAvailable)
                                         {
                                             Print.Stalemate();
                                             stalemate = true;
                                             break;
                                         }
 
-                                        Print.GameStats(player1, player2);
+                                        Print.Stats(player1, player2);
                                         Print.Turn(player2);
                                         board.MoveFigure(player2, player1);
-                                        Print.DarkEmptyMessageScreen();
+                                        Print.EmptyMessageScreen(player2);
                                     }
                                 }
                             }
 
                             Console.ReadLine();
+                            Print.EmptyFinalScreen();
                         }
 
                         break;

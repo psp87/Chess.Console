@@ -41,6 +41,27 @@
 
         public bool IsLastMove { get; set; }
 
+        public bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
+        {
+            for (int i = -1; i <= 1; i += 2)
+            {
+                for (int k = -1; k <= 1; k += 2)
+                {
+                    if (Board.InBoardCheck(row + i, col + k))
+                    {
+                        var checkedSquare = matrix[row + i][col + k];
+
+                        if ((checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color) || !checkedSquare.IsOccupied)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
         {
             for (int i = 1; i <= 7; i++)

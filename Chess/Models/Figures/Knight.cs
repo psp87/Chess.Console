@@ -40,6 +40,91 @@
 
         public bool IsLastMove { get; set; }
 
+        public bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
+        {
+            if (Board.InBoardCheck(row - 2, col - 1))
+            {
+                var checkedSquare = matrix[row - 2][col - 1];
+
+                if ((checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color) || !checkedSquare.IsOccupied)
+                {
+                    return true;
+                }
+            }
+
+            if (Board.InBoardCheck(row - 2, col + 1))
+            {
+                var checkedSquare = matrix[row - 2][col + 1];
+
+                if ((checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color) || !checkedSquare.IsOccupied)
+                {
+                    return true;
+                }
+            }
+
+            if (Board.InBoardCheck(row + 2, col - 1))
+            {
+                var checkedSquare = matrix[row + 2][col - 1];
+
+                if ((checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color) || !checkedSquare.IsOccupied)
+                {
+                    return true;
+                }
+            }
+
+            if (Board.InBoardCheck(row + 2, col + 1))
+            {
+                var checkedSquare = matrix[row + 2][col + 1];
+
+                if ((checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color) || !checkedSquare.IsOccupied)
+                {
+                    return true;
+                }
+            }
+
+            if (Board.InBoardCheck(row - 1, col - 2))
+            {
+                var checkedSquare = matrix[row - 1][col - 2];
+
+                if ((checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color) || !checkedSquare.IsOccupied)
+                {
+                    return true;
+                }
+            }
+
+            if (Board.InBoardCheck(row - 1, col + 2))
+            {
+                var checkedSquare = matrix[row - 1][col + 2];
+
+                if ((checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color) || !checkedSquare.IsOccupied)
+                {
+                    return true;
+                }
+            }
+
+            if (Board.InBoardCheck(row + 1, col - 2))
+            {
+                var checkedSquare = matrix[row + 1][col - 2];
+
+                if ((checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color) || !checkedSquare.IsOccupied)
+                {
+                    return true;
+                }
+            }
+
+            if (Board.InBoardCheck(row + 1, col + 2))
+            {
+                var checkedSquare = matrix[row + 1][col + 2];
+
+                if ((checkedSquare.IsOccupied && checkedSquare.Figure.Color != this.Color) || !checkedSquare.IsOccupied)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
         {
             if (Board.InBoardCheck(row - 2, col - 1))
