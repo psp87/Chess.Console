@@ -89,7 +89,7 @@
                 SetCursorMinMax(playerOneCenterNamePosition, -23);
                 Console.Write($"{player.Name}");
                 SetCursorMinMax(-16, -6);
-                Console.Write("MOVE:      ");
+                Console.Write("MOVE:           ");
                 SetCursorMinMax(-11, -6);
             }
             else
@@ -99,7 +99,7 @@
                 SetCursorMaxMin(playerTwoCenterNamePosition, 6);
                 Console.Write($"{player.Name}");
                 SetCursorMaxMin(3, 23);
-                Console.Write("MOVE:      ");
+                Console.Write("MOVE:           ");
                 SetCursorMaxMin(8, 23);
             }
         }
@@ -227,7 +227,7 @@
                 LineMinMax(-16, -4, 15, ' ');
                 SetCursorMinMax(-16, -4);
                 Console.Write("INVALID!");
-                LineMinMax(-11, -6, 5, ' ');
+                LineMinMax(-11, -6, 10, ' ');
                 SetCursorMinMax(-11, -6);
             }
             else
@@ -235,7 +235,7 @@
                 LineMaxMin(3, 25, 15, ' ');
                 SetCursorMaxMin(3, 25);
                 Console.Write("INVALID!");
-                LineMaxMin(8, 23, 5, ' ');
+                LineMaxMin(8, 23, 10, ' ');
                 SetCursorMaxMin(8, 23);
             }
         }
