@@ -7,4 +7,3 @@ The game is for 2 players. Do not have a computer player.
 You have statistics how many figures of which type you took. 
 All moves are implemented. Check, checkmate and stalemate are also implemented. 
 Still improvement have to be done.
-Error handling also have to be improved.
