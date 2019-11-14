@@ -62,10 +62,7 @@
                                             break;
                                         }
 
-                                        Print.Stats(player1, player2);
-                                        Print.Turn(player1);
                                         board.MoveFigure(player1, player2);
-                                        Print.EmptyMessageScreen(player1);
                                     }
                                     else
                                     {
@@ -83,10 +80,7 @@
                                             break;
                                         }
 
-                                        Print.Stats(player1, player2);
-                                        Print.Turn(player2);
                                         board.MoveFigure(player2, player1);
-                                        Print.EmptyMessageScreen(player2);
                                     }
                                 }
                             }
