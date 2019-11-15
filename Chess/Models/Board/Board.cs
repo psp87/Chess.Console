@@ -34,10 +34,6 @@
         {
             Globals.TurnCounter++;
 
-            // Print statistics and current player to move
-            Print.Stats(currentPlayer, otherPlayer);
-            Print.Turn(currentPlayer);
-
             IFigure emptyFigure = Factory.GetEmpty();
 
             bool successfulMove = false;

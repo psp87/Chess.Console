@@ -48,6 +48,9 @@
                                 {
                                     if (turn % 2 == 1)
                                     {
+                                        Print.Stats(player1, player2);
+                                        Print.Turn(player1);
+
                                         if (player1.IsCheckmate)
                                         {
                                             Print.Won(player2);
@@ -66,6 +69,9 @@
                                     }
                                     else
                                     {
+                                        Print.Stats(player1, player2);
+                                        Print.Turn(player2);
+
                                         if (player2.IsCheckmate)
                                         {
                                             Print.Won(player1);
