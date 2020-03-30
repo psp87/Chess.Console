@@ -25,7 +25,7 @@ namespace Chess.Tests
         public void LightPawnShouldMoveOneSquareOrTwoSquaresOnFirstMove(Col fromCol, Row fromRow, Col toCol, Row toRow)
         {
             // Arrange
-            IFigure pawn = Factory.GetPawn(Color.Light);
+            IPiece pawn = Factory.GetPawn(Color.Light);
             board.Matrix[(int)fromRow][(int)fromCol].Figure = pawn;
 
             // Act
@@ -41,7 +41,7 @@ namespace Chess.Tests
         public void BlackPawnShouldMoveOneSquareOrTwoSquaresOnFirstMove(Col fromCol, Row fromRow, Col toCol, Row toRow)
         {
             // Arrange
-            IFigure pawn = Factory.GetPawn(Color.Dark);
+            IPiece pawn = Factory.GetPawn(Color.Dark);
             board.Matrix[(int)fromRow][(int)fromCol].Figure = pawn;
 
             // Act
@@ -56,7 +56,7 @@ namespace Chess.Tests
         public void LightPawnShouldThrowsExceptionOnInvalidMove(Col fromCol, Row fromRow, Col toCol, Row toRow)
         {
             // Arrange
-            IFigure pawn = Factory.GetPawn(Color.Light);
+            IPiece pawn = Factory.GetPawn(Color.Light);
             board.Matrix[(int)fromRow][(int)fromCol].Figure = pawn;
 
             // Act

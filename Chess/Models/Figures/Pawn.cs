@@ -6,16 +6,16 @@
     using Enums;
     using Board;
 
-    public class Pawn : IFigure
+    public class Pawn : Piece
     {
         public Pawn(Color color)
+            : base(color)
         {
-            this.Name = "Pawn";
-            this.Color = color;
-            this.Symbol = 'P';
-            this.IsFirstMove = true;
-            this.IsLastMove = false;
-            this.FigureMatrix = new bool[Globals.CellRows, Globals.CellCols]
+        }
+
+        public override char Symbol => 'P';
+
+        public override bool[,] FigureMatrix { get => new bool[Globals.CellRows, Globals.CellCols]
             {
                 { false, false, false, false, false, false, false, false, false },
                 { false, false, false, false, false, false, false, false, false },
@@ -29,19 +29,7 @@
             };
         }
 
-        public string Name { get; }
-
-        public Color Color { get; }
-
-        public char Symbol { get; }
-
-        public bool[,] FigureMatrix { get; }
-
-        public bool IsFirstMove { get; set; }
-
-        public bool IsLastMove { get; set; }
-
-        public bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
+        public override bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
         {
             if (this.Color == Color.Light)
             {
@@ -111,7 +99,7 @@
             return false;
         }
 
-        public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
+        public override void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
         {
             if (this.Color == Color.Light)
             {
@@ -139,7 +127,7 @@
             }
         }
 
-        public bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
+        public override bool Move(ISquare[][] matrix, ISquare square, IPiece figure, Row toRow, Col toCol)
         {
             if (this.Color == Color.Light)
             {
@@ -197,7 +185,7 @@
             return false;
         }
 
-        public bool Take(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
+        public override bool Take(ISquare[][] matrix, ISquare square, IPiece figure, Row toRow, Col toCol)
         {
             if (this.Color == Color.Light)
             {
@@ -253,7 +241,7 @@
             return false;
         }
 
-        public static IFigure Promotion(int toRow, int toCol, IFigure figure)
+        public static IPiece Promotion(int toRow, int toCol, IPiece figure)
         {
             Paint.DefaultBackground();
 
@@ -279,28 +267,28 @@
                 case ConsoleKey.Q:
                     {
                         Draw.EmptySquare(toRow, toCol);
-                        IFigure queen = Factory.GetQueen(figure.Color);
+                        IPiece queen = Factory.GetQueen(figure.Color);
                         Draw.Figure(toRow, toCol, queen);
                         return queen;
                     }
                 case ConsoleKey.R:
                     {
                         Draw.EmptySquare(toRow, toCol);
-                        IFigure rook = Factory.GetRook(figure.Color);
+                        IPiece rook = Factory.GetRook(figure.Color);
                         Draw.Figure(toRow, toCol, rook);
                         return rook;
                     }
                 case ConsoleKey.B:
                     {
                         Draw.EmptySquare(toRow, toCol);
-                        IFigure bishop = Factory.GetBishop(figure.Color);
+                        IPiece bishop = Factory.GetBishop(figure.Color);
                         Draw.Figure(toRow, toCol, bishop);
                         return bishop;
                     }
                 case ConsoleKey.N:
                     {
                         Draw.EmptySquare(toRow, toCol);
-                        IFigure knight = Factory.GetKnight(figure.Color);
+                        IPiece knight = Factory.GetKnight(figure.Color);
                         Draw.Figure(toRow, toCol, knight);
                         return knight;
                     }

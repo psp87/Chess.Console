@@ -10,7 +10,7 @@
 
         Col Col { get; set; }
 
-        IFigure Figure { get; set; }
+        IPiece Figure { get; set; }
 
         bool IsOccupied { get; set; }
 
