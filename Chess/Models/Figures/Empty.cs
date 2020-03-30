@@ -5,16 +5,16 @@
     using Contracts;
     using Enums;
 
-    public class Empty : IFigure
+    public class Empty : Piece
     {
         public Empty()
         {
-            this.Name = "Empty";
-            this.Symbol = 'E';
             this.Color = Color.Empty;
-            this.IsFirstMove = false;
-            this.IsLastMove = false;
-            this.FigureMatrix = new bool[Globals.CellRows, Globals.CellCols]
+        }
+
+        public override char Symbol => 'E';
+
+        public override bool[,] FigureMatrix { get => new bool[Globals.CellRows, Globals.CellCols]
             {
                 { false, false, false, false, false, false, false, false, false },
                 { false, false, false, false, false, false, false, false, false },
@@ -28,34 +28,22 @@
             };
         }
 
-        public string Name { get; }
-
-        public Color Color { get; }
-
-        public char Symbol { get; }
-
-        public bool[,] FigureMatrix { get; }
-
-        public bool IsFirstMove { get; set; }
-
-        public bool IsLastMove { get; set; }
-
-        public bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
+        public override bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
         {
             return true;
         }
 
-        public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
+        public override void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
         {
 
         }
 
-        public bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
+        public override bool Move(ISquare[][] matrix, ISquare square, IPiece figure, Row toRow, Col toCol)
         {
             throw new NotImplementedException();
         }
 
-        public bool Take(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
+        public override bool Take(ISquare[][] matrix, ISquare square, IPiece figure, Row toRow, Col toCol)
         {
             throw new NotImplementedException();
         }

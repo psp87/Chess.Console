@@ -5,16 +5,16 @@
     using Contracts;
     using Enums;
 
-    public class Knight : IFigure
+    public class Knight : Piece
     {
         public Knight(Color color)
+            : base(color)
         {
-            this.Name = "Knight";
-            this.Color = color;
-            this.Symbol = 'N';
-            this.IsFirstMove = true;
-            this.IsLastMove = false;
-            this.FigureMatrix = new bool[Globals.CellRows, Globals.CellCols]
+        }
+
+        public override char Symbol => 'N';
+
+        public override bool[,] FigureMatrix { get => new bool[Globals.CellRows, Globals.CellCols]
             {
                 { false, false, false, false, false, false, false, false, false },
                 { false, false, false, true, true, true, false, false, false },
@@ -28,19 +28,7 @@
             };
         }
 
-        public string Name { get; }
-
-        public Color Color { get; }
-
-        public char Symbol { get; }
-
-        public bool[,] FigureMatrix { get; }
-
-        public bool IsFirstMove { get; set; }
-
-        public bool IsLastMove { get; set; }
-
-        public bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
+        public override bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
         {
             if (Board.InBoardCheck(row - 2, col - 1))
             {
@@ -125,7 +113,7 @@
             return false;
         }
 
-        public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
+        public override void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
         {
             if (Board.InBoardCheck(row - 2, col - 1))
             {
@@ -168,7 +156,7 @@
             }
         }
 
-        public bool Move(ISquare[][] squares, ISquare square, IFigure figure, Row toRow, Col toCol)
+        public override bool Move(ISquare[][] squares, ISquare square, IPiece figure, Row toRow, Col toCol)
         {
             if (toCol == square.Col - 1 && toRow == square.Row - 2)
             {
@@ -229,7 +217,7 @@
             return false;
         }
 
-        public bool Take(ISquare[][] squares, ISquare square, IFigure figure, Row toRow, Col toCol)
+        public override bool Take(ISquare[][] squares, ISquare square, IPiece figure, Row toRow, Col toCol)
         {
             if (toCol == square.Col - 1 && toRow == square.Row - 2)
             {

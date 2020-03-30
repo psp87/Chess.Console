@@ -38,7 +38,7 @@
             Paint.DefaultBackground();
         }
 
-        public static void Figure(int row, int col, IFigure figure)
+        public static void Figure(int row, int col, IPiece figure)
         {
             for (int cellRow = 1; cellRow < Globals.CellRows - 1; cellRow++)
             {

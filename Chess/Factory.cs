@@ -9,6 +9,7 @@
     using Models.Board;
     using Models.Figures;
     using Models.Enums;
+    using Chess.Models;
 
     public class Factory
     {
@@ -24,45 +25,45 @@
             return player;
         }
 
-        public static IFigure GetPawn(Color color)
+        public static IPiece GetPawn(Color color)
         {
-            IFigure pawn = new Pawn(color);
+            IPiece pawn = new Pawn(color);
             return pawn;
         }
 
-        public static IFigure GetRook(Color color)
+        public static IPiece GetRook(Color color)
         {
-            IFigure rook = new Rook(color);
+            IPiece rook = new Rook(color);
             return rook;
         }
 
-        public static IFigure GetKnight(Color color)
+        public static IPiece GetKnight(Color color)
         {
-            IFigure knight = new Knight(color);
+            IPiece knight = new Knight(color);
             return knight;
         }
 
-        public static IFigure GetBishop(Color color)
+        public static IPiece GetBishop(Color color)
         {
-            IFigure bishop = new Bishop(color);
+            IPiece bishop = new Bishop(color);
             return bishop;
         }
 
-        public static IFigure GetQueen(Color color)
+        public static IPiece GetQueen(Color color)
         {
-            IFigure queen = new Queen(color);
+            IPiece queen = new Queen(color);
             return queen;
         }
 
-        public static IFigure GetKing(Color color)
+        public static IPiece GetKing(Color color)
         {
-            IFigure king = new King(color);
+            IPiece king = new King(color);
             return king;
         }
 
-        public static IFigure GetEmpty()
+        public static IPiece GetEmpty()
         {
-            IFigure empty = new Empty();
+            IPiece empty = new Empty();
             return empty;
         }
 
@@ -78,10 +79,15 @@
             return matrix;
         }
 
-        public static ISquare GetSquare(Row row, Col col, IFigure empty)
+        public static ISquare GetSquare(Row row, Col col, IPiece empty)
         {
             ISquare square = new Square(row, col, empty);
             return square;
+        }
+
+        public static Position GetPosition (X x, Y y)
+        {
+            return new Position(x, y);
         }
     }
 }

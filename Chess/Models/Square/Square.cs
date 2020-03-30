@@ -7,7 +7,7 @@
 
     public class Square : ISquare
     {
-        public Square(Row row, Col col, IFigure empty)
+        public Square(Row row, Col col, IPiece empty)
         {
             this.Row = row;
             this.Col = col;
@@ -20,7 +20,7 @@
 
         public Col Col { get; set; }
 
-        public IFigure Figure { get ; set ; }
+        public IPiece Figure { get ; set ; }
 
         public bool IsOccupied { get; set; }
 

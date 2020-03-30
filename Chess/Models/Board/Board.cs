@@ -34,7 +34,7 @@
         {
             Globals.TurnCounter++;
 
-            IFigure emptyFigure = Factory.GetEmpty();
+            IPiece emptyFigure = Factory.GetEmpty();
 
             bool successfulMove = false;
 
@@ -276,8 +276,8 @@
 
                         if (this.NeighbourSquareAvailable(checkedSquare, currentPlayer))
                         {
-                            IFigure currentFigure = this.Matrix[kingRow][kingCol].Figure;
-                            IFigure empty = Factory.GetEmpty();
+                            IPiece currentFigure = this.Matrix[kingRow][kingCol].Figure;
+                            IPiece empty = Factory.GetEmpty();
 
                             this.AssignNewValuesAndCalculate(kingRow, kingCol, i, k, currentFigure, empty);
 
@@ -386,7 +386,7 @@
             otherPlayer.IsCheckmate = true;
         }
 
-        private void AssignOldValuesAndCalculate(int kingRow, int kingCol, int i, int k, IFigure currentFigure, IFigure empty)
+        private void AssignOldValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)
         {
             this.Matrix[kingRow][kingCol].Figure = currentFigure;
             this.Matrix[kingRow][kingCol].IsOccupied = true;
@@ -395,7 +395,7 @@
             this.CalculateAttackedSquares();
         }
 
-        private void AssignNewValuesAndCalculate(int kingRow, int kingCol, int i, int k, IFigure currentFigure, IFigure empty)
+        private void AssignNewValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)
         {
             this.Matrix[kingRow][kingCol].Figure = empty;
             this.Matrix[kingRow][kingCol].IsOccupied = false;
@@ -446,7 +446,7 @@
 
         private void MatrixInitializeAssign()
         {
-            IFigure empty = Factory.GetEmpty();
+            IPiece empty = Factory.GetEmpty();
 
             ISquare square1 = Factory.GetSquare(Row.One, Col.A, empty);
             ISquare square2 = Factory.GetSquare(Row.One, Col.B, empty);
@@ -595,39 +595,39 @@
 
         private void FiguresInitializeAssign()
         {
-            IFigure whiteRook1 = Factory.GetRook(Color.Light);
-            IFigure whiteKnight1 = Factory.GetKnight(Color.Light);
-            IFigure whiteBishop1 = Factory.GetBishop(Color.Light);
-            IFigure whiteQueen = Factory.GetQueen(Color.Light);
-            IFigure whiteKing = Factory.GetKing(Color.Light);
-            IFigure whiteBishop2 = Factory.GetBishop(Color.Light);
-            IFigure whiteKnight2 = Factory.GetKnight(Color.Light);
-            IFigure whiteRook2 = Factory.GetRook(Color.Light);
-            IFigure whitePawn1 = Factory.GetPawn(Color.Light);
-            IFigure whitePawn2 = Factory.GetPawn(Color.Light);
-            IFigure whitePawn3 = Factory.GetPawn(Color.Light);
-            IFigure whitePawn4 = Factory.GetPawn(Color.Light);
-            IFigure whitePawn5 = Factory.GetPawn(Color.Light);
-            IFigure whitePawn6 = Factory.GetPawn(Color.Light);
-            IFigure whitePawn7 = Factory.GetPawn(Color.Light);
-            IFigure whitePawn8 = Factory.GetPawn(Color.Light);
+            IPiece whiteRook1 = Factory.GetRook(Color.Light);
+            IPiece whiteKnight1 = Factory.GetKnight(Color.Light);
+            IPiece whiteBishop1 = Factory.GetBishop(Color.Light);
+            IPiece whiteQueen = Factory.GetQueen(Color.Light);
+            IPiece whiteKing = Factory.GetKing(Color.Light);
+            IPiece whiteBishop2 = Factory.GetBishop(Color.Light);
+            IPiece whiteKnight2 = Factory.GetKnight(Color.Light);
+            IPiece whiteRook2 = Factory.GetRook(Color.Light);
+            IPiece whitePawn1 = Factory.GetPawn(Color.Light);
+            IPiece whitePawn2 = Factory.GetPawn(Color.Light);
+            IPiece whitePawn3 = Factory.GetPawn(Color.Light);
+            IPiece whitePawn4 = Factory.GetPawn(Color.Light);
+            IPiece whitePawn5 = Factory.GetPawn(Color.Light);
+            IPiece whitePawn6 = Factory.GetPawn(Color.Light);
+            IPiece whitePawn7 = Factory.GetPawn(Color.Light);
+            IPiece whitePawn8 = Factory.GetPawn(Color.Light);
 
-            IFigure blackRook1 = Factory.GetRook(Color.Dark);
-            IFigure blackKnight1 = Factory.GetKnight(Color.Dark);
-            IFigure blackBishop1 = Factory.GetBishop(Color.Dark);
-            IFigure blackQueen = Factory.GetQueen(Color.Dark);
-            IFigure blackKing = Factory.GetKing(Color.Dark);
-            IFigure blackBishop2 = Factory.GetBishop(Color.Dark);
-            IFigure blackKnight2 = Factory.GetKnight(Color.Dark);
-            IFigure blackRook2 = Factory.GetRook(Color.Dark);
-            IFigure blackPawn1 = Factory.GetPawn(Color.Dark);
-            IFigure blackPawn2 = Factory.GetPawn(Color.Dark);
-            IFigure blackPawn3 = Factory.GetPawn(Color.Dark);
-            IFigure blackPawn4 = Factory.GetPawn(Color.Dark);
-            IFigure blackPawn5 = Factory.GetPawn(Color.Dark);
-            IFigure blackPawn6 = Factory.GetPawn(Color.Dark);
-            IFigure blackPawn7 = Factory.GetPawn(Color.Dark);
-            IFigure blackPawn8 = Factory.GetPawn(Color.Dark);
+            IPiece blackRook1 = Factory.GetRook(Color.Dark);
+            IPiece blackKnight1 = Factory.GetKnight(Color.Dark);
+            IPiece blackBishop1 = Factory.GetBishop(Color.Dark);
+            IPiece blackQueen = Factory.GetQueen(Color.Dark);
+            IPiece blackKing = Factory.GetKing(Color.Dark);
+            IPiece blackBishop2 = Factory.GetBishop(Color.Dark);
+            IPiece blackKnight2 = Factory.GetKnight(Color.Dark);
+            IPiece blackRook2 = Factory.GetRook(Color.Dark);
+            IPiece blackPawn1 = Factory.GetPawn(Color.Dark);
+            IPiece blackPawn2 = Factory.GetPawn(Color.Dark);
+            IPiece blackPawn3 = Factory.GetPawn(Color.Dark);
+            IPiece blackPawn4 = Factory.GetPawn(Color.Dark);
+            IPiece blackPawn5 = Factory.GetPawn(Color.Dark);
+            IPiece blackPawn6 = Factory.GetPawn(Color.Dark);
+            IPiece blackPawn7 = Factory.GetPawn(Color.Dark);
+            IPiece blackPawn8 = Factory.GetPawn(Color.Dark);
 
             this.Matrix[0][0].Figure = blackRook1;
             this.Matrix[0][1].Figure = blackKnight1;
@@ -706,7 +706,7 @@
             Draw.EmptySquare(fromRow, fromCol);
         }
 
-        private void AssignNewValues(IFigure emptyFigure, int fromCol, int fromRow, int toCol, int toRow)
+        private void AssignNewValues(IPiece emptyFigure, int fromCol, int fromRow, int toCol, int toRow)
         {
             // Assigning the new value
             this.Matrix[toRow][toCol] = this.Matrix[fromRow][fromCol];

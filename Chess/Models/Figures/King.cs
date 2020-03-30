@@ -7,16 +7,16 @@
     using Enums;
     using System.Linq;
 
-    public class King : IFigure
+    public class King : Piece
     {
         public King(Color color)
+            : base(color)
         {
-            this.Name = "King";
-            this.Color = color;
-            this.Symbol = 'K';
-            this.IsFirstMove = true;
-            this.IsLastMove = false;
-            this.FigureMatrix = new bool[Globals.CellRows, Globals.CellCols]
+        }
+
+        public override char Symbol => 'K';
+
+        public override bool[,] FigureMatrix { get => new bool[Globals.CellRows, Globals.CellCols]
             {
                 { false, false, false, false, false, false, false, false, false },
                 { false, false, false, false, true, false, false, false, false },
@@ -30,19 +30,7 @@
             };
         }
 
-        public string Name { get; }
-
-        public Color Color { get; }
-
-        public char Symbol { get; }
-
-        public bool[,] FigureMatrix { get; }
-
-        public bool IsFirstMove { get; set; }
-
-        public bool IsLastMove { get; set; }
-
-        public bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
+        public override bool IsMoveAvailable(ISquare[][] matrix, int row, int col)
         {
             var currentFigure = matrix[row][col].Figure;
 
@@ -74,7 +62,7 @@
             return false;
         }
 
-        public void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
+        public override void Attacking(ISquare[][] matrix, ISquare square, int row, int col)
         {
             if (Board.InBoardCheck(row - 1, col))
             {
@@ -117,7 +105,7 @@
             }
         }
 
-        public bool Move(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
+        public override bool Move(ISquare[][] matrix, ISquare square, IPiece figure, Row toRow, Col toCol)
         {
             if (!matrix[(int)toRow][(int)toCol].IsAttacked.Where(x => x.Figure.Color != this.Color).Any())
             {
@@ -190,7 +178,7 @@
                             square.Col += 2;
                             this.IsFirstMove = false;
 
-                            IFigure emptyFigure = Factory.GetEmpty();
+                            IPiece emptyFigure = Factory.GetEmpty();
                             ISquare emptySquare = Factory.GetSquare(square.Row, (Col)7, emptyFigure);
                             matrix[(int)square.Row][(int)square.Col - 1] = matrix[(int)square.Row][7];
                             Draw.EmptySquare((int)square.Row, 7);
@@ -209,7 +197,7 @@
                         {
                             square.Col -= 2;
 
-                            IFigure emptyFigure = Factory.GetEmpty();
+                            IPiece emptyFigure = Factory.GetEmpty();
                             ISquare emptySquare = Factory.GetSquare(square.Row, (Col)0, emptyFigure);
                             matrix[(int)square.Row][(int)square.Col + 1] = matrix[(int)square.Row][0];
                             Draw.EmptySquare((int)square.Row, 0);
@@ -227,7 +215,7 @@
             return false;
         }
 
-        public bool Take(ISquare[][] matrix, ISquare square, IFigure figure, Row toRow, Col toCol)
+        public override bool Take(ISquare[][] matrix, ISquare square, IPiece figure, Row toRow, Col toCol)
         {
             if (toCol == square.Col && toRow == square.Row - 1)
             {
