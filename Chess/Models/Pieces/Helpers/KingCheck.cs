@@ -1,6 +1,6 @@
-﻿namespace Chess
+﻿namespace Chess.Models.Pieces.Helpers
 {
-    public static class Check
+    public static class KingCheck
     {
         public static int KingRow { get; set; }
 

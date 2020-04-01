@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using Models.Board;
+    using Chess.View;
+    using Models;
     using Models.Enums;
-    using Models.Player.Contracts;
 
     public class StartUp
     {
@@ -31,10 +31,11 @@
                                 playerNames.Add(Console.ReadLine());
                             }
 
-                            IPlayer player1 = Factory.GetPlayer(playerNames[0].ToUpper(), Color.Light);
-                            IPlayer player2 = Factory.GetPlayer(playerNames[1].ToUpper(), Color.Dark);
+                            Player player1 = Factory.GetPlayer(playerNames[0].ToUpper(), Color.Light);
+                            Player player2 = Factory.GetPlayer(playerNames[1].ToUpper(), Color.Dark);
 
                             Print.GameMenu();
+                            
                             Print.ExampleText();
 
                             board.NewGame();
@@ -65,7 +66,7 @@
                                             break;
                                         }
 
-                                        board.MoveFigure(player1, player2);
+                                        board.MakeMove(player1, player2);
                                     }
                                     else
                                     {
@@ -86,7 +87,7 @@
                                             break;
                                         }
 
-                                        board.MoveFigure(player2, player1);
+                                        board.MakeMove(player2, player1);
                                     }
                                 }
                             }

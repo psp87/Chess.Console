@@ -14,7 +14,7 @@
         public const int OffsetVertical = 6;
 
         public const int HorizontalMin = OffsetHorizontal;
-        public const int HorizontalMax= OffsetHorizontal + (BoardCols * CellCols);
+        public const int HorizontalMax = OffsetHorizontal + (BoardCols * CellCols);
 
         public const int VerticalMin = OffsetVertical;
         public const int VerticalMax = OffsetVertical + (BoardRows * CellRows);

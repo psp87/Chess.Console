@@ -1,9 +1,10 @@
-﻿namespace Chess
+﻿namespace Chess.View
 {
     using System;
-    using Models.Square.Contracts;
-    using Models.Figures.Contracts;
+
+    using Models;
     using Models.Enums;
+    using Models.Pieces.Contracts;
 
     public static class Draw
     {
@@ -22,14 +23,14 @@
             Paint.DefaultBackground();
         }
 
-        public static void NewGame(ISquare[][] matrix)
+        public static void NewGame(Square[][] matrix)
         {
             for (int row = 0; row < Globals.BoardRows; row++)
             {
                 for (int col = 0; col < Globals.BoardCols; col++)
                 {
-                    ISquare currentSquare = matrix[row][col];
-                    Figure(row, col, currentSquare.Figure);
+                    Square currentSquare = matrix[row][col];
+                    Figure(row, col, currentSquare.Piece);
                 }
             }
 

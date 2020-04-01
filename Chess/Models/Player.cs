@@ -1,13 +1,13 @@
-﻿namespace Chess.Models.Player
+﻿namespace Chess.Models
 {
     using System.Collections.Generic;
-    using Figures;
-    using Contracts;
-    using Enums;
 
-    public class Player : IPlayer
+    using Enums;
+    using Pieces;
+
+    public class Player
     {
-        Dictionary<string, int> takenFigures;
+        private Dictionary<string, int> takenFigures;
 
         public Player(string name, Color color)
         {
@@ -22,8 +22,6 @@
             this.Name = name;
             this.Color = color;
             this.IsMoveAvailable = true;
-            this.IsCheck = false;
-            this.IsCheckmate = false;
         }
 
         public string Name { get; }
@@ -38,12 +36,12 @@
 
         public void TakeFigure(string figureName)
         {
-            takenFigures[figureName]++;
+            this.takenFigures[figureName]++;
         }
 
         public int TakenFigures(string figureName)
         {
-            return takenFigures[figureName];
+            return this.takenFigures[figureName];
         }
     }
 }

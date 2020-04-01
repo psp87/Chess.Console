@@ -1,22 +1,22 @@
-﻿namespace Chess.Models.Figures
+﻿namespace Chess.Models.Pieces
 {
     using System;
 
-    using Chess.Models.Enums;
-    using Chess.Models.Figures.Contracts;
-    using Chess.Models.Square.Contracts;
+    using Contracts;
+    using Enums;
 
     public abstract class Piece : IPiece, ICloneable
     {
         public Piece(Color color)
         {
+            Position = Factory.GetPositionEmpty();
             this.Color = color;
             this.IsFirstMove = true;
-            this.IsLastMove = false;
         }
 
         public Piece()
         {
+            Position = Factory.GetPositionEmpty();
         }
 
         public string Name => this.GetType().Name.ToString();
@@ -33,19 +33,19 @@
 
         public bool IsLastMove { get; set; }
 
-        public bool IsMoveable { get; set; }
+        public bool IsMovable { get; set; }
 
-        public abstract bool IsMoveAvailable(ISquare[][] matrix, int row, int col);
+        public abstract void IsMoveAvailable(Square[][] boardMatrix);
 
-        public abstract void Attacking(ISquare[][] matrix, ISquare square, int row, int col);
+        public abstract void Attacking(Square[][] boardMatrix);
 
-        public abstract bool Move(ISquare[][] matrix, ISquare square, IPiece figure, Row toRow, Col toCol);
+        public abstract bool Move(Position toPosition, Square[][] boardMatrix);
 
-        public abstract bool Take(ISquare[][] matrix, ISquare square, IPiece figure, Row toRow, Col toCol);
+        public abstract bool Take(Position toPosition, Square[][] boardMatrix);
 
         public override string ToString()
         {
-            return this.ToString();
+            return Position.ToString();
         }
 
         public virtual object Clone()

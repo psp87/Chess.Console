@@ -1,9 +1,11 @@
-﻿namespace Chess
+﻿namespace Chess.View
 {
     using System;
-    using Models.Figures;
-    using Models.Player.Contracts;
+
+    using Models;
     using Models.Enums;
+    using Models.Pieces;
+    using Models.Pieces.Contracts;
 
     public static class Print
     {
@@ -30,7 +32,7 @@
             Console.Write("(E)XIT");
         }
 
-        public static void Stats(IPlayer player1, IPlayer player2)
+        public static void Stats(Player player1, Player player2)
         {
             Paint.DefaultBackground();
             Paint.WhiteText();
@@ -77,7 +79,7 @@
             Console.Write($"Q x {player2.TakenFigures(nameof(Queen))}");
         }
 
-        public static void Turn(IPlayer player)
+        public static void Turn(Player player)
         {
             Paint.DefaultBackground();
             Paint.YellowText();
@@ -104,7 +106,7 @@
             }
         }
 
-        public static void Check(IPlayer player)
+        public static void Check(Player player)
         {
             Paint.DefaultBackground();
             Paint.YellowText();
@@ -120,7 +122,66 @@
             Console.Write("CHECK!");
         }
 
-        public static void Won(IPlayer player)
+        public static IPiece PawnPromotion(Position toPos, IPiece piece)
+        {
+            Paint.DefaultBackground();
+
+            if (piece.Color == Color.Light)
+            {
+                SetCursorMinMax(-17, -4);
+                Console.WriteLine("(Q,R,B,N)");
+                SetCursorMinMax(-17, -6);
+                Console.Write("CHOOSE FIGURE:");
+            }
+            else
+            {
+                SetCursorMinMax(78, -51);
+                Console.WriteLine("(Q,R,B,N)");
+                SetCursorMinMax(78, -53);
+                Console.Write("CHOOSE FIGURE:");
+            }
+
+            var figureChoose = Console.ReadKey().Key;
+
+            switch (figureChoose)
+            {
+                case ConsoleKey.Q:
+                    {
+                        Draw.EmptySquare(toPos.Y, toPos.X);
+                        IPiece queen = Factory.GetQueen(piece.Color);
+                        Draw.Figure(toPos.Y, toPos.X, queen);
+                        return queen;
+                    }
+
+                case ConsoleKey.R:
+                    {
+                        Draw.EmptySquare(toPos.Y, toPos.X);
+                        IPiece rook = Factory.GetRook(piece.Color);
+                        Draw.Figure(toPos.Y, toPos.X, rook);
+                        return rook;
+                    }
+
+                case ConsoleKey.B:
+                    {
+                        Draw.EmptySquare(toPos.Y, toPos.X);
+                        IPiece bishop = Factory.GetBishop(piece.Color);
+                        Draw.Figure(toPos.Y, toPos.X, bishop);
+                        return bishop;
+                    }
+
+                case ConsoleKey.N:
+                    {
+                        Draw.EmptySquare(toPos.Y, toPos.X);
+                        IPiece knight = Factory.GetKnight(piece.Color);
+                        Draw.Figure(toPos.Y, toPos.X, knight);
+                        return knight;
+                    }
+
+                default: return PawnPromotion(toPos, piece);
+            }
+        }
+
+        public static void Won(Player player)
         {
             Paint.DefaultBackground();
             Paint.YellowText();
@@ -134,6 +195,7 @@
             {
                 SetCursorMaxMin(5, 2);
             }
+
             Console.Write("CHECKMATE!");
             SetCursorMinMax(28, 2);
             Console.Write($"{player.Name.ToUpper()} WON THE GAME!");
@@ -149,7 +211,7 @@
             Console.Write("THE GAME IS STALEMATE!");
         }
 
-        public static void KingIsCheck(IPlayer player)
+        public static void KingIsCheck(Player player)
         {
             Paint.DefaultBackground();
             Paint.YellowText();
@@ -217,7 +279,7 @@
             Console.Write("(E)XIT");
         }
 
-        public static void Invalid(IPlayer player)
+        public static void Invalid(Player player)
         {
             Paint.DefaultBackground();
             Paint.YellowText();
@@ -250,7 +312,7 @@
             Console.Write($"PLAYER {number} NAME: ");
         }
 
-        public static void EmptyMessageScreen(IPlayer player)
+        public static void EmptyMessageScreen(Player player)
         {
             Paint.DefaultBackground();
 
@@ -272,7 +334,7 @@
             }
         }
 
-        public static void EmptyCheckScreen(IPlayer player)
+        public static void EmptyCheckScreen(Player player)
         {
             Paint.DefaultBackground();
 

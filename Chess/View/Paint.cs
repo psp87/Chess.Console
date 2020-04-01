@@ -1,4 +1,4 @@
-﻿namespace Chess
+﻿namespace Chess.View
 {
     using System;
 
@@ -31,7 +31,7 @@
 
         public static void BorderBackground()
         {
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.BackgroundColor = ConsoleColor.DarkGray;
         }
 
         public static void BorderText()
