@@ -1,8 +1,8 @@
 ﻿namespace Chess
 {
-    using System.Collections.Generic;
+    using Models.Enums;
 
-    public static class Globals
+    public class Globals
     {
         public const int BoardRows = 8;
         public const int BoardCols = 8;
@@ -25,18 +25,8 @@
         public const int VerticalMinWithBorder = VerticalMin - 2;
         public const int VerticalMaxWithBorder = VerticalMax + 2;
 
-        public static int TurnCounter = 0;
+        public static GameOver GameState { get; set; }
 
-        public static Dictionary<string, int> ColMap = new Dictionary<string, int>()
-        {
-            { "A", 0 },
-            { "B", 1 },
-            { "C", 2 },
-            { "D", 3 },
-            { "E", 4 },
-            { "F", 5 },
-            { "G", 6 },
-            { "H", 7 },
-        };
+        public static int TurnCounter { get; set; }
     }
 }

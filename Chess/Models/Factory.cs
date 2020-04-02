@@ -88,5 +88,10 @@
         {
             return new BishopBahaviour();
         }
+
+        public static Game GetGame(Player player1, Player player2)
+        {
+            return new Game(player1, player2);
+        }
     }
 }

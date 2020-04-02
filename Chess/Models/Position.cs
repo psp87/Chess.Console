@@ -2,6 +2,8 @@
 {
     using System;
 
+    using Enums;
+
     public class Position : ICloneable
     {
         public Position() : this(-1, -1)
@@ -30,7 +32,7 @@
 
         public object Clone()
         {
-            return Factory.GetPosition(this.X, this.Y);
+            return Factory.GetPosition(this.Y, this.X);
         }
     }
 }

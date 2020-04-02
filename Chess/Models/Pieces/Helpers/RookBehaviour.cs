@@ -54,7 +54,7 @@
             this.AttackedSquaresX(piece.Position.Y, 1, matrix, piece);
         }
 
-        public void AttackedSquaresX(int y, int signX, Square[][] matrix, IPiece piece)
+        private void AttackedSquaresX(int y, int signX, Square[][] matrix, IPiece piece)
         {
             for (int i = 1; i <= 7; i++)
             {

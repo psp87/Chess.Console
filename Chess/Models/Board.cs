@@ -13,6 +13,18 @@
 
     public class Board : ICloneable
     {
+        private Dictionary<string, int> ColMap = new Dictionary<string, int>()
+        {
+            { "A", 0 },
+            { "B", 1 },
+            { "C", 2 },
+            { "D", 3 },
+            { "E", 4 },
+            { "F", 5 },
+            { "G", 6 },
+            { "H", 7 },
+        };
+
         private string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 
         private Dictionary<string, Piece> setup = new Dictionary<string, Piece>()
@@ -55,9 +67,9 @@
                     Match match = regex.Match(text);
 
                     char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
-                    int fromCol = Globals.ColMap[match.Groups[2].ToString().ToUpper()];
+                    int fromCol = this.ColMap[match.Groups[2].ToString().ToUpper()];
                     int fromRow = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
-                    int toCol = Globals.ColMap[match.Groups[4].ToString().ToUpper()];
+                    int toCol = this.ColMap[match.Groups[4].ToString().ToUpper()];
                     int toRow = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
 
                     // Get FROM square and TO square to simplify if conditions
@@ -216,12 +228,6 @@
             Print.EmptyMessageScreen(currentPlayer);
         }
 
-        public void NewGame()
-        {
-            this.Initialize();
-            Draw.NewGame(this.Matrix);
-        } // CHECKED -> GAME CLASS
-
         public object Clone()
         {
             var board = Factory.GetBoard();
@@ -237,13 +243,13 @@
             return board;
         } // CHECKED
 
-        private void Initialize()
+        public void Initialize()
         {
             var toggle = Color.Light;
 
-            for (int row = 0; row <= 7; row++)
+            for (int row = 0; row < Globals.BoardRows; row++)
             {
-                for (int col = 0; col <= 7; col++)
+                for (int col = 0; col < Globals.BoardCols; col++)
                 {
                     var name = this.letters[col] + (8 - row);
                     var square = new Square()
@@ -270,7 +276,7 @@
             }
         }
 
-        private void Stalemate(Player player)
+        public GameOver Stalemate(Player player)
         {
             for (int row = 0; row < Globals.BoardRows; row++)
             {
@@ -283,32 +289,33 @@
                         currentFigure.IsMoveAvailable(this.Matrix);
                         if (currentFigure.IsMovable)
                         {
-                            player.IsMoveAvailable = true;
-                            return;
+                            //player.IsMoveAvailable = true;
+                            return GameOver.None;
                         }
                     }
                 }
             }
 
-            player.IsMoveAvailable = false;
+            //player.IsMoveAvailable = false;
+            return GameOver.Stalemate;
         }
 
-        private void Checkmate(Player currentPlayer, int kingRow, int kingCol, Square attackingSquare, Player otherPlayer)
+        public GameOver Checkmate(Player currentPlayer, int kingRow, int kingCol, Square attackingSquare, Player otherPlayer)
         {
             // To take attacking figure check
             if (attackingSquare.IsAttacked.Where(x => x.Color == otherPlayer.Color).Any())
             {
                 if (attackingSquare.IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
                 {
-                    otherPlayer.IsCheckmate = false;
-                    return;
+                    //otherPlayer.IsCheckmate = false;
+                    return GameOver.Checkmate;
                 }
                 else
                 {
                     if (!(attackingSquare.IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
                     {
-                        otherPlayer.IsCheckmate = false;
-                        return;
+                        //otherPlayer.IsCheckmate = false;
+                        return GameOver.None;
                     }
                 }
             }
@@ -337,8 +344,8 @@
                             if (!this.Matrix[kingRow + i][kingCol + k].IsAttacked.Where(x => x.Color == currentPlayer.Color).Any())
                             {
                                 this.AssignOldValuesAndCalculate(kingRow, kingCol, i, k, currentFigure, empty);
-                                otherPlayer.IsCheckmate = false;
-                                return;
+                                //otherPlayer.IsCheckmate = false;
+                                return GameOver.None;
                             }
 
                             this.AssignOldValuesAndCalculate(kingRow, kingCol, i, k, currentFigure, empty);
@@ -365,15 +372,15 @@
                         {
                             if (this.Matrix[kingRow][attackingCol + sign].IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
                             {
-                                otherPlayer.IsCheckmate = false;
-                                return;
+                                //otherPlayer.IsCheckmate = false;
+                                return GameOver.None;
                             }
                             else
                             {
                                 if (!(this.Matrix[kingRow][attackingCol + sign].IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
                                 {
-                                    otherPlayer.IsCheckmate = false;
-                                    return;
+                                    //otherPlayer.IsCheckmate = false;
+                                    return GameOver.None;
                                 }
                             }
                         }
@@ -392,15 +399,15 @@
                         {
                             if (this.Matrix[kingRow + sign][attackingCol].IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
                             {
-                                otherPlayer.IsCheckmate = false;
-                                return;
+                                //otherPlayer.IsCheckmate = false;
+                                return GameOver.None;
                             }
                             else
                             {
                                 if (!(this.Matrix[kingRow + sign][attackingCol].IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
                                 {
-                                    otherPlayer.IsCheckmate = false;
-                                    return;
+                                    //otherPlayer.IsCheckmate = false;
+                                    return GameOver.None;
                                 }
                             }
                         }
@@ -420,15 +427,15 @@
                         {
                             if (this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
                             {
-                                otherPlayer.IsCheckmate = false;
-                                return;
+                                //otherPlayer.IsCheckmate = false;
+                                return GameOver.None;
                             }
                             else
                             {
                                 if (!(this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
                                 {
-                                    otherPlayer.IsCheckmate = false;
-                                    return;
+                                    //otherPlayer.IsCheckmate = false;
+                                    return GameOver.None;
                                 }
                             }
                         }
@@ -436,7 +443,8 @@
                 }
             }
 
-            otherPlayer.IsCheckmate = true;
+            //otherPlayer.IsCheckmate = true;
+            return GameOver.Checkmate;
         }
 
         private void AssignOldValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)

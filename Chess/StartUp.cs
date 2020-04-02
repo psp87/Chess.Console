@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using Chess.View;
+
     using Models;
     using Models.Enums;
+    using Models.EventArgs;
+    using View;
 
     public class StartUp
     {
@@ -22,8 +24,6 @@
                 {
                     case ConsoleKey.N:
                         {
-                            Board board = new Board();
-
                             List<string> playerNames = new List<string>();
                             for (int i = 1; i <= 2; i++)
                             {
@@ -34,66 +34,22 @@
                             Player player1 = Factory.GetPlayer(playerNames[0].ToUpper(), Color.Light);
                             Player player2 = Factory.GetPlayer(playerNames[1].ToUpper(), Color.Dark);
 
+                            Game game = Factory.GetGame(player1, player2);
+                            game.OnGameOver += Game_OnGameOver;
+
                             Print.GameMenu();
-                            
                             Print.ExampleText();
 
-                            board.NewGame();
+                            game.New();
 
-                            bool checkmate = false;
-                            bool stalemate = false;
-
-                            while (!checkmate && !stalemate)
+                            while (Globals.GameState.ToString() == GameOver.None.ToString())
                             {
-                                for (int turn = 1; turn <= 2; turn++)
-                                {
-                                    if (turn % 2 == 1)
-                                    {
-                                        Print.Stats(player1, player2);
-                                        Print.Turn(player1);
-
-                                        if (player1.IsCheckmate)
-                                        {
-                                            Print.Won(player2);
-                                            checkmate = true;
-                                            break;
-                                        }
-
-                                        if (!player1.IsMoveAvailable)
-                                        {
-                                            Print.Stalemate();
-                                            stalemate = true;
-                                            break;
-                                        }
-
-                                        board.MakeMove(player1, player2);
-                                    }
-                                    else
-                                    {
-                                        Print.Stats(player1, player2);
-                                        Print.Turn(player2);
-
-                                        if (player2.IsCheckmate)
-                                        {
-                                            Print.Won(player1);
-                                            checkmate = true;
-                                            break;
-                                        }
-
-                                        if (!player2.IsMoveAvailable)
-                                        {
-                                            Print.Stalemate();
-                                            stalemate = true;
-                                            break;
-                                        }
-
-                                        board.MakeMove(player2, player1);
-                                    }
-                                }
+                                game.Move(game.MovingPlayer, game.WaitingPlayer);
                             }
 
                             Console.ReadLine();
-                            Print.EmptyFinalScreen();
+                            Console.Clear();
+                            Draw.Board();
                         }
 
                         break;
@@ -103,6 +59,20 @@
                         break;
                     case ConsoleKey.Escape:
                         return;
+                }
+            }
+
+            void Game_OnGameOver(object sender, EventArgs e)
+            {
+                var player = sender as Player;
+                var gameOver = e as GameOverEventArgs;
+
+                switch (gameOver.GameOver)
+                {
+                    case GameOver.Checkmate: Print.Won(player, gameOver.GameOver.ToString());
+                        break;
+                    case GameOver.Stalemate: Print.Stalemate();
+                        break;
                 }
             }
         }

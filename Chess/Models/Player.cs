@@ -28,6 +28,8 @@
 
         public Color Color { get; }
 
+        public bool HasToMove { get; set; }
+
         public bool IsCheck { get; set; }
 
         public bool IsCheckmate { get; set; }

@@ -1,7 +1,6 @@
 ﻿namespace Chess.View
 {
     using System;
-
     using Models;
     using Models.Enums;
     using Models.Pieces;
@@ -181,7 +180,7 @@
             }
         }
 
-        public static void Won(Player player)
+        public static void Won(Player player, string message)
         {
             Paint.DefaultBackground();
             Paint.YellowText();
@@ -196,7 +195,7 @@
                 SetCursorMaxMin(5, 2);
             }
 
-            Console.Write("CHECKMATE!");
+            Console.Write($"{message.ToUpper()}!");
             SetCursorMinMax(28, 2);
             Console.Write($"{player.Name.ToUpper()} WON THE GAME!");
         }
