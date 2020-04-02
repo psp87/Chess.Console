@@ -301,8 +301,10 @@
             }
         }
 
-        public static void PlayersMenu(int number)
+        public static void PlayersMenu(Color color)
         {
+            int number = color == Color.Light ? 1 : 2;
+
             Paint.DefaultBackground();
             Paint.WhiteText();
 

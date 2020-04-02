@@ -114,7 +114,15 @@
                             }
 
                             // Draw the new figures to FROM and TO squares
-                            Draw.NewFigures(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
+                            if (movingPlayer.Color == Color.Light)
+                            {
+                                Draw.NewFigures(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
+                            }
+                            else
+                            {
+                                Draw.NewFiguresTest(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
+                            }
+
 
                             // Clear the check message screen of the other player
                             Print.EmptyCheckScreen(opponent);

@@ -1,7 +1,7 @@
 ﻿namespace Chess
 {
     using System;
-    using System.Collections.Generic;
+    using System.Threading;
 
     using Models;
     using Models.Enums;
@@ -13,35 +13,31 @@
         public static void Main()
         {
             Print.Header();
+            Draw.Board(Color.Light);
 
             while (true)
             {
                 Print.Menu();
-                var option = Console.ReadKey().Key;
 
+                var option = Console.ReadKey().Key;
                 switch (option)
                 {
                     case ConsoleKey.N:
                         {
-                            Draw.Board();
-                            List<string> playerNames = new List<string>();
-                            for (int i = 1; i <= 2; i++)
-                            {
-                                Print.PlayersMenu(i);
-                                playerNames.Add(Console.ReadLine());
-                            }
+                            Print.PlayersMenu(Color.Light);
+                            var namePlayer1 = Console.ReadLine();
+                            Print.PlayersMenu(Color.Dark);
+                            var namePlayer2 = Console.ReadLine();
 
-                            Player player1 = Factory.GetPlayer(playerNames[0].ToUpper(), Color.Light);
-                            Player player2 = Factory.GetPlayer(playerNames[1].ToUpper(), Color.Dark);
+                            Player player1 = Factory.GetPlayer(namePlayer1.ToUpper(), Color.Light);
+                            Player player2 = Factory.GetPlayer(namePlayer2.ToUpper(), Color.Dark);
 
                             Game game = Factory.GetGame(player1, player2);
                             game.OnGameOver += Game_OnGameOver;
 
                             Print.GameMenu();
                             Print.ExampleText();
-
-                            game.New();
-                            Draw.NewGame(game.ChessBoard.Matrix);
+                            Draw.NewGame(game.ChessBoard.Matrix, game.MovingPlayer);
 
                             while (Globals.GameOver.ToString() == GameOver.None.ToString())
                             {
@@ -49,10 +45,15 @@
                                 Print.Turn(game.MovingPlayer);
 
                                 game.Move(game.MovingPlayer, game.Opponent);
+
+                                Thread.Sleep(500);
+                                Draw.Board(game.MovingPlayer.Color);
+                                Draw.BoardOrientation(game.ChessBoard.Matrix, game.MovingPlayer.Color);
                             }
 
                             Console.ReadLine();
                             Console.Clear();
+                            Draw.Board(Color.Light);
                         }
 
                         break;
@@ -60,7 +61,7 @@
                         break;
                     case ConsoleKey.S:
                         break;
-                    case ConsoleKey.Escape:
+                    case ConsoleKey.Escape: Console.Clear();
                         return;
                 }
             }

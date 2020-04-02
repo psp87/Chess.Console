@@ -1,14 +1,14 @@
 ﻿namespace Chess.View
 {
     using System;
-
+    using System.Threading;
     using Models;
     using Models.Enums;
     using Models.Pieces.Contracts;
 
     public static class Draw
     {
-        public static void Board()
+        public static void Board(Color color)
         {
             for (int row = 0; row < Globals.BoardRows; row++)
             {
@@ -18,12 +18,12 @@
                 }
             }
 
-            Border();
+            Border(color);
 
             Paint.DefaultBackground();
         }
 
-        public static void NewGame(Square[][] matrix)
+        public static void NewGame(Square[][] matrix, Player player)
         {
             for (int row = 0; row < Globals.BoardRows; row++)
             {
@@ -34,7 +34,7 @@
                 }
             }
 
-            Border();
+            Border(player.Color);
 
             Paint.DefaultBackground();
         }
@@ -84,8 +84,10 @@
             }
         }
 
-        private static void Border()
+        private static void Border(Color color)
         {
+            var value = color == Color.Light ? 0 : 9;
+
             Paint.BorderBackground();
             Paint.BorderText();
 
@@ -109,16 +111,28 @@
                 var verticalMiddlePoints = Globals.OffsetVertical + 4 + (i * Globals.CellRows);
 
                 Console.SetCursorPosition(horizontalMin - 1, verticalMiddlePoints);
-                Console.WriteLine($"{Math.Abs(i - 8)}");
+                Console.WriteLine($"{Math.Abs(8 - i - value)}");
 
                 Console.SetCursorPosition(horizontalMax, verticalMiddlePoints);
-                Console.WriteLine($"{Math.Abs(i - 8)}");
+                Console.WriteLine($"{Math.Abs(8 - i - value)}");
 
-                Console.SetCursorPosition(horizontalMiddlePoints, verticalMin - 1);
-                Console.WriteLine($"{(char)(65 + i)}");
+                if (color == Color.Light)
+                {
+                    Console.SetCursorPosition(horizontalMiddlePoints, verticalMin - 1);
+                    Console.WriteLine($"{(char)(65 + i)}");
 
-                Console.SetCursorPosition(horizontalMiddlePoints, verticalMax);
-                Console.WriteLine($"{(char)(65 + i)}");
+                    Console.SetCursorPosition(horizontalMiddlePoints, verticalMax);
+                    Console.WriteLine($"{(char)(65 + i)}");
+                }
+                else
+                {
+                    Console.SetCursorPosition(horizontalMiddlePoints, verticalMin - 1);
+                    Console.WriteLine($"{(char)(72 - i)}");
+
+                    Console.SetCursorPosition(horizontalMiddlePoints, verticalMax);
+                    Console.WriteLine($"{(char)(72 - i)}");
+                }
+
 
                 for (int k = 0; k < Globals.CellRows + 2; k++)
                 {
@@ -140,6 +154,32 @@
             Figure(toRow, toCol, figure);
 
             EmptySquare(fromRow, fromCol);
+        }
+
+        public static void NewFiguresTest(int fromCol, int fromRow, int toCol, int toRow, IPiece figure)
+        {
+            EmptySquare(7 - toRow, 7 - toCol);
+            Figure(7 - toRow, 7 - toCol, figure);
+
+            EmptySquare(7 - fromRow, 7 - fromCol);
+        }
+
+        public static void BoardOrientation(Square[][] matrix, Color color)
+        {
+            var value = color == Color.Light ? 0 : 7;
+
+            for (int row = 0; row < Globals.BoardRows; row++)
+            {
+                for (int col = 0; col < Globals.BoardCols; col++)
+                {
+                    Square currentSquare = matrix[row][col];
+                    Figure(Math.Abs(row - value), Math.Abs(col - value), currentSquare.Piece);
+                }
+            }
+
+            Border(color);
+
+            Paint.DefaultBackground();
         }
     }
 }
