@@ -133,5 +133,13 @@
                 }
             }
         }
+
+        public static void NewFigures(int fromCol, int fromRow, int toCol, int toRow, IPiece figure)
+        {
+            EmptySquare(toRow, toCol);
+            Figure(toRow, toCol, figure);
+
+            EmptySquare(fromRow, fromCol);
+        }
     }
 }

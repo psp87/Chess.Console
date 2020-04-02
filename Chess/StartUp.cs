@@ -13,7 +13,6 @@
         public static void Main()
         {
             Print.Header();
-            Draw.Board();
 
             while (true)
             {
@@ -24,6 +23,7 @@
                 {
                     case ConsoleKey.N:
                         {
+                            Draw.Board();
                             List<string> playerNames = new List<string>();
                             for (int i = 1; i <= 2; i++)
                             {
@@ -41,15 +41,18 @@
                             Print.ExampleText();
 
                             game.New();
+                            Draw.NewGame(game.ChessBoard.Matrix);
 
                             while (Globals.GameOver.ToString() == GameOver.None.ToString())
                             {
-                                game.Move(game.MovingPlayer, game.WaitingPlayer);
+                                Print.Stats(game.MovingPlayer, game.Opponent);
+                                Print.Turn(game.MovingPlayer);
+
+                                game.Move(game.MovingPlayer, game.Opponent);
                             }
 
                             Console.ReadLine();
                             Console.Clear();
-                            Draw.Board();
                         }
 
                         break;

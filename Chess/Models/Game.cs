@@ -1,10 +1,9 @@
 ﻿namespace Chess.Models
 {
     using System;
-    using Chess.Models.Pieces.Helpers;
+
     using Enums;
     using EventArgs;
-    using View;
 
     public class Game
     {
@@ -27,37 +26,21 @@
 
         public Player MovingPlayer => Player1?.HasToMove ?? false ? Player2 : Player1;
 
-        public Player WaitingPlayer => Player1?.HasToMove ?? false ? Player1 : Player2;
+        public Player Opponent => Player1?.HasToMove ?? false ? Player1 : Player2;
 
         public void New()
         {
             this.ChessBoard.Initialize();
-            Draw.NewGame(this.ChessBoard.Matrix);
         }
 
-        public void Move(Player movingPlayer, Player waitingPlayer)
+        public void Move(Player movingPlayer, Player opponent)
         {
-            Print.Stats(movingPlayer, waitingPlayer);
-            Print.Turn(movingPlayer);
-
-            this.ChessBoard.MakeMove(movingPlayer, waitingPlayer);
+            this.ChessBoard.MakeMove(movingPlayer, opponent);
             this.ChangeTurns();
 
-            if (Globals.GameOver.ToString() == GameOver.Checkmate.ToString())
+            if (Globals.GameOver.ToString() != GameOver.None.ToString())
             {
-                OnGameOver?.Invoke(movingPlayer, new GameOverEventArgs(Globals.GameOver));
-            }
-            
-            this.IsStalemate(movingPlayer);
-        }
-
-        private void IsStalemate(Player MovingPlayer)
-        {
-            var stalemate = this.ChessBoard.Stalemate(MovingPlayer);
-            if (stalemate == GameOver.Stalemate)
-            {
-                OnGameOver?.Invoke(MovingPlayer, new GameOverEventArgs(stalemate));
-                Globals.GameOver = stalemate;
+                this.OnGameOver?.Invoke(movingPlayer, new GameOverEventArgs(Globals.GameOver));
             }
         }
 
