@@ -118,10 +118,10 @@
                             }
 
                             // Print if the current player check the other player after movement. Check if the player is checkmate.
-                            if (this.IsCheck(currentPlayer, otherPlayer, from))
+                            if (this.IsOpponentChecked(currentPlayer, otherPlayer, from))
                             {
                                 Print.Check(currentPlayer);
-                                this.Checkmate(currentPlayer, KingCheck.KingRow, KingCheck.KingCol, this.Matrix[KingCheck.AttackingRow][KingCheck.AttackingCol], otherPlayer);
+                                this.IsOpponentCheckmate(currentPlayer, from, otherPlayer);
                             }
 
                             successfulMove = true;
@@ -165,10 +165,10 @@
                             }
 
                             // Print if the current player check the other player after movement. Check if the player is checkmate.
-                            if (this.IsCheck(currentPlayer, otherPlayer, from))
+                            if (this.IsOpponentChecked(currentPlayer, otherPlayer, from))
                             {
                                 Print.Check(currentPlayer);
-                                this.Checkmate(currentPlayer, KingCheck.KingRow, KingCheck.KingCol, this.Matrix[KingCheck.AttackingRow][KingCheck.AttackingCol], otherPlayer);
+                                this.IsOpponentCheckmate(currentPlayer, from, otherPlayer);
                             }
 
                             // Update the dictionary with the newly taken figure
@@ -199,10 +199,10 @@
                         this.CalculateAttackedSquares();
 
                         // Print if the current player check the other player after movement. Check if the player is checkmate.
-                        if (this.IsCheck(currentPlayer, otherPlayer, from))
+                        if (this.IsOpponentChecked(currentPlayer, otherPlayer, from))
                         {
                             Print.Check(currentPlayer);
-                            this.Checkmate(currentPlayer, KingCheck.KingRow, KingCheck.KingCol, this.Matrix[KingCheck.AttackingRow][KingCheck.AttackingCol], otherPlayer);
+                            this.IsOpponentCheckmate(currentPlayer, from, otherPlayer);
                         }
 
                         successfulMove = true;
@@ -300,22 +300,29 @@
             return GameOver.Stalemate;
         }
 
-        public GameOver Checkmate(Player currentPlayer, int kingRow, int kingCol, Square attackingSquare, Player otherPlayer)
+        public void IsOpponentCheckmate(Player currentPlayer, Square attackingSquare, Player otherPlayer)
         {
+            var king = this.GetKingSquare(otherPlayer.Color);
+
+            int kingRow = king.Position.Y;
+            int kingCol = king.Position.X;
+
             // To take attacking figure check
             if (attackingSquare.IsAttacked.Where(x => x.Color == otherPlayer.Color).Any())
             {
                 if (attackingSquare.IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
                 {
                     //otherPlayer.IsCheckmate = false;
-                    return GameOver.Checkmate;
+                    Globals.GameOver = GameOver.None;
+                    return;
                 }
                 else
                 {
                     if (!(attackingSquare.IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
                     {
                         //otherPlayer.IsCheckmate = false;
-                        return GameOver.None;
+                        Globals.GameOver = GameOver.None;
+                        return;
                     }
                 }
             }
@@ -345,7 +352,8 @@
                             {
                                 this.AssignOldValuesAndCalculate(kingRow, kingCol, i, k, currentFigure, empty);
                                 //otherPlayer.IsCheckmate = false;
-                                return GameOver.None;
+                                Globals.GameOver = GameOver.None;
+                                return;
                             }
 
                             this.AssignOldValuesAndCalculate(kingRow, kingCol, i, k, currentFigure, empty);
@@ -373,14 +381,16 @@
                             if (this.Matrix[kingRow][attackingCol + sign].IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
                             {
                                 //otherPlayer.IsCheckmate = false;
-                                return GameOver.None;
+                                Globals.GameOver = GameOver.None;
+                                return;
                             }
                             else
                             {
                                 if (!(this.Matrix[kingRow][attackingCol + sign].IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
                                 {
                                     //otherPlayer.IsCheckmate = false;
-                                    return GameOver.None;
+                                    Globals.GameOver = GameOver.None;
+                                    return;
                                 }
                             }
                         }
@@ -400,14 +410,16 @@
                             if (this.Matrix[kingRow + sign][attackingCol].IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
                             {
                                 //otherPlayer.IsCheckmate = false;
-                                return GameOver.None;
+                                Globals.GameOver = GameOver.None;
+                                return;
                             }
                             else
                             {
                                 if (!(this.Matrix[kingRow + sign][attackingCol].IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
                                 {
                                     //otherPlayer.IsCheckmate = false;
-                                    return GameOver.None;
+                                    Globals.GameOver = GameOver.None;
+                                    return;
                                 }
                             }
                         }
@@ -428,14 +440,16 @@
                             if (this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
                             {
                                 //otherPlayer.IsCheckmate = false;
-                                return GameOver.None;
+                                Globals.GameOver = GameOver.None;
+                                return;
                             }
                             else
                             {
                                 if (!(this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
                                 {
                                     //otherPlayer.IsCheckmate = false;
-                                    return GameOver.None;
+                                    Globals.GameOver = GameOver.None;
+                                    return;
                                 }
                             }
                         }
@@ -444,7 +458,7 @@
             }
 
             //otherPlayer.IsCheckmate = true;
-            return GameOver.Checkmate;
+            Globals.GameOver = GameOver.Checkmate;
         }
 
         private void AssignOldValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)
@@ -549,29 +563,31 @@
             return false;
         }
 
-        private bool IsCheck(Player playerMoving, Player otherPlayer, Square attackingSquare)
+        private bool IsOpponentChecked(Player movingPlayer, Player opponent, Square attackingSquare)
         {
-            for (int row = 0; row < Globals.BoardRows; row++)
+            var opponentKingSquare = this.GetKingSquare(opponent.Color);
+
+            if (opponentKingSquare.IsAttacked.Where(x => x.Color == movingPlayer.Color).Any())
             {
-                for (int col = 0; col < Globals.BoardCols; col++)
-                {
-                    var currentSquare = this.Matrix[row][col];
-
-                    if (currentSquare.Piece is King && currentSquare.Piece.Color == otherPlayer.Color
-                        && currentSquare.IsAttacked.Where(x => x.Color == playerMoving.Color).Any())
-                    {
-                        KingCheck.KingRow = (int)this.Matrix[row][col].Position.Y;
-                        KingCheck.KingCol = (int)this.Matrix[row][col].Position.X;
-
-                        KingCheck.AttackingRow = (int)attackingSquare.Position.Y;
-                        KingCheck.AttackingCol = (int)attackingSquare.Position.X;
-
-                        return true;
-                    }
-                }
+                return true;
             }
 
             return false;
+        }
+
+        private Square GetKingSquare(Color color)
+        {
+            for (int y = 0; y < Globals.BoardRows; y++)
+            {
+                var kingSquare = this.Matrix[y].FirstOrDefault(x => x.Piece is King && x.Piece.Color == color);
+
+                if (kingSquare != null)
+                {
+                    return kingSquare;
+                }
+            }
+
+            return null;
         }
     }
 }

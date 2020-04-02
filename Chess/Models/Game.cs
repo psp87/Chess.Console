@@ -43,9 +43,9 @@
             this.ChessBoard.MakeMove(movingPlayer, waitingPlayer);
             this.ChangeTurns();
 
-            if (movingPlayer.IsCheck)
+            if (Globals.GameOver.ToString() == GameOver.Checkmate.ToString())
             {
-                this.IsCheckmate(movingPlayer, KingCheck.KingRow, KingCheck.KingCol, this.ChessBoard.Matrix[KingCheck.AttackingRow][KingCheck.AttackingCol], waitingPlayer);
+                OnGameOver?.Invoke(movingPlayer, new GameOverEventArgs(Globals.GameOver));
             }
             
             this.IsStalemate(movingPlayer);
@@ -57,17 +57,7 @@
             if (stalemate == GameOver.Stalemate)
             {
                 OnGameOver?.Invoke(MovingPlayer, new GameOverEventArgs(stalemate));
-                Globals.GameState = stalemate;
-            }
-        }
-
-        private void IsCheckmate(Player movingPlayer, int kingRow, int kingCol, Square attackingSquare,Player waitingPlayer)
-        {
-            var checkmate = this.ChessBoard.Checkmate(movingPlayer, kingRow, kingCol, attackingSquare, waitingPlayer);
-            if (checkmate == GameOver.Checkmate)
-            {
-                OnGameOver?.Invoke(movingPlayer, new GameOverEventArgs(checkmate));
-                Globals.GameState = checkmate;
+                Globals.GameOver = stalemate;
             }
         }
 

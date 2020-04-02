@@ -42,7 +42,7 @@
 
                             game.New();
 
-                            while (Globals.GameState.ToString() == GameOver.None.ToString())
+                            while (Globals.GameOver.ToString() == GameOver.None.ToString())
                             {
                                 game.Move(game.MovingPlayer, game.WaitingPlayer);
                             }

@@ -25,7 +25,7 @@
         public const int VerticalMinWithBorder = VerticalMin - 2;
         public const int VerticalMaxWithBorder = VerticalMax + 2;
 
-        public static GameOver GameState { get; set; }
+        public static GameOver GameOver { get; set; }
 
         public static int TurnCounter { get; set; }
     }
