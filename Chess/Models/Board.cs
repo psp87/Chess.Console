@@ -13,7 +13,7 @@
 
     public class Board : ICloneable
     {
-        private Dictionary<string, int> ColMap = new Dictionary<string, int>()
+        private Dictionary<string, int> colMap = new Dictionary<string, int>()
         {
             { "A", 0 },
             { "B", 1 },
@@ -67,9 +67,9 @@
                     Match match = regex.Match(text);
 
                     char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
-                    int fromCol = this.ColMap[match.Groups[2].ToString().ToUpper()];
+                    int fromCol = this.colMap[match.Groups[2].ToString().ToUpper()];
                     int fromRow = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
-                    int toCol = this.ColMap[match.Groups[4].ToString().ToUpper()];
+                    int toCol = this.colMap[match.Groups[4].ToString().ToUpper()];
                     int toRow = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
 
                     // Get FROM square and TO square to simplify if conditions
@@ -130,7 +130,7 @@
                             if (this.IsPlayerChecked(opponent))
                             {
                                 Print.Check(movingPlayer);
-                                this.IsOpponentCheckmate(movingPlayer, from, opponent);
+                                this.IsOpponentCheckmate(movingPlayer, opponent, from);
                             }
 
                             successfulMove = true;
@@ -186,7 +186,7 @@
                             if (this.IsPlayerChecked(opponent))
                             {
                                 Print.Check(movingPlayer);
-                                this.IsOpponentCheckmate(movingPlayer, from, opponent);
+                                this.IsOpponentCheckmate(movingPlayer, opponent, from);
                             }
 
                             // Update the dictionary with the newly taken figure
@@ -220,7 +220,7 @@
                         if (this.IsPlayerChecked(opponent))
                         {
                             Print.Check(movingPlayer);
-                            this.IsOpponentCheckmate(movingPlayer, from, opponent);
+                            this.IsOpponentCheckmate(movingPlayer, opponent, from);
                         }
 
                         successfulMove = true;
@@ -244,222 +244,6 @@
 
             // Clear the message screen
             Print.EmptyMessageScreen(movingPlayer);
-        }
-
-        public void IsOpponentCheckmate(Player currentPlayer, Square attackingSquare, Player otherPlayer)
-        {
-            var king = this.GetKingSquare(otherPlayer.Color);
-
-            int kingRow = king.Position.Y;
-            int kingCol = king.Position.X;
-
-            // To take attacking figure check
-            if (attackingSquare.IsAttacked.Where(x => x.Color == otherPlayer.Color).Any())
-            {
-                if (attackingSquare.IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
-                {
-                    //otherPlayer.IsCheckmate = false;
-                    Globals.GameOver = GameOver.None;
-                    return;
-                }
-                else
-                {
-                    if (!(attackingSquare.IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
-                    {
-                        //otherPlayer.IsCheckmate = false;
-                        Globals.GameOver = GameOver.None;
-                        return;
-                    }
-                }
-            }
-
-            // To move king check
-            for (int i = -1; i <= 1; i++)
-            {
-                for (int k = -1; k <= 1; k++)
-                {
-                    if (i == 0 && k == 0)
-                    {
-                        continue;
-                    }
-
-                    if (Position.IsInBoard(kingRow + i, kingCol + k))
-                    {
-                        var checkedSquare = this.Matrix[kingRow + i][kingCol + k];
-
-                        if (this.NeighbourSquareAvailable(checkedSquare, currentPlayer))
-                        {
-                            IPiece currentFigure = this.Matrix[kingRow][kingCol].Piece;
-                            IPiece empty = Factory.GetEmpty();
-
-                            this.AssignNewValuesAndCalculate(kingRow, kingCol, i, k, currentFigure, empty);
-
-                            if (!this.Matrix[kingRow + i][kingCol + k].IsAttacked.Where(x => x.Color == currentPlayer.Color).Any())
-                            {
-                                this.AssignOldValuesAndCalculate(kingRow, kingCol, i, k, currentFigure, empty);
-                                Globals.GameOver = GameOver.None;
-                                return;
-                            }
-
-                            this.AssignOldValuesAndCalculate(kingRow, kingCol, i, k, currentFigure, empty);
-                        }
-                    }
-                }
-            }
-
-            // To move other figure check
-            if (!(attackingSquare.Piece is Knight) && !(attackingSquare.Piece is Pawn))
-            {
-                int attackingRow = attackingSquare.Position.Y;
-                int attackingCol = attackingSquare.Position.X;
-
-                if (attackingRow == kingRow)
-                {
-                    int difference = Math.Abs(attackingCol - kingCol) - 1;
-
-                    for (int i = 1; i <= difference; i++)
-                    {
-                        int sign = attackingCol - kingCol < 0 ? i : -i;
-
-                        if (this.Matrix[kingRow][attackingCol + sign].IsAttacked.Where(x => x.Color == otherPlayer.Color).Any())
-                        {
-                            if (this.Matrix[kingRow][attackingCol + sign].IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
-                            {
-                                Globals.GameOver = GameOver.None;
-                                return;
-                            }
-                            else
-                            {
-                                if (!(this.Matrix[kingRow][attackingCol + sign].IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
-                                {
-                                    Globals.GameOver = GameOver.None;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (attackingCol == kingCol)
-                {
-                    int difference = Math.Abs(attackingRow - kingRow) - 1;
-
-                    for (int i = 1; i <= difference; i++)
-                    {
-                        int sign = attackingRow - kingRow < 0 ? i : -i;
-
-                        if (this.Matrix[attackingRow + sign][kingCol].IsAttacked.Where(x => x.Color == otherPlayer.Color).Any())
-                        {
-                            if (this.Matrix[kingRow + sign][attackingCol].IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
-                            {
-                                Globals.GameOver = GameOver.None;
-                                return;
-                            }
-                            else
-                            {
-                                if (!(this.Matrix[kingRow + sign][attackingCol].IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
-                                {
-                                    Globals.GameOver = GameOver.None;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (attackingRow != kingRow && attackingCol != kingCol)
-                {
-                    int difference = Math.Abs(attackingRow - kingRow) - 1;
-
-                    for (int i = 1; i <= difference; i++)
-                    {
-                        int signRow = attackingRow - kingRow < 0 ? i : -i;
-                        int signCol = attackingCol - kingCol < 0 ? i : -i;
-
-                        if (this.Matrix[attackingRow + signRow][kingCol + signCol].IsAttacked.Where(x => x.Color == otherPlayer.Color).Any())
-                        {
-                            if (this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Count(x => x.Color == otherPlayer.Color) > 1)
-                            {
-                                Globals.GameOver = GameOver.None;
-                                return;
-                            }
-                            else
-                            {
-                                if (!(this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Where(x => x.Color == otherPlayer.Color).First() is King))
-                                {
-                                    Globals.GameOver = GameOver.None;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            Globals.GameOver = GameOver.Checkmate;
-        }
-
-        private void AssignOldValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)
-        {
-            this.Matrix[kingRow][kingCol].Piece = currentFigure;
-            this.Matrix[kingRow][kingCol].IsOccupied = true;
-            this.Matrix[kingRow + i][kingCol + k].Piece = empty;
-            this.Matrix[kingRow + i][kingCol + k].IsOccupied = false;
-            this.CalculateAttackedSquares();
-        }
-
-        private void AssignNewValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)
-        {
-            this.Matrix[kingRow][kingCol].Piece = empty;
-            this.Matrix[kingRow][kingCol].IsOccupied = false;
-            this.Matrix[kingRow + i][kingCol + k].Piece = currentFigure;
-            this.Matrix[kingRow + i][kingCol + k].IsOccupied = true;
-            this.CalculateAttackedSquares();
-        }
-
-        private bool NeighbourSquareAvailable(Square square, Player currentPlayer)
-        {
-            if (square.IsOccupied &&
-                square.Piece.Color == currentPlayer.Color &&
-                !square.IsAttacked.Where(x => x.Color == currentPlayer.Color).Any())
-            {
-                return true;
-            }
-
-            if (!square.IsOccupied &&
-                !square.IsAttacked.Where(x => x.Color == currentPlayer.Color).Any())
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-
-
-
-
-        public void IsGameStalemate(Player player)
-        {
-            for (int y = 0; y < Globals.BoardRows; y++)
-            {
-                for (int x = 0; x < Globals.BoardCols; x++)
-                {
-                    var currentFigure = this.Matrix[y][x].Piece;
-
-                    if (currentFigure.Color == player.Color)
-                    {
-                        currentFigure.IsMoveAvailable(this.Matrix);
-                        if (currentFigure.IsMovable)
-                        {
-                            Globals.GameOver = GameOver.None;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            Globals.GameOver = GameOver.Stalemate;
         }
 
         public void Initialize()
@@ -510,6 +294,57 @@
             return board;
         }
 
+        private bool IsPlayerChecked(Player player)
+        {
+            var kingSquare = this.GetKingSquare(player.Color);
+
+            if (kingSquare.IsAttacked.Where(x => x.Color != kingSquare.Piece.Color).Any())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void IsOpponentCheckmate(Player movingPlayer, Player opponent, Square attackingSquare)
+        {
+            var king = this.GetKingSquare(opponent.Color);
+
+            if (this.IsKingAbleToMove(king, movingPlayer) ||
+                this.AttackingPieceCanBeTaken(attackingSquare, opponent) ||
+                this.OtherPieceCanBlockTheCheck(king, attackingSquare, opponent))
+            {
+                Globals.GameOver = GameOver.None;
+            }
+            else
+            {
+                Globals.GameOver = GameOver.Checkmate;
+            }
+        }
+
+        private void IsGameStalemate(Player player)
+        {
+            for (int y = 0; y < Globals.BoardRows; y++)
+            {
+                for (int x = 0; x < Globals.BoardCols; x++)
+                {
+                    var currentFigure = this.Matrix[y][x].Piece;
+
+                    if (currentFigure.Color == player.Color)
+                    {
+                        currentFigure.IsMoveAvailable(this.Matrix);
+                        if (currentFigure.IsMovable)
+                        {
+                            Globals.GameOver = GameOver.None;
+                            return;
+                        }
+                    }
+                }
+            }
+
+            Globals.GameOver = GameOver.Stalemate;
+        }
+
         private void CalculateAttackedSquares()
         {
             for (int y = 0; y < Globals.BoardRows; y++)
@@ -532,18 +367,6 @@
             }
         }
 
-        private bool IsPlayerChecked(Player player)
-        {
-            var kingSquare = this.GetKingSquare(player.Color);
-
-            if (kingSquare.IsAttacked.Where(x => x.Color != kingSquare.Piece.Color).Any())
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         private Square GetKingSquare(Color color)
         {
             for (int y = 0; y < Globals.BoardRows; y++)
@@ -558,5 +381,190 @@
 
             return null;
         }
+
+        #region IsOpponentCheckmate Methods
+        private bool IsKingAbleToMove(Square king, Player movingPlayer)
+        {
+            int kingY = king.Position.Y;
+            int kingX = king.Position.X;
+
+            for (int y = -1; y <= 1; y++)
+            {
+                for (int x = -1; x <= 1; x++)
+                {
+                    if (y == 0 && x == 0)
+                    {
+                        continue;
+                    }
+
+                    if (Position.IsInBoard(kingY + y, kingX + x))
+                    {
+                        var checkedSquare = this.Matrix[kingY + y][kingX + x];
+
+                        if (this.NeighbourSquareAvailable(checkedSquare, movingPlayer))
+                        {
+                            var currentFigure = this.Matrix[kingY][kingX].Piece;
+                            var empty = Factory.GetEmpty();
+
+                            this.AssignNewValuesAndCalculate(kingY, kingX, y, x, currentFigure, empty);
+
+                            if (!this.Matrix[kingY + y][kingX + x].IsAttacked.Where(k => k.Color == movingPlayer.Color).Any())
+                            {
+                                this.AssignOldValuesAndCalculate(kingY, kingX, y, x, currentFigure, empty);
+                                return true;
+                            }
+
+                            this.AssignOldValuesAndCalculate(kingY, kingX, y, x, currentFigure, empty);
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool AttackingPieceCanBeTaken(Square attackingSquare, Player opponent)
+        {
+            if (attackingSquare.IsAttacked.Where(x => x.Color == opponent.Color).Any())
+            {
+                if (attackingSquare.IsAttacked.Count(x => x.Color == opponent.Color) > 1)
+                {
+                    return true;
+                }
+                else if (!(attackingSquare.IsAttacked.Where(x => x.Color == opponent.Color).First() is King))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool OtherPieceCanBlockTheCheck(Square king, Square attackingSquare, Player opponent)
+        {
+            if (!(attackingSquare.Piece is Knight) && !(attackingSquare.Piece is Pawn))
+            {
+                int kingY = king.Position.Y;
+                int kingX = king.Position.X;
+
+                int attackingRow = attackingSquare.Position.Y;
+                int attackingCol = attackingSquare.Position.X;
+
+                if (attackingRow == kingY)
+                {
+                    int difference = Math.Abs(attackingCol - kingX) - 1;
+
+                    for (int i = 1; i <= difference; i++)
+                    {
+                        int sign = attackingCol - kingX < 0 ? i : -i;
+
+                        if (this.Matrix[kingY][attackingCol + sign].IsAttacked.Where(x => x.Color == opponent.Color).Any())
+                        {
+                            if (this.Matrix[kingY][attackingCol + sign].IsAttacked.Count(x => x.Color == opponent.Color) > 1)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                if (!(this.Matrix[kingY][attackingCol + sign].IsAttacked.Where(x => x.Color == opponent.Color).First() is King))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (attackingCol == kingX)
+                {
+                    int difference = Math.Abs(attackingRow - kingY) - 1;
+
+                    for (int i = 1; i <= difference; i++)
+                    {
+                        int sign = attackingRow - kingY < 0 ? i : -i;
+
+                        if (this.Matrix[attackingRow + sign][kingX].IsAttacked.Where(x => x.Color == opponent.Color).Any())
+                        {
+                            if (this.Matrix[kingY + sign][attackingCol].IsAttacked.Count(x => x.Color == opponent.Color) > 1)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                if (!(this.Matrix[kingY + sign][attackingCol].IsAttacked.Where(x => x.Color == opponent.Color).First() is King))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (attackingRow != kingY && attackingCol != kingX)
+                {
+                    int difference = Math.Abs(attackingRow - kingY) - 1;
+
+                    for (int i = 1; i <= difference; i++)
+                    {
+                        int signRow = attackingRow - kingY < 0 ? i : -i;
+                        int signCol = attackingCol - kingX < 0 ? i : -i;
+
+                        if (this.Matrix[attackingRow + signRow][kingX + signCol].IsAttacked.Where(x => x.Color == opponent.Color).Any())
+                        {
+                            if (this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Count(x => x.Color == opponent.Color) > 1)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                if (!(this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Where(x => x.Color == opponent.Color).First() is King))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool NeighbourSquareAvailable(Square square, Player movingPlayer)
+        {
+            if (square.IsOccupied &&
+                square.Piece.Color == movingPlayer.Color &&
+                !square.IsAttacked.Where(x => x.Color == movingPlayer.Color).Any())
+            {
+                return true;
+            }
+
+            if (!square.IsOccupied &&
+                !square.IsAttacked.Where(x => x.Color == movingPlayer.Color).Any())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void AssignNewValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)
+        {
+            this.Matrix[kingRow][kingCol].Piece = empty;
+            this.Matrix[kingRow][kingCol].IsOccupied = false;
+            this.Matrix[kingRow + i][kingCol + k].Piece = currentFigure;
+            this.Matrix[kingRow + i][kingCol + k].IsOccupied = true;
+            this.CalculateAttackedSquares();
+        }
+
+        private void AssignOldValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)
+        {
+            this.Matrix[kingRow][kingCol].Piece = currentFigure;
+            this.Matrix[kingRow][kingCol].IsOccupied = true;
+            this.Matrix[kingRow + i][kingCol + k].Piece = empty;
+            this.Matrix[kingRow + i][kingCol + k].IsOccupied = false;
+            this.CalculateAttackedSquares();
+        }
+        #endregion
     }
 }
