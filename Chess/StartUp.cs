@@ -42,17 +42,7 @@
                             printer.ExampleText();
                             drawer.NewGame(game.ChessBoard.Matrix, game.MovingPlayer);
 
-                            while (Globals.GameOver.ToString() == GameOver.None.ToString())
-                            {
-                                printer.Stats(game.MovingPlayer, game.Opponent);
-                                printer.Turn(game.MovingPlayer);
-
-                                game.Move(game.MovingPlayer, game.Opponent);
-
-                                Thread.Sleep(500);
-                                drawer.Board(game.MovingPlayer.Color);
-                                drawer.BoardOrientation(game.ChessBoard.Matrix, game.MovingPlayer.Color);
-                            }
+                            game.Start();
 
                             Console.ReadLine();
                             Console.Clear();

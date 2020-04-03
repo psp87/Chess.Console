@@ -181,7 +181,14 @@
                             }
 
                             // Draw the new figures to FROM and TO squares
-                            drawer.NewFigures(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
+                            if (movingPlayer.Color == Color.Light)
+                            {
+                                drawer.NewFigures(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
+                            }
+                            else
+                            {
+                                drawer.NewFiguresTest(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
+                            }
 
                             // Clear the check message screen of the other player
                             printer.EmptyCheckScreen(opponent);

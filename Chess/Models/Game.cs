@@ -1,12 +1,17 @@
 ﻿namespace Chess.Models
 {
     using System;
+    using System.Threading;
 
     using Enums;
     using EventArgs;
+    using View;
 
     public class Game
     {
+        Print printer = Factory.GetPrint();
+        Draw drawer = Factory.GetDraw();
+
         public Game(Player player1, Player player2)
         {
             this.ChessBoard = Factory.GetBoard();
@@ -28,20 +33,31 @@
 
         public Player Opponent => Player1?.HasToMove ?? false ? Player1 : Player2;
 
+        public void Start()
+        {
+            while (Globals.GameOver.ToString() == GameOver.None.ToString())
+            {
+                printer.Stats(this.MovingPlayer, this.Opponent);
+                printer.Turn(this.MovingPlayer);
+
+                this.ChessBoard.MakeMove(this.MovingPlayer, this.Opponent);
+
+                if (Globals.GameOver.ToString() != GameOver.None.ToString())
+                {
+                    this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(Globals.GameOver));
+                }
+
+                this.ChangeTurns();
+
+                Thread.Sleep(500);
+                drawer.Board(this.MovingPlayer.Color);
+                drawer.BoardOrientation(this.ChessBoard.Matrix, this.MovingPlayer.Color);
+            }
+        }
+
         public void New()
         {
             this.ChessBoard.Initialize();
-        }
-
-        public void Move(Player movingPlayer, Player opponent)
-        {
-            this.ChessBoard.MakeMove(movingPlayer, opponent);
-            this.ChangeTurns();
-
-            if (Globals.GameOver.ToString() != GameOver.None.ToString())
-            {
-                this.OnGameOver?.Invoke(movingPlayer, new GameOverEventArgs(Globals.GameOver));
-            }
         }
 
         private void ChangeTurns()
