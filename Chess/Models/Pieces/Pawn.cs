@@ -106,7 +106,7 @@
                 if (number == sign * 2)
                 {
                     EnPassant.Turn = Globals.TurnCounter + 1;
-                    EnPassant.Position = Factory.GetPosition(this.Position.Y - (sign * 1), this.Position.X);
+                    EnPassant.Position = Factory.GetPosition(this.Position.Y + (sign * 1), this.Position.X);
                 }
 
                 return true;

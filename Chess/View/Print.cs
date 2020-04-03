@@ -266,6 +266,29 @@
             }
         }
 
+        public void Exception(Player player)
+        {
+            Paint.DefaultBackground();
+            Paint.YellowText();
+
+            if (player.Color == Color.Light)
+            {
+                this.LineMinMax(-16, -4, 15, ' ');
+                SetCursorMinMax(-16, -4);
+                Console.Write("EXCEPTION!");
+                this.LineMinMax(-11, -6, 10, ' ');
+                SetCursorMinMax(-11, -6);
+            }
+            else
+            {
+                this.LineMaxMin(3, 25, 15, ' ');
+                SetCursorMaxMin(3, 25);
+                Console.Write("EXCEPTION!");
+                this.LineMaxMin(8, 23, 10, ' ');
+                SetCursorMaxMin(8, 23);
+            }
+        }
+
         public void PlayersMenu(Color color)
         {
             int number = color == Color.Light ? 1 : 2;
