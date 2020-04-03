@@ -16,7 +16,6 @@
             {
                 if (this.Movement(to, piece.Position, matrix))
                 {
-                    piece.Position.Y = to.Y;
                     return true;
                 }
             }
@@ -25,7 +24,6 @@
             {
                 if (this.Movement(to, piece.Position, matrix))
                 {
-                    piece.Position.X = to.X;
                     return true;
                 }
             }

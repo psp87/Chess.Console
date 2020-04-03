@@ -48,8 +48,6 @@
             {
                 if (this.Movement(to, piece.Position, matrix))
                 {
-                    piece.Position.X = to.X;
-                    piece.Position.Y = to.Y;
                     return true;
                 }
             }

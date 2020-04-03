@@ -94,14 +94,12 @@
                     this.IsLastMove = true;
                 }
 
-                this.Position.Y += sign * 1;
                 return true;
             }
             else if (this.IsFirstMove && to.X == this.Position.X &&
                 (to.Y == this.Position.Y + (sign * 1) || to.Y == this.Position.Y + (sign * 2)))
             {
                 int number = to.Y == this.Position.Y + (sign * 1) ? sign * 1 : sign * 2;
-                this.Position.Y += number;
 
                 this.IsFirstMove = false;
 
@@ -130,10 +128,6 @@
                 {
                     this.IsLastMove = true;
                 }
-
-                int number = to.X == this.Position.X - 1 ? -1 : 1;
-                this.Position.X += number;
-                this.Position.Y += sign * 1;
 
                 return true;
             }

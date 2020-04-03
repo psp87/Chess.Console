@@ -63,6 +63,8 @@
         {
             while (Globals.GameOver.ToString() == GameOver.None.ToString())
             {
+                Globals.TurnCounter++;
+
                 this.printer.Stats(this.MovingPlayer, this.Opponent);
                 this.printer.Turn(this.MovingPlayer);
 

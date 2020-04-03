@@ -98,8 +98,6 @@
 
                         if (to.X == this.Position.X + x && to.Y == this.Position.Y + y)
                         {
-                            this.Position.Y += x;
-                            this.Position.X += y;
                             this.IsFirstMove = false;
                             return true;
                         }
@@ -111,15 +109,13 @@
                     var rook = matrix[this.Position.Y][7].Piece;
                     if (this.OccupiedSquaresCheck(to, matrix) && rook is Rook && rook.IsFirstMove)
                     {
-                        this.Position.X += 2;
                         this.IsFirstMove = false;
 
-                        matrix[this.Position.Y][this.Position.X - 1].Piece = matrix[this.Position.Y][7].Piece;
+                        matrix[this.Position.Y][to.X - 1].Piece = matrix[this.Position.Y][7].Piece;
 
                         drawer.EmptySquare(this.Position.Y, 7);
-                        drawer.Figure(this.Position.Y, this.Position.X - 1, matrix[this.Position.Y][this.Position.X - 1].Piece);
+                        drawer.Figure(this.Position.Y, to.X - 1, matrix[this.Position.Y][to.X - 1].Piece);
 
-                        matrix[this.Position.Y][this.Position.X - 1].Position.X -= 2;
                         IPiece emptyFigure = Factory.GetEmpty();
                         matrix[this.Position.Y][7].Piece = emptyFigure;
 
@@ -134,15 +130,13 @@
                     var rook = matrix[this.Position.Y][0].Piece;
                     if (this.OccupiedSquaresCheck(to, matrix) && rook is Rook && rook.IsFirstMove)
                     {
-                        this.Position.X -= 2;
                         this.IsFirstMove = false;
 
-                        matrix[this.Position.Y][this.Position.X + 1].Piece = matrix[this.Position.Y][0].Piece;
+                        matrix[this.Position.Y][to.X + 1].Piece = matrix[this.Position.Y][0].Piece;
 
                         drawer.EmptySquare(this.Position.Y, 0);
-                        drawer.Figure(this.Position.Y, this.Position.X + 1, matrix[this.Position.Y][this.Position.X + 1].Piece);
+                        drawer.Figure(this.Position.Y, to.X + 1, matrix[this.Position.Y][to.X + 1].Piece);
 
-                        matrix[this.Position.Y][this.Position.X + 1].Position.X += 3;
                         IPiece emptyFigure = Factory.GetEmpty();
                         matrix[this.Position.Y][0].Piece = emptyFigure;
                         drawer.EmptySquare(this.Position.Y, 0);

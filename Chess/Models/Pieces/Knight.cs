@@ -58,49 +58,41 @@
         {
             if (to.X == this.Position.X - 1 && to.Y == this.Position.Y - 2)
             {
-                this.Position = to;
                 return true;
             }
 
             if (to.X == this.Position.X + 1 && to.Y == this.Position.Y - 2)
             {
-                this.Position = to;
                 return true;
             }
 
             if (to.X == this.Position.X - 1 && to.Y == this.Position.Y + 2)
             {
-                this.Position = to;
                 return true;
             }
 
             if (to.X == this.Position.X + 1 && to.Y == this.Position.Y + 2)
             {
-                this.Position = to;
                 return true;
             }
 
             if (to.X == this.Position.X - 2 && to.Y == this.Position.Y - 1)
             {
-                this.Position = to;
                 return true;
             }
 
             if (to.X == this.Position.X - 2 && to.Y == this.Position.Y + 1)
             {
-                this.Position = to;
                 return true;
             }
 
             if (to.X == this.Position.X + 2 && to.Y == this.Position.Y - 1)
             {
-                this.Position = to;
                 return true;
             }
 
             if (to.X == this.Position.X + 2 && to.Y == this.Position.Y + 1)
             {
-                this.Position = to;
                 return true;
             }
 

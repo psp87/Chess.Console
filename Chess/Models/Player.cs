@@ -32,8 +32,6 @@
 
         public bool IsCheck { get; set; }
 
-        public bool IsCheckmate { get; set; }
-
         public bool IsMoveAvailable { get; set; }
 
         public void TakeFigure(string figureName)
