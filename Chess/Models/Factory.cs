@@ -99,5 +99,10 @@
         {
             return new Print();
         }
+
+        public static Draw GetDraw()
+        {
+            return new Draw();
+        }
     }
 }

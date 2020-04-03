@@ -6,9 +6,9 @@
     using Models.Enums;
     using Models.Pieces.Contracts;
 
-    public static class Draw
+    public class Draw
     {
-        public static void Board(Color color)
+        public void Board(Color color)
         {
             for (int row = 0; row < Globals.BoardRows; row++)
             {
@@ -23,7 +23,7 @@
             Paint.DefaultBackground();
         }
 
-        public static void NewGame(Square[][] matrix, Player player)
+        public void NewGame(Square[][] matrix, Player player)
         {
             for (int row = 0; row < Globals.BoardRows; row++)
             {
@@ -39,7 +39,7 @@
             Paint.DefaultBackground();
         }
 
-        public static void Figure(int row, int col, IPiece figure)
+        public void Figure(int row, int col, IPiece figure)
         {
             for (int cellRow = 1; cellRow < Globals.CellRows - 1; cellRow++)
             {
@@ -65,7 +65,7 @@
             }
         }
 
-        public static void EmptySquare(int row, int col)
+        public void EmptySquare(int row, int col)
         {
             if ((row + col) % 2 == 0)
             {
@@ -84,7 +84,7 @@
             }
         }
 
-        private static void Border(Color color)
+        private void Border(Color color)
         {
             var value = color == Color.Light ? 0 : 9;
 
@@ -148,7 +148,7 @@
             }
         }
 
-        public static void NewFigures(int fromCol, int fromRow, int toCol, int toRow, IPiece figure)
+        public void NewFigures(int fromCol, int fromRow, int toCol, int toRow, IPiece figure)
         {
             EmptySquare(toRow, toCol);
             Figure(toRow, toCol, figure);
@@ -156,7 +156,7 @@
             EmptySquare(fromRow, fromCol);
         }
 
-        public static void NewFiguresTest(int fromCol, int fromRow, int toCol, int toRow, IPiece figure)
+        public void NewFiguresTest(int fromCol, int fromRow, int toCol, int toRow, IPiece figure)
         {
             EmptySquare(7 - toRow, 7 - toCol);
             Figure(7 - toRow, 7 - toCol, figure);
@@ -164,7 +164,7 @@
             EmptySquare(7 - fromRow, 7 - fromCol);
         }
 
-        public static void BoardOrientation(Square[][] matrix, Color color)
+        public void BoardOrientation(Square[][] matrix, Color color)
         {
             var value = color == Color.Light ? 0 : 7;
 
@@ -180,6 +180,65 @@
             Border(color);
 
             Paint.DefaultBackground();
+        }
+
+        public IPiece PawnPromotion(Position toPos, IPiece piece)
+        {
+            Paint.DefaultBackground();
+
+            if (piece.Color == Color.Light)
+            {
+                Print.SetCursorMinMax(-17, -4);
+                Console.WriteLine("(Q,R,B,N)");
+                Print.SetCursorMinMax(-17, -6);
+                Console.Write("CHOOSE FIGURE:");
+            }
+            else
+            {
+                Print.SetCursorMinMax(78, -51);
+                Console.WriteLine("(Q,R,B,N)");
+                Print.SetCursorMinMax(78, -53);
+                Console.Write("CHOOSE FIGURE:");
+            }
+
+            var figureChoose = Console.ReadKey().Key;
+
+            switch (figureChoose)
+            {
+                case ConsoleKey.Q:
+                    {
+                        this.EmptySquare(toPos.Y, toPos.X);
+                        IPiece queen = Factory.GetQueen(piece.Color);
+                        this.Figure(toPos.Y, toPos.X, queen);
+                        return queen;
+                    }
+
+                case ConsoleKey.R:
+                    {
+                        this.EmptySquare(toPos.Y, toPos.X);
+                        IPiece rook = Factory.GetRook(piece.Color);
+                        this.Figure(toPos.Y, toPos.X, rook);
+                        return rook;
+                    }
+
+                case ConsoleKey.B:
+                    {
+                        this.EmptySquare(toPos.Y, toPos.X);
+                        IPiece bishop = Factory.GetBishop(piece.Color);
+                        this.Figure(toPos.Y, toPos.X, bishop);
+                        return bishop;
+                    }
+
+                case ConsoleKey.N:
+                    {
+                        this.EmptySquare(toPos.Y, toPos.X);
+                        IPiece knight = Factory.GetKnight(piece.Color);
+                        this.Figure(toPos.Y, toPos.X, knight);
+                        return knight;
+                    }
+
+                default: return this.PawnPromotion(toPos, piece);
+            }
         }
     }
 }

@@ -13,9 +13,10 @@
         public static void Main()
         {
             Print printer = Factory.GetPrint();
+            Draw drawer = Factory.GetDraw();
 
             printer.Header();
-            Draw.Board(Color.Light);
+            drawer.Board(Color.Light);
 
             while (true)
             {
@@ -39,7 +40,7 @@
 
                             printer.GameMenu();
                             printer.ExampleText();
-                            Draw.NewGame(game.ChessBoard.Matrix, game.MovingPlayer);
+                            drawer.NewGame(game.ChessBoard.Matrix, game.MovingPlayer);
 
                             while (Globals.GameOver.ToString() == GameOver.None.ToString())
                             {
@@ -49,13 +50,13 @@
                                 game.Move(game.MovingPlayer, game.Opponent);
 
                                 Thread.Sleep(500);
-                                Draw.Board(game.MovingPlayer.Color);
-                                Draw.BoardOrientation(game.ChessBoard.Matrix, game.MovingPlayer.Color);
+                                drawer.Board(game.MovingPlayer.Color);
+                                drawer.BoardOrientation(game.ChessBoard.Matrix, game.MovingPlayer.Color);
                             }
 
                             Console.ReadLine();
                             Console.Clear();
-                            Draw.Board(Color.Light);
+                            drawer.Board(Color.Light);
                         }
 
                         break;

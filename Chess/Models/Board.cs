@@ -14,6 +14,7 @@
     public class Board : ICloneable
     {
         Print printer = Factory.GetPrint();
+        Draw drawer = Factory.GetDraw();
 
         private Dictionary<string, int> colMap = new Dictionary<string, int>()
         {
@@ -118,11 +119,11 @@
                             // Draw the new figures to FROM and TO squares
                             if (movingPlayer.Color == Color.Light)
                             {
-                                Draw.NewFigures(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
+                                drawer.NewFigures(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
                             }
                             else
                             {
-                                Draw.NewFiguresTest(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
+                                drawer.NewFiguresTest(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
                             }
 
 
@@ -132,7 +133,7 @@
                             // Check for pawn promotion
                             if (this.Matrix[toRow][toCol].Piece is Pawn && this.Matrix[toRow][toCol].Piece.IsLastMove)
                             {
-                                this.Matrix[toRow][toCol].Piece = printer.PawnPromotion(toPos, this.Matrix[toRow][toCol].Piece);
+                                this.Matrix[toRow][toCol].Piece = drawer.PawnPromotion(toPos, this.Matrix[toRow][toCol].Piece);
                                 this.CalculateAttackedSquares();
                             }
 
@@ -180,7 +181,7 @@
                             }
 
                             // Draw the new figures to FROM and TO squares
-                            Draw.NewFigures(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
+                            drawer.NewFigures(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
 
                             // Clear the check message screen of the other player
                             printer.EmptyCheckScreen(opponent);
@@ -188,7 +189,7 @@
                             // Check for pawn promotion
                             if (this.Matrix[toRow][toCol].Piece is Pawn && this.Matrix[toRow][toCol].Piece.IsLastMove)
                             {
-                                this.Matrix[toRow][toCol].Piece = printer.PawnPromotion(toPos, this.Matrix[toRow][toCol].Piece);
+                                this.Matrix[toRow][toCol].Piece = drawer.PawnPromotion(toPos, this.Matrix[toRow][toCol].Piece);
                                 this.CalculateAttackedSquares();
                             }
 
@@ -212,16 +213,16 @@
                     {
                         // Assign new values to TO square and update row and col because you do not enter take method of pawn. Draw the new figure.
                         this.Matrix[toRow][toCol].Piece = this.Matrix[fromRow][fromCol].Piece;
-                        Draw.Figure(toRow, toCol, this.Matrix[toRow][toCol].Piece);
+                        drawer.Figure(toRow, toCol, this.Matrix[toRow][toCol].Piece);
 
                         // Assign empty square to FROM. Draw the empty square.
                         this.Matrix[fromRow][fromCol].Piece = emptyFigure;
-                        Draw.EmptySquare(fromRow, fromCol);
+                        drawer.EmptySquare(fromRow, fromCol);
 
                         // Assign empty to the third square where is figure. Draw the empty square.
                         int colCheck = toCol > fromCol ? 1 : -1;
                         this.Matrix[fromRow][fromCol + colCheck].Piece = emptyFigure;
-                        Draw.EmptySquare(fromRow, fromCol + colCheck);
+                        drawer.EmptySquare(fromRow, fromCol + colCheck);
 
                         // Calculation of attacked squares in the board
                         this.CalculateAttackedSquares();

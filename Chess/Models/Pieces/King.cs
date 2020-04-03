@@ -9,6 +9,8 @@
 
     public class King : Piece
     {
+        Draw drawer = Factory.GetDraw();
+
         public King(Color color)
             : base(color)
         {
@@ -114,14 +116,14 @@
 
                         matrix[this.Position.Y][this.Position.X - 1].Piece = matrix[this.Position.Y][7].Piece;
 
-                        Draw.EmptySquare(this.Position.Y, 7);
-                        Draw.Figure(this.Position.Y, this.Position.X - 1, matrix[this.Position.Y][this.Position.X - 1].Piece);
+                        drawer.EmptySquare(this.Position.Y, 7);
+                        drawer.Figure(this.Position.Y, this.Position.X - 1, matrix[this.Position.Y][this.Position.X - 1].Piece);
 
                         matrix[this.Position.Y][this.Position.X - 1].Position.X -= 2;
                         IPiece emptyFigure = Factory.GetEmpty();
                         matrix[this.Position.Y][7].Piece = emptyFigure;
 
-                        Draw.EmptySquare(this.Position.Y, 7);
+                        drawer.EmptySquare(this.Position.Y, 7);
 
                         return true;
                     }
@@ -137,13 +139,13 @@
 
                         matrix[this.Position.Y][this.Position.X + 1].Piece = matrix[this.Position.Y][0].Piece;
 
-                        Draw.EmptySquare(this.Position.Y, 0);
-                        Draw.Figure(this.Position.Y, this.Position.X + 1, matrix[this.Position.Y][this.Position.X + 1].Piece);
+                        drawer.EmptySquare(this.Position.Y, 0);
+                        drawer.Figure(this.Position.Y, this.Position.X + 1, matrix[this.Position.Y][this.Position.X + 1].Piece);
 
                         matrix[this.Position.Y][this.Position.X + 1].Position.X += 3;
                         IPiece emptyFigure = Factory.GetEmpty();
                         matrix[this.Position.Y][0].Piece = emptyFigure;
-                        Draw.EmptySquare(this.Position.Y, 0);
+                        drawer.EmptySquare(this.Position.Y, 0);
 
                         return true;
                     }
