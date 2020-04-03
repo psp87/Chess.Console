@@ -104,5 +104,10 @@
         {
             return new Draw();
         }
+
+        public static Move GetMove()
+        {
+            return new Move();
+        }
     }
 }
