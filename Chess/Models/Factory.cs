@@ -1,5 +1,6 @@
 ﻿namespace Chess.Models
 {
+    using Chess.View;
     using Enums;
     using Pieces;
     using Pieces.Contracts;
@@ -92,6 +93,11 @@
         public static Game GetGame(Player player1, Player player2)
         {
             return new Game(player1, player2);
+        }
+
+        public static Print GetPrint()
+        {
+            return new Print();
         }
     }
 }

@@ -2,8 +2,6 @@
 {
     using System;
 
-    using Enums;
-
     public class Position : ICloneable
     {
         public Position() : this(-1, -1)

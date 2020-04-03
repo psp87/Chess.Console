@@ -12,21 +12,23 @@
     {
         public static void Main()
         {
-            Print.Header();
+            Print printer = Factory.GetPrint();
+
+            printer.Header();
             Draw.Board(Color.Light);
 
             while (true)
             {
-                Print.Menu();
+                printer.Menu();
 
                 var option = Console.ReadKey().Key;
                 switch (option)
                 {
                     case ConsoleKey.N:
                         {
-                            Print.PlayersMenu(Color.Light);
+                            printer.PlayersMenu(Color.Light);
                             var namePlayer1 = Console.ReadLine();
-                            Print.PlayersMenu(Color.Dark);
+                            printer.PlayersMenu(Color.Dark);
                             var namePlayer2 = Console.ReadLine();
 
                             Player player1 = Factory.GetPlayer(namePlayer1.ToUpper(), Color.Light);
@@ -35,14 +37,14 @@
                             Game game = Factory.GetGame(player1, player2);
                             game.OnGameOver += Game_OnGameOver;
 
-                            Print.GameMenu();
-                            Print.ExampleText();
+                            printer.GameMenu();
+                            printer.ExampleText();
                             Draw.NewGame(game.ChessBoard.Matrix, game.MovingPlayer);
 
                             while (Globals.GameOver.ToString() == GameOver.None.ToString())
                             {
-                                Print.Stats(game.MovingPlayer, game.Opponent);
-                                Print.Turn(game.MovingPlayer);
+                                printer.Stats(game.MovingPlayer, game.Opponent);
+                                printer.Turn(game.MovingPlayer);
 
                                 game.Move(game.MovingPlayer, game.Opponent);
 
@@ -73,9 +75,9 @@
 
                 switch (gameOver.GameOver)
                 {
-                    case GameOver.Checkmate: Print.Won(player, gameOver.GameOver.ToString());
+                    case GameOver.Checkmate: printer.Won(player, gameOver.GameOver.ToString());
                         break;
-                    case GameOver.Stalemate: Print.Stalemate();
+                    case GameOver.Stalemate: printer.Stalemate();
                         break;
                 }
             }

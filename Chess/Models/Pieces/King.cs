@@ -3,9 +3,9 @@
     using System;
     using System.Linq;
 
-    using Chess.View;
     using Contracts;
     using Enums;
+    using View;
 
     public class King : Piece
     {

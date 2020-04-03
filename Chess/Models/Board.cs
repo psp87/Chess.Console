@@ -13,6 +13,8 @@
 
     public class Board : ICloneable
     {
+        Print printer = Factory.GetPrint();
+
         private Dictionary<string, int> colMap = new Dictionary<string, int>()
         {
             { "A", 0 },
@@ -105,7 +107,7 @@
 
                                 movingPlayer.IsCheck = true;
                                 this.CalculateAttackedSquares();
-                                Print.KingIsCheck(movingPlayer);
+                                printer.KingIsCheck(movingPlayer);
                                 continue;
                             }
                             else
@@ -125,19 +127,19 @@
 
 
                             // Clear the check message screen of the other player
-                            Print.EmptyCheckScreen(opponent);
+                            printer.EmptyCheckScreen(opponent);
 
                             // Check for pawn promotion
                             if (this.Matrix[toRow][toCol].Piece is Pawn && this.Matrix[toRow][toCol].Piece.IsLastMove)
                             {
-                                this.Matrix[toRow][toCol].Piece = Print.PawnPromotion(toPos, this.Matrix[toRow][toCol].Piece);
+                                this.Matrix[toRow][toCol].Piece = printer.PawnPromotion(toPos, this.Matrix[toRow][toCol].Piece);
                                 this.CalculateAttackedSquares();
                             }
 
                             // Print if the current player check the other player after movement. Check if the player is checkmate.
                             if (this.IsPlayerChecked(opponent))
                             {
-                                Print.Check(movingPlayer);
+                                printer.Check(movingPlayer);
                                 this.IsOpponentCheckmate(movingPlayer, opponent, from);
                             }
 
@@ -169,7 +171,7 @@
 
                                 movingPlayer.IsCheck = true;
                                 this.CalculateAttackedSquares();
-                                Print.KingIsCheck(movingPlayer);
+                                printer.KingIsCheck(movingPlayer);
                                 continue;
                             }
                             else
@@ -181,19 +183,19 @@
                             Draw.NewFigures(fromCol, fromRow, toCol, toRow, this.Matrix[toRow][toCol].Piece);
 
                             // Clear the check message screen of the other player
-                            Print.EmptyCheckScreen(opponent);
+                            printer.EmptyCheckScreen(opponent);
 
                             // Check for pawn promotion
                             if (this.Matrix[toRow][toCol].Piece is Pawn && this.Matrix[toRow][toCol].Piece.IsLastMove)
                             {
-                                this.Matrix[toRow][toCol].Piece = Print.PawnPromotion(toPos, this.Matrix[toRow][toCol].Piece);
+                                this.Matrix[toRow][toCol].Piece = printer.PawnPromotion(toPos, this.Matrix[toRow][toCol].Piece);
                                 this.CalculateAttackedSquares();
                             }
 
                             // Print if the current player check the other player after movement. Check if the player is checkmate.
                             if (this.IsPlayerChecked(opponent))
                             {
-                                Print.Check(movingPlayer);
+                                printer.Check(movingPlayer);
                                 this.IsOpponentCheckmate(movingPlayer, opponent, from);
                             }
 
@@ -227,7 +229,7 @@
                         // Print if the current player check the other player after movement. Check if the player is checkmate.
                         if (this.IsPlayerChecked(opponent))
                         {
-                            Print.Check(movingPlayer);
+                            printer.Check(movingPlayer);
                             this.IsOpponentCheckmate(movingPlayer, opponent, from);
                         }
 
@@ -237,12 +239,12 @@
                     // Print invalid message if the move is unsuccessful
                     if (!successfulMove)
                     {
-                        Print.Invalid(movingPlayer);
+                        printer.Invalid(movingPlayer);
                     }
                 }
                 catch (Exception)
                 {
-                    Print.Invalid(movingPlayer);
+                    printer.Invalid(movingPlayer);
                     continue;
                 }
             }
@@ -251,7 +253,7 @@
             this.IsGameStalemate(opponent);
 
             // Clear the message screen
-            Print.EmptyMessageScreen(movingPlayer);
+            printer.EmptyMessageScreen(movingPlayer);
         }
 
         public void Initialize()

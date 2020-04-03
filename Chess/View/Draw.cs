@@ -1,7 +1,7 @@
 ﻿namespace Chess.View
 {
     using System;
-    using System.Threading;
+
     using Models;
     using Models.Enums;
     using Models.Pieces.Contracts;
