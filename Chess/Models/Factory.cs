@@ -90,9 +90,9 @@
             return new BishopBahaviour();
         }
 
-        public static Game GetGame(Player player1, Player player2)
+        public static Game GetGame()
         {
-            return new Game(player1, player2);
+            return new Game();
         }
 
         public static Print GetPrint()

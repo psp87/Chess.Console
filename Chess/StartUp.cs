@@ -1,7 +1,6 @@
 ﻿namespace Chess
 {
     using System;
-    using System.Threading;
 
     using Models;
     using Models.Enums;
@@ -27,26 +26,13 @@
                 {
                     case ConsoleKey.N:
                         {
-                            printer.PlayersMenu(Color.Light);
-                            var namePlayer1 = Console.ReadLine();
-                            printer.PlayersMenu(Color.Dark);
-                            var namePlayer2 = Console.ReadLine();
+                            Game game = Factory.GetGame();
 
-                            Player player1 = Factory.GetPlayer(namePlayer1.ToUpper(), Color.Light);
-                            Player player2 = Factory.GetPlayer(namePlayer2.ToUpper(), Color.Dark);
-
-                            Game game = Factory.GetGame(player1, player2);
+                            game.GetPlayers();
+                            game.New();
                             game.OnGameOver += Game_OnGameOver;
-
-                            printer.GameMenu();
-                            printer.ExampleText();
-                            drawer.NewGame(game.ChessBoard.Matrix, game.MovingPlayer);
-
                             game.Start();
-
-                            Console.ReadLine();
-                            Console.Clear();
-                            drawer.Board(Color.Light);
+                            game.End();
                         }
 
                         break;
@@ -66,9 +52,11 @@
 
                 switch (gameOver.GameOver)
                 {
-                    case GameOver.Checkmate: printer.Won(player, gameOver.GameOver.ToString());
+                    case GameOver.Checkmate:
+                        printer.Won(player, gameOver.GameOver.ToString());
                         break;
-                    case GameOver.Stalemate: printer.Stalemate();
+                    case GameOver.Stalemate:
+                        printer.Stalemate();
                         break;
                 }
             }
