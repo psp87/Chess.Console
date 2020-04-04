@@ -23,22 +23,6 @@
             Paint.DefaultBackground();
         }
 
-        public void NewGame(Square[][] matrix, Player player)
-        {
-            for (int row = 0; row < Globals.BoardRows; row++)
-            {
-                for (int col = 0; col < Globals.BoardCols; col++)
-                {
-                    Square currentSquare = matrix[row][col];
-                    this.Piece(row, col, currentSquare.Piece);
-                }
-            }
-
-            this.Border(player.Color);
-
-            Paint.DefaultBackground();
-        }
-
         public void Piece(int row, int col, IPiece figure)
         {
             for (int cellRow = 1; cellRow < Globals.CellRows - 1; cellRow++)

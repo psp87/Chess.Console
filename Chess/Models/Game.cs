@@ -49,7 +49,7 @@
 
             this.printer.GameMenu();
             this.printer.ExampleText();
-            this.drawer.NewGame(this.ChessBoard.Matrix, this.MovingPlayer);
+            this.drawer.BoardOrientation(this.ChessBoard.Matrix, this.MovingPlayer.Color);
         }
 
         public void End()
@@ -77,7 +77,8 @@
 
                 this.ChangeTurns();
 
-                Thread.Sleep(500);
+                Thread.Sleep(200);
+
                 this.drawer.Board(this.MovingPlayer.Color);
                 this.drawer.BoardOrientation(this.ChessBoard.Matrix, this.MovingPlayer.Color);
             }
