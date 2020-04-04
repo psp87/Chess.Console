@@ -248,7 +248,7 @@
 
                 movingPlayer.IsCheck = false;
 
-                this.drawer.Figure(this.Move.End.Position.Y, this.Move.End.Position.X, this.Move.End.Piece);
+                this.drawer.Piece(this.Move.End.Position.Y, this.Move.End.Position.X, this.Move.End.Piece);
                 this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X);
                 this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X + x);
 

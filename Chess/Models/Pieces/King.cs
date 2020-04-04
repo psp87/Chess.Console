@@ -114,7 +114,7 @@
                         matrix[this.Position.Y][to.X - 1].Piece = matrix[this.Position.Y][7].Piece;
 
                         drawer.EmptySquare(this.Position.Y, 7);
-                        drawer.Figure(this.Position.Y, to.X - 1, matrix[this.Position.Y][to.X - 1].Piece);
+                        drawer.Piece(this.Position.Y, to.X - 1, matrix[this.Position.Y][to.X - 1].Piece);
 
                         IPiece emptyFigure = Factory.GetEmpty();
                         matrix[this.Position.Y][7].Piece = emptyFigure;
@@ -135,7 +135,7 @@
                         matrix[this.Position.Y][to.X + 1].Piece = matrix[this.Position.Y][0].Piece;
 
                         drawer.EmptySquare(this.Position.Y, 0);
-                        drawer.Figure(this.Position.Y, to.X + 1, matrix[this.Position.Y][to.X + 1].Piece);
+                        drawer.Piece(this.Position.Y, to.X + 1, matrix[this.Position.Y][to.X + 1].Piece);
 
                         IPiece emptyFigure = Factory.GetEmpty();
                         matrix[this.Position.Y][0].Piece = emptyFigure;

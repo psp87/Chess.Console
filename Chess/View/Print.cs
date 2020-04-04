@@ -37,8 +37,8 @@
             Paint.DefaultBackground();
             Paint.WhiteText();
 
-            string header = "JUST CHESS BY PLAMEN PETROV";
-            SetCursorMinMin((76 - header.Length) / 2 + 1, -3);
+            string header = "CONSOLE CHESS BY PLAMEN PETROV";
+            SetCursorMinMin((76 - header.Length) / 2, -3);
             Console.Write(header);
         }
 
