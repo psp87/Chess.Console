@@ -44,7 +44,7 @@
         public void MakeMove(Player movingPlayer, Player opponent)
         {
             bool success = false;
-            while (!success || movingPlayer.IsCheck == true)
+            while (!success)
             {
                 try
                 {
@@ -58,6 +58,12 @@
                         {
                             movingPlayer.IsCheck = false;
                             continue;
+                        }
+
+                        if (this.IsPlayerChecked(opponent))
+                        {
+                            this.printer.Check(movingPlayer);
+                            this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
                         }
 
                         success = true;
@@ -130,18 +136,6 @@
 
         private void GetCommand()
         {
-            Dictionary<string, int> xMapping = new Dictionary<string, int>()
-            {
-                { "A", 0 },
-                { "B", 1 },
-                { "C", 2 },
-                { "D", 3 },
-                { "E", 4 },
-                { "F", 5 },
-                { "G", 6 },
-                { "H", 7 },
-            };
-
             string text = Console.ReadLine();
 
             string pattern = @"([A-Za-z])([A-Za-z])([1-8])([A-Za-z])([1-8])";
@@ -149,10 +143,10 @@
             Match match = regex.Match(text);
 
             char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
+            int startX = char.Parse(match.Groups[2].ToString().ToUpper()) - 65;
             int startY = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
-            int startX = xMapping[match.Groups[2].ToString().ToUpper()];
+            int endX = char.Parse(match.Groups[4].ToString().ToUpper()) - 65;
             int endY = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
-            int endX = xMapping[match.Groups[4].ToString().ToUpper()];
 
             this.Move.Symbol = symbol;
             this.Move.Start = this.Matrix[startY][startX];
@@ -169,7 +163,6 @@
                 if (!this.TryMove(movingPlayer, opponent))
                 {
                     movingPlayer.IsCheck = true;
-                    return true;
                 }
 
                 return true;
@@ -195,7 +188,6 @@
                 }
 
                 movingPlayer.TakeFigure(pieceName);
-
                 return true;
             }
 
@@ -226,12 +218,6 @@
                 this.CalculateAttackedSquares();
             }
 
-            if (this.IsPlayerChecked(opponent))
-            {
-                this.printer.Check(movingPlayer);
-                this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
-            }
-
             return true;
         }
 
@@ -245,6 +231,7 @@
                 this.PlacePiece(this.Move);
                 this.RemovePiece(this.Move.Start);
                 int x = this.Move.End.Position.X > this.Move.Start.Position.X ? 1 : -1;
+                IPiece piece = this.Matrix[this.Move.Start.Position.Y][this.Move.Start.Position.X + x].Piece;
                 this.RemovePiece(this.Matrix[this.Move.Start.Position.Y][this.Move.Start.Position.X + x]);
                 this.CalculateAttackedSquares();
 
@@ -252,7 +239,7 @@
                 {
                     this.ReversePiece(this.Move);
                     this.RemovePiece(this.Move.End);
-                    //this.PlacePiece(this.Move.End); TO DO
+                    this.Matrix[this.Move.Start.Position.Y][this.Move.Start.Position.X + x].Piece = piece;
                     this.CalculateAttackedSquares();
                     this.printer.KingIsCheck(movingPlayer);
                     movingPlayer.IsCheck = true;
@@ -264,12 +251,6 @@
                 this.drawer.Figure(this.Move.End.Position.Y, this.Move.End.Position.X, this.Move.End.Piece);
                 this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X);
                 this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X + x);
-
-                if (this.IsPlayerChecked(opponent))
-                {
-                    this.printer.Check(movingPlayer);
-                    this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
-                }
 
                 return true;
             }
