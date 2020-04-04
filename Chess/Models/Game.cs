@@ -77,7 +77,7 @@
 
                 this.ChangeTurns();
 
-                //Thread.Sleep(500);
+                Thread.Sleep(500);
                 this.drawer.Board(this.MovingPlayer.Color);
                 this.drawer.BoardOrientation(this.ChessBoard.Matrix, this.MovingPlayer.Color);
             }

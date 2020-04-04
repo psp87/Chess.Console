@@ -373,5 +373,14 @@
             SetCursorMaxMax(x, y);
             Console.Write(new string(symbol, count));
         }
+
+        public void ErrorWindow()
+        {
+            Console.WriteLine("\nAPP WORKS WITH THE FOLLOWING WINDOW SETTINGS:\n");
+            Console.WriteLine("Font: Raster Fonts");
+            Console.WriteLine("Size: 8x8");
+            Console.WriteLine("Window Size Width: 114");
+            Console.WriteLine("Window Size Height: 87");
+        }
     }
 }

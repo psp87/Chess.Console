@@ -14,37 +14,47 @@
             Print printer = Factory.GetPrint();
             Draw drawer = Factory.GetDraw();
 
-            printer.Header();
-            drawer.Board(Color.Light);
-
-            while (true)
+            try
             {
-                printer.Menu();
+                printer.Header();
+                drawer.Board(Color.Light);
 
-                var option = Console.ReadKey().Key;
-                switch (option)
+                while (true)
                 {
-                    case ConsoleKey.N:
-                        {
-                            Game game = Factory.GetGame();
+                    printer.Menu();
 
-                            game.GetPlayers();
-                            game.New();
-                            game.OnGameOver += Game_OnGameOver;
-                            game.Start();
-                            game.End();
-                        }
+                    var option = Console.ReadKey().Key;
+                    switch (option)
+                    {
+                        case ConsoleKey.N:
+                            {
+                                Game game = Factory.GetGame();
 
-                        break;
-                    case ConsoleKey.L:
-                        break;
-                    case ConsoleKey.S:
-                        break;
-                    case ConsoleKey.Escape: Console.Clear();
-                        return;
+                                game.GetPlayers();
+                                game.New();
+                                game.OnGameOver += Game_OnGameOver;
+                                game.Start();
+                                game.End();
+                            }
+
+                            break;
+                        case ConsoleKey.L:
+                            break;
+                        case ConsoleKey.S:
+                            break;
+                        case ConsoleKey.Escape:
+                            Console.Clear();
+                            return;
+                    }
                 }
             }
-
+            catch (Exception)
+            {
+                Paint.DefaultBackground();
+                Console.Clear();
+                printer.ErrorWindow();
+            }
+            
             void Game_OnGameOver(object sender, EventArgs e)
             {
                 var player = sender as Player;
