@@ -291,13 +291,9 @@
         {
             var king = this.GetKingSquare(opponent.Color);
 
-            if (this.IsKingAbleToMove(king, movingPlayer) ||
-                this.AttackingPieceCanBeTaken(attackingSquare, opponent) ||
-                this.OtherPieceCanBlockTheCheck(king, attackingSquare, opponent))
-            {
-                Globals.GameOver = GameOver.None;
-            }
-            else
+            if (!this.IsKingAbleToMove(king, movingPlayer) &&
+                !this.AttackingPieceCanBeTaken(attackingSquare, opponent) &&
+                !this.OtherPieceCanBlockTheCheck(king, attackingSquare, opponent))
             {
                 Globals.GameOver = GameOver.Checkmate;
             }
@@ -316,7 +312,6 @@
                         currentFigure.IsMoveAvailable(this.Matrix);
                         if (currentFigure.IsMovable)
                         {
-                            Globals.GameOver = GameOver.None;
                             return;
                         }
                     }
