@@ -110,8 +110,15 @@
                     int sign = to.X == this.Position.X + 2 ? -1 : 1;
                     int lastPiecePosition = to.X == this.Position.X + 2 ? 7 : 0;
 
-                    var rook = matrix[this.Position.Y][lastPiecePosition].Piece;
-                    if (this.OccupiedSquaresCheck(to, matrix) && rook is Rook && rook.IsFirstMove)
+                    var firstSquareOnWay = matrix[this.Position.Y][to.X + sign];
+                    var secondSquareOnWay = matrix[this.Position.Y][to.X];
+                    var lastPiece = matrix[this.Position.Y][lastPiecePosition].Piece;
+
+                    if (this.OccupiedSquaresCheck(to, matrix) && 
+                        lastPiece is Rook && 
+                        lastPiece.IsFirstMove && 
+                        !firstSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any() && 
+                        !secondSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any())
                     {
                         this.IsFirstMove = false;
 
