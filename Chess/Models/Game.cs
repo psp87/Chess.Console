@@ -73,7 +73,7 @@
                     this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(Globals.GameOver));
                 }
 
-                this.printer.Stats(this.MovingPlayer, this.Opponent);
+                this.printer.Stats(this.Player1, this.Player2);
                 this.ChangeTurns();
 
                 this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);

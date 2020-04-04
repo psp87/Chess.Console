@@ -55,7 +55,7 @@
             Console.Write("(E)XIT");
         }
 
-        public void Stats(Player player1, Player player2)
+        public void Stats(Player playerOne, Player playerTwo)
         {
             Paint.DefaultBackground();
             Paint.WhiteText();
@@ -65,41 +65,41 @@
             int darkHorizontalOffset = 7;
             int darkVerticalOffset = 5;
 
-            int playerOneNameCenterPosition = -(19 + player1.Name.Length) / 2;
-            this.LineMinMax(playerOneNameCenterPosition - 1, lightVerticalOffset, player1.Name.Length + 2, '-');
+            int playerOneNameCenterPosition = -(19 + playerOne.Name.Length) / 2;
+            this.LineMinMax(playerOneNameCenterPosition - 1, lightVerticalOffset, playerOne.Name.Length + 2, '-');
             SetCursorMinMax(playerOneNameCenterPosition, lightVerticalOffset + 1);
-            Console.WriteLine($"{player1.Name}");
-            this.LineMinMax(playerOneNameCenterPosition - 1, lightVerticalOffset + 2, player1.Name.Length + 2, '-');
+            Console.WriteLine($"{playerOne.Name}");
+            this.LineMinMax(playerOneNameCenterPosition - 1, lightVerticalOffset + 2, playerOne.Name.Length + 2, '-');
             SetCursorMinMax(lightHorizontalOffset, lightVerticalOffset + 4);
             Console.WriteLine("WHITE");
             SetCursorMinMax(lightHorizontalOffset, lightVerticalOffset + 7);
-            Console.Write($"P x {player1.TakenFigures(nameof(Pawn))}");
+            Console.Write($"P x {playerOne.TakenFigures(nameof(Pawn))}");
             SetCursorMinMax(lightHorizontalOffset, lightVerticalOffset + 9);
-            Console.Write($"N x {player1.TakenFigures(nameof(Knight))}");
+            Console.Write($"N x {playerOne.TakenFigures(nameof(Knight))}");
             SetCursorMinMax(lightHorizontalOffset, lightVerticalOffset + 11);
-            Console.Write($"B x {player1.TakenFigures(nameof(Bishop))}");
+            Console.Write($"B x {playerOne.TakenFigures(nameof(Bishop))}");
             SetCursorMinMax(lightHorizontalOffset, lightVerticalOffset + 13);
-            Console.Write($"R x {player1.TakenFigures(nameof(Rook))}");
+            Console.Write($"R x {playerOne.TakenFigures(nameof(Rook))}");
             SetCursorMinMax(lightHorizontalOffset, lightVerticalOffset + 15);
-            Console.Write($"Q x {player1.TakenFigures(nameof(Queen))}");
+            Console.Write($"Q x {playerOne.TakenFigures(nameof(Queen))}");
 
-            int playerTwoNameCenterPosition = (19 - player2.Name.Length) / 2;
-            this.LineMaxMin(playerTwoNameCenterPosition - 1, darkVerticalOffset, player2.Name.Length + 2, '-');
+            int playerTwoNameCenterPosition = (19 - playerTwo.Name.Length) / 2;
+            this.LineMaxMin(playerTwoNameCenterPosition - 1, darkVerticalOffset, playerTwo.Name.Length + 2, '-');
             SetCursorMaxMin(playerTwoNameCenterPosition, darkVerticalOffset + 1);
-            Console.WriteLine($"{player2.Name}");
-            this.LineMaxMin(playerTwoNameCenterPosition - 1, darkVerticalOffset + 2, player2.Name.Length + 2, '-');
+            Console.WriteLine($"{playerTwo.Name}");
+            this.LineMaxMin(playerTwoNameCenterPosition - 1, darkVerticalOffset + 2, playerTwo.Name.Length + 2, '-');
             SetCursorMaxMin(darkHorizontalOffset, darkVerticalOffset + 4);
             Console.WriteLine("BLACK");
             SetCursorMaxMin(darkHorizontalOffset, darkVerticalOffset + 7);
-            Console.Write($"P x {player2.TakenFigures(nameof(Pawn))}");
+            Console.Write($"P x {playerTwo.TakenFigures(nameof(Pawn))}");
             SetCursorMaxMin(darkHorizontalOffset, darkVerticalOffset + 9);
-            Console.Write($"N x {player2.TakenFigures(nameof(Knight))}");
+            Console.Write($"N x {playerTwo.TakenFigures(nameof(Knight))}");
             SetCursorMaxMin(darkHorizontalOffset, darkVerticalOffset + 11);
-            Console.Write($"B x {player2.TakenFigures(nameof(Bishop))}");
+            Console.Write($"B x {playerTwo.TakenFigures(nameof(Bishop))}");
             SetCursorMaxMin(darkHorizontalOffset, darkVerticalOffset + 13);
-            Console.Write($"R x {player2.TakenFigures(nameof(Rook))}");
+            Console.Write($"R x {playerTwo.TakenFigures(nameof(Rook))}");
             SetCursorMaxMin(darkHorizontalOffset, darkVerticalOffset + 15);
-            Console.Write($"Q x {player2.TakenFigures(nameof(Queen))}");
+            Console.Write($"Q x {playerTwo.TakenFigures(nameof(Queen))}");
         }
 
         public void Turn(Player player)
@@ -136,9 +136,11 @@
 
             switch (player.Color)
             {
-                case Color.Light: SetCursorMinMax(-12, -27);
+                case Color.Light:
+                    SetCursorMinMax(-12, -27);
                     break;
-                case Color.Dark: SetCursorMaxMin(7, 2);
+                case Color.Dark:
+                    SetCursorMaxMin(7, 2);
                     break;
             }
 
