@@ -17,7 +17,7 @@
             try
             {
                 printer.Header();
-                drawer.Board(Color.Light);
+                drawer.BoardEmpty(Color.Light);
 
                 while (true)
                 {

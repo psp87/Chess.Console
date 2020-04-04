@@ -1,7 +1,6 @@
 ﻿namespace Chess.Models
 {
     using System;
-    using System.Threading;
 
     using Enums;
     using EventArgs;
@@ -47,16 +46,17 @@
         {
             this.ChessBoard.Initialize();
 
-            this.printer.GameMenu();
+            this.printer.Stats(this.MovingPlayer, this.Opponent);
             this.printer.ExampleText();
-            this.drawer.BoardOrientation(this.ChessBoard.Matrix, this.MovingPlayer.Color);
+            this.printer.GameMenu();
+            this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
         }
 
         public void End()
         {
             Console.ReadLine();
             Console.Clear();
-            this.drawer.Board(Color.Light);
+            this.drawer.BoardEmpty(Color.Light);
         }
 
         public void Start()
@@ -65,9 +65,7 @@
             {
                 Globals.TurnCounter++;
 
-                this.printer.Stats(this.MovingPlayer, this.Opponent);
                 this.printer.Turn(this.MovingPlayer);
-
                 this.ChessBoard.MakeMove(this.MovingPlayer, this.Opponent);
 
                 if (Globals.GameOver.ToString() != GameOver.None.ToString())
@@ -75,12 +73,10 @@
                     this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(Globals.GameOver));
                 }
 
+                this.printer.Stats(this.MovingPlayer, this.Opponent);
                 this.ChangeTurns();
 
-                Thread.Sleep(200);
-
-                this.drawer.Board(this.MovingPlayer.Color);
-                this.drawer.BoardOrientation(this.ChessBoard.Matrix, this.MovingPlayer.Color);
+                this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
             }
         }
 

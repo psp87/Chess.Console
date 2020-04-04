@@ -8,7 +8,7 @@
 
     public class Draw
     {
-        public void Board(Color color)
+        public void BoardEmpty(Color color)
         {
             for (int row = 0; row < Globals.BoardRows; row++)
             {
@@ -23,68 +23,7 @@
             Paint.DefaultBackground();
         }
 
-        public void Piece(int row, int col, IPiece figure)
-        {
-            for (int cellRow = 1; cellRow < Globals.CellRows - 1; cellRow++)
-            {
-                for (int cellCol = 1; cellCol < Globals.CellCols - 1; cellCol++)
-                {
-                    if (figure.FigureMatrix[cellRow, cellCol] == true)
-                    {
-                        Console.SetCursorPosition(col * Globals.CellCols + Globals.OffsetHorizontal + cellCol,
-                            row * Globals.CellRows + Globals.OffsetVertical + cellRow);
-
-                        if (figure.Color == Color.Light)
-                        {
-                            Paint.LightFigure();
-                            Console.Write(" ");
-                        }
-                        else
-                        {
-                            Paint.DarkFigure();
-                            Console.Write(" ");
-                        }
-                    }
-                }
-            }
-        }
-
-        public void EmptySquare(int row, int col)
-        {
-            if ((row + col) % 2 == 0)
-            {
-                Paint.LightSquare();
-            }
-            else
-            {
-                Paint.DarkSquare();
-            }
-
-            for (int i = 0; i < Globals.CellRows; i++)
-            {
-                Console.SetCursorPosition(col * Globals.CellCols + Globals.OffsetHorizontal,
-                    row * Globals.CellRows + Globals.OffsetVertical + i);
-                Console.Write(new string(' ', 9));
-            }
-        }
-
-        public void NewPiece(Move move)
-        {
-            if (move.End.Piece.Color == Color.Light)
-            {
-                this.EmptySquare(move.End.Position.Y, move.End.Position.X);
-                this.Piece(move.End.Position.Y, move.End.Position.X, move.End.Piece);
-                this.EmptySquare(move.Start.Position.Y, move.Start.Position.X);
-            }
-            else
-            {
-                this.EmptySquare(7 - move.End.Position.Y, 7 - move.End.Position.X);
-                this.Piece(7 - move.End.Position.Y, 7 - move.End.Position.X, move.End.Piece);
-                this.EmptySquare(7 - move.Start.Position.Y, 7 - move.Start.Position.X);
-            }
-        }
-
-        public void BoardOrientation(Square[][] matrix, Color color)
+        public void BoardOrientate(Square[][] matrix, Color color)
         {
             var orientationValue = color == Color.Light ? 0 : 7;
 
@@ -92,6 +31,7 @@
             {
                 for (int col = 0; col < Globals.BoardCols; col++)
                 {
+                    this.EmptySquare(Math.Abs(row - orientationValue), Math.Abs(col - orientationValue));
                     Square currentSquare = matrix[row][col];
                     this.Piece(Math.Abs(row - orientationValue), Math.Abs(col - orientationValue), currentSquare.Piece);
                 }
@@ -100,68 +40,6 @@
             this.Border(color);
 
             Paint.DefaultBackground();
-        }
-
-        public IPiece PawnPromotion(Square square)
-        {
-            Paint.DefaultBackground();
-
-            int toY = square.Position.Y;
-            int toX = square.Position.X;
-
-            if (square.Piece.Color == Color.Light)
-            {
-                Print.SetCursorMinMax(-17, -4);
-                Console.WriteLine("(Q,R,B,N)");
-                Print.SetCursorMinMax(-17, -6);
-                Console.Write("CHOOSE FIGURE:");
-            }
-            else
-            {
-                Print.SetCursorMinMax(78, -51);
-                Console.WriteLine("(Q,R,B,N)");
-                Print.SetCursorMinMax(78, -53);
-                Console.Write("CHOOSE FIGURE:");
-            }
-
-            var figureChoose = Console.ReadKey().Key;
-
-            switch (figureChoose)
-            {
-                case ConsoleKey.Q:
-                    {
-                        this.EmptySquare(toY, toX);
-                        IPiece queen = Factory.GetQueen(square.Piece.Color);
-                        this.Piece(toY, toX, queen);
-                        return queen;
-                    }
-
-                case ConsoleKey.R:
-                    {
-                        this.EmptySquare(toY, toX);
-                        IPiece rook = Factory.GetRook(square.Piece.Color);
-                        this.Piece(toY, toX, rook);
-                        return rook;
-                    }
-
-                case ConsoleKey.B:
-                    {
-                        this.EmptySquare(toY, toX);
-                        IPiece bishop = Factory.GetBishop(square.Piece.Color);
-                        this.Piece(toY, toX, bishop);
-                        return bishop;
-                    }
-
-                case ConsoleKey.N:
-                    {
-                        this.EmptySquare(toY, toX);
-                        IPiece knight = Factory.GetKnight(square.Piece.Color);
-                        this.Piece(toY, toX, knight);
-                        return knight;
-                    }
-
-                default: return this.PawnPromotion(square);
-            }
         }
 
         private void Border(Color color)
@@ -224,6 +102,129 @@
                     Console.SetCursorPosition(horizontalMax + 1, verticalRowByRow - 1);
                     Console.WriteLine(" ");
                 }
+            }
+        }
+
+        public void NewPiece(Move move)
+        {
+            if (move.End.Piece.Color == Color.Light)
+            {
+                this.EmptySquare(move.End.Position.Y, move.End.Position.X);
+                this.Piece(move.End.Position.Y, move.End.Position.X, move.End.Piece);
+                this.EmptySquare(move.Start.Position.Y, move.Start.Position.X);
+            }
+            else
+            {
+                this.EmptySquare(7 - move.End.Position.Y, 7 - move.End.Position.X);
+                this.Piece(7 - move.End.Position.Y, 7 - move.End.Position.X, move.End.Piece);
+                this.EmptySquare(7 - move.Start.Position.Y, 7 - move.Start.Position.X);
+            }
+        }
+
+        public void Piece(int row, int col, IPiece figure)
+        {
+            for (int cellRow = 1; cellRow < Globals.CellRows - 1; cellRow++)
+            {
+                for (int cellCol = 1; cellCol < Globals.CellCols - 1; cellCol++)
+                {
+                    if (figure.FigureMatrix[cellRow, cellCol] == true)
+                    {
+                        Console.SetCursorPosition(col * Globals.CellCols + Globals.OffsetHorizontal + cellCol,
+                            row * Globals.CellRows + Globals.OffsetVertical + cellRow);
+
+                        if (figure.Color == Color.Light)
+                        {
+                            Paint.LightFigure();
+                            Console.Write(" ");
+                        }
+                        else
+                        {
+                            Paint.DarkFigure();
+                            Console.Write(" ");
+                        }
+                    }
+                }
+            }
+        }
+
+        public void EmptySquare(int row, int col)
+        {
+            if ((row + col) % 2 == 0)
+            {
+                Paint.LightSquare();
+            }
+            else
+            {
+                Paint.DarkSquare();
+            }
+
+            for (int i = 0; i < Globals.CellRows; i++)
+            {
+                Console.SetCursorPosition(col * Globals.CellCols + Globals.OffsetHorizontal,
+                    row * Globals.CellRows + Globals.OffsetVertical + i);
+                Console.Write(new string(' ', 9));
+            }
+        }
+
+        public IPiece PawnPromotion(Square square)
+        {
+            Paint.DefaultBackground();
+
+            int toY = square.Position.Y;
+            int toX = square.Position.X;
+
+            if (square.Piece.Color == Color.Light)
+            {
+                Print.SetCursorMinMax(-17, -4);
+                Console.WriteLine("(Q,R,B,N)");
+                Print.SetCursorMinMax(-17, -6);
+                Console.Write("CHOOSE FIGURE:");
+            }
+            else
+            {
+                Print.SetCursorMinMax(78, -51);
+                Console.WriteLine("(Q,R,B,N)");
+                Print.SetCursorMinMax(78, -53);
+                Console.Write("CHOOSE FIGURE:");
+            }
+
+            var figureChoose = Console.ReadKey().Key;
+
+            switch (figureChoose)
+            {
+                case ConsoleKey.Q:
+                    {
+                        this.EmptySquare(toY, toX);
+                        IPiece queen = Factory.GetQueen(square.Piece.Color);
+                        this.Piece(toY, toX, queen);
+                        return queen;
+                    }
+
+                case ConsoleKey.R:
+                    {
+                        this.EmptySquare(toY, toX);
+                        IPiece rook = Factory.GetRook(square.Piece.Color);
+                        this.Piece(toY, toX, rook);
+                        return rook;
+                    }
+
+                case ConsoleKey.B:
+                    {
+                        this.EmptySquare(toY, toX);
+                        IPiece bishop = Factory.GetBishop(square.Piece.Color);
+                        this.Piece(toY, toX, bishop);
+                        return bishop;
+                    }
+
+                case ConsoleKey.N:
+                    {
+                        this.EmptySquare(toY, toX);
+                        IPiece knight = Factory.GetKnight(square.Piece.Color);
+                        this.Piece(toY, toX, knight);
+                        return knight;
+                    }
+
+                default: return this.PawnPromotion(square);
             }
         }
     }
