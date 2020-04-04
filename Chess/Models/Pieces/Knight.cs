@@ -11,7 +11,9 @@
 
         public override char Symbol => 'N';
 
-        public override bool[,] FigureMatrix { get => new bool[Globals.CellRows, Globals.CellCols]
+        public override bool[,] FigureMatrix 
+        { 
+            get => new bool[Globals.CellRows, Globals.CellCols]
             {
                 { false, false, false, false, false, false, false, false, false },
                 { false, false, false, true, true, true, false, false, false },

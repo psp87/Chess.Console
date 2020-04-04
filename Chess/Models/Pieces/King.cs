@@ -8,7 +8,7 @@
 
     public class King : Piece
     {
-        Draw drawer = Factory.GetDraw();
+        private Draw drawer = Factory.GetDraw();
 
         public King(Color color)
             : base(color)
@@ -20,7 +20,7 @@
         public override bool[,] FigureMatrix
         {
             get => new bool[Globals.CellRows, Globals.CellCols]
-{
+            {
                 { false, false, false, false, false, false, false, false, false },
                 { false, false, false, false, true, false, false, false, false },
                 { false, false, false, true, true, true, false, false, false },
@@ -30,7 +30,7 @@
                 { false, false, true, true, true, true, true, false, false },
                 { false, false, true, true, true, true, true, false, false },
                 { false, false, false, false, false, false, false, false, false }
-};
+            };
         }
 
         public override void IsMoveAvailable(Square[][] matrix)
@@ -125,8 +125,8 @@
                         matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
                         matrix[this.Position.Y][lastPiecePosition].Piece = Factory.GetEmpty();
 
-                        drawer.EmptySquare(this.Position.Y, lastPiecePosition);
-                        drawer.Piece(this.Position.Y, to.X + sign, matrix[this.Position.Y][to.X + sign].Piece);
+                        this.drawer.EmptySquare(this.Position.Y, lastPiecePosition);
+                        this.drawer.Piece(this.Position.Y, to.X + sign, matrix[this.Position.Y][to.X + sign].Piece);
 
                         return true;
                     }
