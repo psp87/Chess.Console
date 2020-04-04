@@ -37,6 +37,7 @@
                 this.MoveCheck(2, 1, matrix))
             {
                 this.IsMovable = true;
+                return;
             }
 
             this.IsMovable = false;

@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
 
-    using Contracts;
     using Enums;
     using View;
 
@@ -56,6 +55,7 @@
                             !checkedSquare.IsAttacked.Where(p => p.Color != this.Color).Any()))
                         {
                             this.IsMovable = true;
+                            return;
                         }
                     }
                 }
