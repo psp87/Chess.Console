@@ -104,42 +104,22 @@
                     }
                 }
 
-                if (this.IsFirstMove && to.Y == this.Position.Y && to.X == this.Position.X + 2)
+                if (this.IsFirstMove && to.Y == this.Position.Y && 
+                    (to.X == this.Position.X + 2 || to.X == this.Position.X - 2))
                 {
-                    var rook = matrix[this.Position.Y][7].Piece;
+                    int sign = to.X == this.Position.X + 2 ? -1 : 1;
+                    int lastPiecePosition = to.X == this.Position.X + 2 ? 7 : 0;
+
+                    var rook = matrix[this.Position.Y][lastPiecePosition].Piece;
                     if (this.OccupiedSquaresCheck(to, matrix) && rook is Rook && rook.IsFirstMove)
                     {
                         this.IsFirstMove = false;
 
-                        matrix[this.Position.Y][to.X - 1].Piece = matrix[this.Position.Y][7].Piece;
+                        matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
+                        matrix[this.Position.Y][lastPiecePosition].Piece = Factory.GetEmpty();
 
-                        drawer.EmptySquare(this.Position.Y, 7);
-                        drawer.Piece(this.Position.Y, to.X - 1, matrix[this.Position.Y][to.X - 1].Piece);
-
-                        IPiece emptyFigure = Factory.GetEmpty();
-                        matrix[this.Position.Y][7].Piece = emptyFigure;
-
-                        drawer.EmptySquare(this.Position.Y, 7);
-
-                        return true;
-                    }
-                }
-
-                if (this.IsFirstMove && to.Y == this.Position.Y && to.X == this.Position.X - 2)
-                {
-                    var rook = matrix[this.Position.Y][0].Piece;
-                    if (this.OccupiedSquaresCheck(to, matrix) && rook is Rook && rook.IsFirstMove)
-                    {
-                        this.IsFirstMove = false;
-
-                        matrix[this.Position.Y][to.X + 1].Piece = matrix[this.Position.Y][0].Piece;
-
-                        drawer.EmptySquare(this.Position.Y, 0);
-                        drawer.Piece(this.Position.Y, to.X + 1, matrix[this.Position.Y][to.X + 1].Piece);
-
-                        IPiece emptyFigure = Factory.GetEmpty();
-                        matrix[this.Position.Y][0].Piece = emptyFigure;
-                        drawer.EmptySquare(this.Position.Y, 0);
+                        drawer.EmptySquare(this.Position.Y, lastPiecePosition);
+                        drawer.Piece(this.Position.Y, to.X + sign, matrix[this.Position.Y][to.X + sign].Piece);
 
                         return true;
                     }
