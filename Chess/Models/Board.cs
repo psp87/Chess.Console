@@ -87,7 +87,7 @@
             }
 
             this.IsGameRepetitionDraw();
-
+            this.IsGameDraw();
             this.IsGameStalemate(opponent);
 
             this.printer.EmptyMessageScreen(movingPlayer);
@@ -376,6 +376,31 @@
             {
                 this.movesQueue.Dequeue();
             }
+        }
+
+        private void IsGameDraw()
+        {
+            int counter = 0;
+
+            for (int y = 0; y < Globals.BoardRows; y++)
+            {
+                for (int x = 0; x < Globals.BoardCols; x++)
+                {
+                    var currentFigure = this.Matrix[y][x].Piece;
+
+                    if (!(currentFigure is Empty))
+                    {
+                        counter++;
+
+                        if (counter > 2)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            Globals.GameOver = GameOver.Draw;
         }
 
         private void CalculateAttackedSquares()

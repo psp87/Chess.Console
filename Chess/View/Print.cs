@@ -140,6 +140,15 @@
                 SetCursorMinMax(22, 2);
                 Console.Write("THE GAME IS DRAW BY REPETITION!");
             }
+            else if (gameOver == GameOver.Draw)
+            {
+                Paint.DefaultBackground();
+                Paint.YellowText();
+
+                this.EmptyFinalScreen();
+                SetCursorMinMax(30, 2);
+                Console.Write("THE GAME IS DRAW!");
+            }
         }
 
         public void Turn(Player player)
