@@ -53,14 +53,19 @@
             return new Empty();
         }
 
+        public static Position GetPosition()
+        {
+            return new Position();
+        }
+
         public static Position GetPosition(int y, int x)
         {
             return new Position(y, x);
         }
 
-        public static Position GetPositionEmpty()
+        public static Square GetSquare()
         {
-            return new Position();
+            return new Square();
         }
 
         public static Square GetSquare(int x, int y)
@@ -108,6 +113,11 @@
         public static Move GetMove()
         {
             return new Move();
+        }
+
+        public static Move GetMove(Move move)
+        {
+            return new Move(move);
         }
     }
 }

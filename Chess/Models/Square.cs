@@ -14,13 +14,12 @@
         public Square()
         {
             this.IsAttacked = new List<IPiece>();
+            this.Position = Factory.GetPosition();
         }
 
-        public Square(int posY, int posX)
+        public Square(int posY, int posX) : this()
         {
-            this.IsAttacked = new List<IPiece>();
-            this.Position.X = posX;
-            this.Position.Y = posY;
+            this.Position = Factory.GetPosition(posX, posY);
         }
 
         public IPiece Piece

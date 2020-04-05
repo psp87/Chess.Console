@@ -60,15 +60,7 @@
                 var player = sender as Player;
                 var gameOver = e as GameOverEventArgs;
 
-                switch (gameOver.GameOver)
-                {
-                    case GameOver.Checkmate:
-                        printer.Won(player, gameOver.GameOver.ToString());
-                        break;
-                    case GameOver.Stalemate:
-                        printer.Stalemate();
-                        break;
-                }
+                printer.FinalMessage(player, gameOver.GameOver);
             }
         }
     }

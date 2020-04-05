@@ -13,8 +13,9 @@
 
     public class Board : ICloneable
     {
-        private Print printer = Factory.GetPrint();
-        private Draw drawer = Factory.GetDraw();
+        private Print printer;
+        private Draw drawer;
+        private Queue<Move> movesQueue;
 
         private string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 
@@ -33,6 +34,10 @@
 
         public Board()
         {
+            this.printer = Factory.GetPrint();
+            this.drawer = Factory.GetDraw();
+            this.movesQueue = new Queue<Move>();
+
             this.Matrix = Factory.GetMatrix();
             this.Move = Factory.GetMove();
         }
@@ -80,6 +85,8 @@
                     continue;
                 }
             }
+
+            this.IsGameRepetitionDraw();
 
             this.IsGameStalemate(opponent);
 
@@ -194,33 +201,6 @@
             return false;
         }
 
-        private bool TryMove(Player movingPlayer, Player opponent)
-        {
-            this.PlacePiece(this.Move);
-            this.RemovePiece(this.Move.Start);
-            this.CalculateAttackedSquares();
-
-            if (this.IsPlayerChecked(movingPlayer))
-            {
-                this.ReversePiece(this.Move);
-                this.RemovePiece(this.Move.End);
-                this.CalculateAttackedSquares();
-                this.printer.KingIsCheck(movingPlayer);
-                return false;
-            }
-
-            this.drawer.NewPiece(this.Move);
-            this.printer.EmptyCheckScreen(opponent);
-
-            if (this.Move.End.Piece is Pawn && this.Move.End.Piece.IsLastMove)
-            {
-                this.Move.End.Piece = this.drawer.PawnPromotion(this.Move.End);
-                this.CalculateAttackedSquares();
-            }
-
-            return true;
-        }
-
         private bool EnPassantTake(Player movingPlayer, Player opponent)
         {
             if (EnPassant.Turn == Globals.TurnCounter &&
@@ -256,6 +236,33 @@
             }
 
             return false;
+        }
+
+        private bool TryMove(Player movingPlayer, Player opponent)
+        {
+            this.PlacePiece(this.Move);
+            this.RemovePiece(this.Move.Start);
+            this.CalculateAttackedSquares();
+
+            if (this.IsPlayerChecked(movingPlayer))
+            {
+                this.ReversePiece(this.Move);
+                this.RemovePiece(this.Move.End);
+                this.CalculateAttackedSquares();
+                this.printer.KingIsCheck(movingPlayer);
+                return false;
+            }
+
+            this.drawer.NewPiece(this.Move);
+            this.printer.EmptyCheckScreen(opponent);
+
+            if (this.Move.End.Piece is Pawn && this.Move.End.Piece.IsLastMove)
+            {
+                this.Move.End.Piece = this.drawer.PawnPromotion(this.Move.End);
+                this.CalculateAttackedSquares();
+            }
+
+            return true;
         }
 
         private void PlacePiece(Move move)
@@ -319,6 +326,56 @@
             }
 
             Globals.GameOver = GameOver.Stalemate;
+        }
+
+        private void IsGameRepetitionDraw()
+        {
+            var move = Factory.GetMove(this.Move);
+            this.movesQueue.Enqueue(move);
+
+            Move[] array = this.movesQueue.ToArray();
+
+            if (this.movesQueue.Count == 3 &&
+                array[0].Start.Position.X == this.Move.End.Position.X &&
+                array[0].Start.Position.Y == this.Move.End.Position.Y &&
+                array[0].End.Position.X == this.Move.Start.Position.X &&
+                array[0].End.Position.Y == this.Move.Start.Position.Y)
+            {
+                return;
+            }
+
+            else if (this.movesQueue.Count == 4 &&
+                array[1].Start.Position.X == this.Move.End.Position.X &&
+                array[1].Start.Position.Y == this.Move.End.Position.Y &&
+                array[1].End.Position.X == this.Move.Start.Position.X &&
+                array[1].End.Position.Y == this.Move.Start.Position.Y)
+            {
+                return;
+            }
+
+            else if (this.movesQueue.Count == 5 &&
+                array[0].Start.Position.X == this.Move.Start.Position.X &&
+                array[0].Start.Position.Y == this.Move.Start.Position.Y &&
+                array[0].End.Position.X == this.Move.End.Position.X &&
+                array[0].End.Position.Y == this.Move.End.Position.Y)
+            {
+                return;
+            }
+
+            else if (this.movesQueue.Count == 6 &&
+                array[1].Start.Position.X == this.Move.Start.Position.X &&
+                array[1].Start.Position.Y == this.Move.Start.Position.Y &&
+                array[1].End.Position.X == this.Move.End.Position.X &&
+                array[1].End.Position.Y == this.Move.End.Position.Y)
+            {
+                Globals.GameOver = GameOver.Repetition;
+                return;
+            }
+
+            else if (this.movesQueue.Count > 2)
+            {
+                this.movesQueue.Dequeue();
+            }
         }
 
         private void CalculateAttackedSquares()

@@ -8,11 +8,14 @@
 
     public class Game
     {
-        private Print printer = Factory.GetPrint();
-        private Draw drawer = Factory.GetDraw();
+        private Print printer;
+        private Draw drawer;
 
         public Game()
         {
+            this.printer = Factory.GetPrint();
+            this.drawer = Factory.GetDraw();
+
             this.ChessBoard = Factory.GetBoard();
         }
 

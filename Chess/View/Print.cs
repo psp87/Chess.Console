@@ -1,8 +1,7 @@
 ﻿namespace Chess.View
 {
     using System;
-
-    using Models;
+    using Chess.Models;
     using Models.Enums;
     using Models.Pieces;
 
@@ -102,6 +101,47 @@
             Console.Write($"Q x {playerTwo.TakenFigures(nameof(Queen))}");
         }
 
+        public void FinalMessage(Player player, GameOver gameOver)
+        {
+            if (gameOver == GameOver.Checkmate)
+            {
+                Paint.DefaultBackground();
+                Paint.YellowText();
+
+                this.EmptyFinalScreen();
+                if (player.Color == Color.Light)
+                {
+                    SetCursorMinMax(-14, -27);
+                }
+                else
+                {
+                    SetCursorMaxMin(5, 2);
+                }
+
+                Console.Write($"{gameOver.ToString().ToUpper()}!");
+                SetCursorMinMax(28, 2);
+                Console.Write($"{player.Name.ToUpper()} WON THE GAME!");
+            }
+            else if (gameOver == GameOver.Stalemate)
+            {
+                Paint.DefaultBackground();
+                Paint.YellowText();
+
+                this.EmptyFinalScreen();
+                SetCursorMinMax(28, 2);
+                Console.Write("THE GAME IS STALEMATE!");
+            }
+            else if (gameOver == GameOver.Repetition)
+            {
+                Paint.DefaultBackground();
+                Paint.YellowText();
+
+                this.EmptyFinalScreen();
+                SetCursorMinMax(22, 2);
+                Console.Write("THE GAME IS DRAW BY REPETITION!");
+            }
+        }
+
         public void Turn(Player player)
         {
             Paint.DefaultBackground();
@@ -145,36 +185,6 @@
             }
 
             Console.Write("CHECK!");
-        }
-
-        public void Won(Player player, string message)
-        {
-            Paint.DefaultBackground();
-            Paint.YellowText();
-
-            this.EmptyFinalScreen();
-            if (player.Color == Color.Light)
-            {
-                SetCursorMinMax(-14, -27);
-            }
-            else
-            {
-                SetCursorMaxMin(5, 2);
-            }
-
-            Console.Write($"{message.ToUpper()}!");
-            SetCursorMinMax(28, 2);
-            Console.Write($"{player.Name.ToUpper()} WON THE GAME!");
-        }
-
-        public void Stalemate()
-        {
-            Paint.DefaultBackground();
-            Paint.YellowText();
-
-            this.EmptyFinalScreen();
-            SetCursorMinMax(28, 2);
-            Console.Write("THE GAME IS STALEMATE!");
         }
 
         public void KingIsCheck(Player player)

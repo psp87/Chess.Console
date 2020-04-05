@@ -9,14 +9,14 @@
     {
         public Piece(Color color)
         {
-            Position = Factory.GetPositionEmpty();
+            Position = Factory.GetPosition();
             this.Color = color;
             this.IsFirstMove = true;
         }
 
         public Piece()
         {
-            Position = Factory.GetPositionEmpty();
+            Position = Factory.GetPosition();
         }
 
         public string Name => this.GetType().Name.ToString();
