@@ -1,7 +1,8 @@
 ﻿namespace Chess.View
 {
     using System;
-    using Chess.Models;
+
+    using Models;
     using Models.Enums;
     using Models.Pieces;
 

@@ -16,6 +16,7 @@
 
             try
             {
+                Console.Clear();
                 printer.Header();
                 drawer.BoardEmpty(Color.Light);
 
