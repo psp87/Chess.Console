@@ -4,4 +4,4 @@
 
 The game is made for practising OOP course in SoftUni.
 Multiplayer on one PC. Moving figures by keyboard command. Do not have an AI.
-Castling, EnPassant and Pawn Promotion moves are implemented. Still improvement have to be done.
+Castling, EnPassant and Pawn Promotion moves are implemented.
