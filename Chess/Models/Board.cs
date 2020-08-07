@@ -61,7 +61,6 @@
                     {
                         if (movingPlayer.IsCheck)
                         {
-                            movingPlayer.IsCheck = false;
                             continue;
                         }
 
