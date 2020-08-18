@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Text.RegularExpressions;
 
     using Enums;
@@ -15,7 +16,8 @@
     {
         private Print printer;
         private Draw drawer;
-        private Queue<Move> movesQueue;
+        private Queue<string> movesQueue;
+        private string[] movesArray;
 
         private string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 
@@ -36,7 +38,8 @@
         {
             this.printer = Factory.GetPrint();
             this.drawer = Factory.GetDraw();
-            this.movesQueue = new Queue<Move>();
+            this.movesQueue = new Queue<string>();
+            this.movesArray = new string[9];
 
             this.Matrix = Factory.GetMatrix();
             this.Move = Factory.GetMove();
@@ -331,50 +334,30 @@
 
         private void IsGameRepetitionDraw()
         {
-            var move = Factory.GetMove(this.Move);
-            this.movesQueue.Enqueue(move);
+            StringBuilder sb = new StringBuilder();
 
-            Move[] array = this.movesQueue.ToArray();
-
-            if (this.movesQueue.Count == 3 &&
-                array[0].Start.Position.X == this.Move.End.Position.X &&
-                array[0].Start.Position.Y == this.Move.End.Position.Y &&
-                array[0].End.Position.X == this.Move.Start.Position.X &&
-                array[0].End.Position.Y == this.Move.Start.Position.Y)
+            for (int y = 0; y < Globals.BoardRows; y++)
             {
-                return;
+                for (int x = 0; x < Globals.BoardCols; x++)
+                {
+                    sb.Append(this.Matrix[y][x].Piece.Symbol);
+                }
             }
 
-            else if (this.movesQueue.Count == 4 &&
-                array[1].Start.Position.X == this.Move.End.Position.X &&
-                array[1].Start.Position.Y == this.Move.End.Position.Y &&
-                array[1].End.Position.X == this.Move.Start.Position.X &&
-                array[1].End.Position.Y == this.Move.Start.Position.Y)
-            {
-                return;
-            }
+            this.movesQueue.Enqueue(sb.ToString());
 
-            else if (this.movesQueue.Count == 5 &&
-                array[0].Start.Position.X == this.Move.Start.Position.X &&
-                array[0].Start.Position.Y == this.Move.Start.Position.Y &&
-                array[0].End.Position.X == this.Move.End.Position.X &&
-                array[0].End.Position.Y == this.Move.End.Position.Y)
+            if (this.movesQueue.Count == 9)
             {
-                return;
-            }
+                this.movesArray = this.movesQueue.ToArray();
 
-            else if (this.movesQueue.Count == 6 &&
-                array[1].Start.Position.X == this.Move.Start.Position.X &&
-                array[1].Start.Position.Y == this.Move.Start.Position.Y &&
-                array[1].End.Position.X == this.Move.End.Position.X &&
-                array[1].End.Position.Y == this.Move.End.Position.Y)
-            {
-                Globals.GameOver = GameOver.Repetition;
-                return;
-            }
+                var isFirstFenSame = string.Compare(sb.ToString(), this.movesArray[0]) == 0;
+                var isFiveFenSame = string.Compare(sb.ToString(), this.movesArray[4]) == 0;
 
-            else if (this.movesQueue.Count > 2)
-            {
+                if (isFirstFenSame && isFiveFenSame)
+                {
+                    Globals.GameOver = GameOver.Repetition;
+                }
+
                 this.movesQueue.Dequeue();
             }
         }
@@ -555,7 +538,7 @@
                             return true;
                         }
                     }
-                }   
+                }
 
                 if (attackingRow != kingY && attackingCol != kingX)
                 {
